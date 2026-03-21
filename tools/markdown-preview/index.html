@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Preview — UtilShed</title>
+    <meta name="description" content="Free online Markdown editor with live preview. Write Markdown and see it rendered in real-time. Supports GitHub Flavored Markdown. No signup required.">
+    <meta name="keywords" content="markdown preview, markdown editor, markdown online, markdown renderer, github markdown, markdown to html">
+    <link rel="canonical" href="https://utilshed.com/tools/markdown-preview/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        #preview {
+            padding: 1.25rem;
+            min-height: 300px;
+            overflow-y: auto;
+            font-size: 0.9375rem;
+            line-height: 1.7;
+        }
+        #preview h1 { font-size: 1.75rem; font-weight: 700; margin: 1.25rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.375rem; }
+        #preview h2 { font-size: 1.375rem; font-weight: 600; margin: 1rem 0 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+        #preview h3 { font-size: 1.125rem; font-weight: 600; margin: 0.875rem 0 0.375rem; }
+        #preview h4, #preview h5, #preview h6 { font-size: 1rem; font-weight: 600; margin: 0.75rem 0 0.25rem; }
+        #preview p { margin: 0.5rem 0; }
+        #preview code { background: var(--bg); padding: 0.125rem 0.375rem; border-radius: 4px; font-family: var(--mono); font-size: 0.8125rem; }
+        #preview pre { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; margin: 0.75rem 0; }
+        #preview pre code { background: none; padding: 0; font-size: 0.8125rem; }
+        #preview blockquote { border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--text-muted); margin: 0.75rem 0; }
+        #preview ul, #preview ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+        #preview li { margin: 0.25rem 0; }
+        #preview a { color: var(--accent); text-decoration: underline; }
+        #preview hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+        #preview table { border-collapse: collapse; width: 100%; margin: 0.75rem 0; }
+        #preview th, #preview td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; font-size: 0.875rem; }
+        #preview th { background: var(--bg); font-weight: 600; }
+        #preview img { max-width: 100%; border-radius: 8px; }
+        #preview strong { font-weight: 700; }
+        #preview em { font-style: italic; }
+        #preview del { text-decoration: line-through; color: var(--text-muted); }
+        .input-label { display: flex; justify-content: space-between; align-items: center; }
+        .char-count { color: var(--text-muted); font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">🛠️ UtilShed</a>
+            <span class="tagline">Markdown Preview</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Markdown Preview</h1>
+            <p>Write Markdown on the left, see the rendered preview on the right — in real-time.</p>
+        </div>
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="copyHtml()">Copy HTML</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="loadSample()">Load Sample</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">
+                    <div class="input-label"><span>Markdown</span> <span class="char-count" id="char-count">0 chars</span></div>
+                </div>
+                <textarea class="tool-input" id="input" placeholder="# Hello World&#10;&#10;Write some **Markdown** here..." spellcheck="false"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Preview</div>
+                <div id="preview"></div>
+            </div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    // Lightweight Markdown parser — supports most GFM features
+    function parseMd(md) {
+        // Escape HTML
+        let html = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+        // Code blocks (``` ... ```)
+        html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(_, lang, code) {
+            return '<pre><code>' + code.trimEnd() + '</code></pre>';
+        });
+
+        // Tables
+        html = html.replace(/^(\|.+\|)\n(\|[\s:|-]+\|)\n((?:\|.+\|\n?)*)/gm, function(_, header, sep, body) {
+            const ths = header.split('|').filter(c => c.trim()).map(c => '<th>' + c.trim() + '</th>').join('');
+            const rows = body.trim().split('\n').map(row => {
+                const tds = row.split('|').filter(c => c.trim()).map(c => '<td>' + c.trim() + '</td>').join('');
+                return '<tr>' + tds + '</tr>';
+            }).join('');
+            return '<table><thead><tr>' + ths + '</tr></thead><tbody>' + rows + '</tbody></table>';
+        });
+
+        // Headings
+        html = html.replace(/^######\s+(.+)$/gm, '<h6>$1</h6>');
+        html = html.replace(/^#####\s+(.+)$/gm, '<h5>$1</h5>');
+        html = html.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>');
+        html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>');
+        html = html.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>');
+        html = html.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
+
+        // Horizontal rules
+        html = html.replace(/^---+$/gm, '<hr>');
+
+        // Blockquotes
+        html = html.replace(/^&gt;\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+
+        // Unordered lists
+        html = html.replace(/^[\*\-]\s+(.+)$/gm, '<li>$1</li>');
+        html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+        // Ordered lists
+        html = html.replace(/^\d+\.\s+(.+)$/gm, '<oli>$1</oli>');
+        html = html.replace(/((?:<oli>.*<\/oli>\n?)+)/g, function(m) {
+            return '<ol>' + m.replace(/<\/?oli>/g, function(t) { return t.replace('oli', 'li'); }) + '</ol>';
+        });
+
+        // Images
+        html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">');
+
+        // Links
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+        // Inline code
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+        // Bold + italic
+        html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+        // Strikethrough
+        html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
+
+        // Paragraphs — wrap lone lines
+        html = html.replace(/^(?!<[a-z/])(.*\S.*)$/gm, '<p>$1</p>');
+
+        // Clean up extra p around block elements
+        html = html.replace(/<p>(<(?:h[1-6]|ul|ol|li|blockquote|pre|hr|table|thead|tbody|tr|th|td|img)[^>]*>)/g, '$1');
+        html = html.replace(/(<\/(?:h[1-6]|ul|ol|li|blockquote|pre|hr|table|thead|tbody|tr|th|td)>)<\/p>/g, '$1');
+
+        return html;
+    }
+
+    const input = document.getElementById('input');
+    const preview = document.getElementById('preview');
+    const charCount = document.getElementById('char-count');
+
+    function render() {
+        preview.innerHTML = parseMd(input.value);
+        charCount.textContent = input.value.length + ' chars';
+    }
+
+    function copyHtml() {
+        const html = parseMd(input.value);
+        navigator.clipboard.writeText(html);
+        const el = document.getElementById('status');
+        el.textContent = 'HTML copied!';
+        el.className = 'status status-ok';
+        setTimeout(() => el.textContent = '', 2000);
+    }
+
+    function clearAll() {
+        input.value = '';
+        render();
+    }
+
+    function loadSample() {
+        input.value = `# Hello World
+
+This is a **Markdown** preview tool by *UtilShed*.
+
+## Features
+
+- Real-time preview
+- **Bold**, *italic*, and ~~strikethrough~~
+- \`inline code\` and code blocks
+- Links and images
+- Tables and lists
+
+## Code Example
+
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+\`\`\`
+
+## Table
+
+| Feature | Status |
+|---------|--------|
+| Headings | ✅ |
+| Lists | ✅ |
+| Code | ✅ |
+| Tables | ✅ |
+
+> Markdown is the best way to write for the web.
+
+---
+
+Built with ❤️ by [UtilShed](https://utilshed.com)`;
+        render();
+    }
+
+    input.addEventListener('input', render);
+    render();
+    </script>
+</body>
+</html>

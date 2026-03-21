@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT Decoder — UtilShed</title>
+    <meta name="description" content="Free online JWT decoder and inspector. Decode JSON Web Tokens to see the header, payload, and signature. Verify expiration dates. No signup required.">
+    <meta name="keywords" content="JWT decoder, JWT debugger, JSON web token, JWT parser, decode JWT, JWT inspector, JWT online">
+    <link rel="canonical" href="https://utilshed.com/tools/jwt-decoder/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .jwt-parts { display: grid; gap: 1rem; margin-top: 1rem; }
+        .jwt-part { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+        .jwt-part-label { font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .jwt-part-label .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .dot-header { background: #ef4444; }
+        .dot-payload { background: #a855f7; }
+        .dot-signature { background: #3b82f6; }
+        .jwt-json { font-family: var(--mono); font-size: 0.8125rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+        .jwt-json .key { color: #ef4444; }
+        .jwt-json .string { color: #22c55e; }
+        .jwt-json .number { color: #eab308; }
+        .jwt-json .boolean { color: #3b82f6; }
+        .jwt-json .null { color: var(--text-muted); }
+        .jwt-colored { font-family: var(--mono); font-size: 0.8125rem; word-break: break-all; line-height: 1.5; padding: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; margin-top: 0.75rem; }
+        .jwt-colored .c-header { color: #ef4444; }
+        .jwt-colored .c-payload { color: #a855f7; }
+        .jwt-colored .c-signature { color: #3b82f6; }
+        .jwt-colored .c-dot { color: var(--text-muted); }
+        .claim-info { font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem; }
+        .expired { color: var(--red); font-weight: 600; }
+        .valid { color: var(--green); font-weight: 600; }
+        #jwt-input { width: 100%; min-height: 100px; padding: 0.875rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--mono); font-size: 0.8125rem; resize: vertical; outline: none; line-height: 1.5; word-break: break-all; }
+        #jwt-input:focus { border-color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">🛠️ UtilShed</a>
+            <span class="tagline">JWT Decoder</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>JWT Decoder</h1>
+            <p>Paste a JSON Web Token to decode and inspect its header, payload, and signature.</p>
+        </div>
+        <div class="tool-single">
+            <div style="margin-bottom:0.5rem;font-size:0.875rem;font-weight:600;">Encoded Token</div>
+            <textarea id="jwt-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" spellcheck="false"></textarea>
+            <div class="btn-row" style="margin-top:0.75rem;">
+                <button class="btn btn-primary" onclick="decode()">Decode</button>
+                <button class="btn" onclick="loadSample()">Load Sample</button>
+                <button class="btn" onclick="clearAll()">Clear</button>
+                <span id="status" class="status"></span>
+            </div>
+            <div id="jwt-colored"></div>
+            <div id="output" class="jwt-parts" style="display:none;">
+                <div class="jwt-part">
+                    <div class="jwt-part-label"><span class="dot dot-header"></span> Header <span style="font-weight:400;color:var(--text-muted)">(ALGORITHM & TOKEN TYPE)</span></div>
+                    <div class="jwt-json" id="header-json"></div>
+                </div>
+                <div class="jwt-part">
+                    <div class="jwt-part-label"><span class="dot dot-payload"></span> Payload <span style="font-weight:400;color:var(--text-muted)">(DATA)</span></div>
+                    <div class="jwt-json" id="payload-json"></div>
+                </div>
+                <div class="jwt-part">
+                    <div class="jwt-part-label"><span class="dot dot-signature"></span> Signature</div>
+                    <div class="jwt-json" id="sig-json" style="color:var(--text-muted);"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    function b64decode(str) {
+        // Handle URL-safe base64
+        str = str.replace(/-/g, '+').replace(/_/g, '/');
+        // Pad if needed
+        while (str.length % 4) str += '=';
+        return decodeURIComponent(atob(str).split('').map(c =>
+            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        ).join(''));
+    }
+
+    function syntaxHighlight(json) {
+        if (typeof json !== 'string') json = JSON.stringify(json, null, 2);
+        return json.replace(/("(\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
+            let cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                    // Add claim info for known claims
+                    const key = match.replace(/[":]/g, '');
+                    const info = getClaimInfo(key);
+                    if (info) return '<span class="' + cls + '">' + match + '</span>' + '<span class="claim-info">// ' + info + '</span>';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+
+    function getClaimInfo(key) {
+        const claims = {
+            'iss': 'Issuer',
+            'sub': 'Subject',
+            'aud': 'Audience',
+            'exp': 'Expiration Time',
+            'nbf': 'Not Before',
+            'iat': 'Issued At',
+            'jti': 'JWT ID',
+            'name': 'Full Name',
+            'email': 'Email',
+            'role': 'Role',
+            'scope': 'Scope',
+            'alg': 'Algorithm',
+            'typ': 'Token Type',
+            'kid': 'Key ID'
+        };
+        return claims[key] || null;
+    }
+
+    function formatTimestamp(val) {
+        if (typeof val !== 'number') return '';
+        const d = new Date(val * 1000);
+        const now = Date.now();
+        const expired = val * 1000 < now;
+        const dateStr = d.toUTCString();
+        if (expired) return ' <span class="expired">(expired: ' + dateStr + ')</span>';
+        return ' <span class="valid">(valid until: ' + dateStr + ')</span>';
+    }
+
+    function decode() {
+        const token = document.getElementById('jwt-input').value.trim();
+        const status = document.getElementById('status');
+        const output = document.getElementById('output');
+        const colored = document.getElementById('jwt-colored');
+
+        if (!token) {
+            status.textContent = 'Paste a JWT token first';
+            status.className = 'status status-err';
+            output.style.display = 'none';
+            colored.innerHTML = '';
+            return;
+        }
+
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+            status.textContent = 'Invalid JWT — must have 3 parts separated by dots';
+            status.className = 'status status-err';
+            output.style.display = 'none';
+            colored.innerHTML = '';
+            return;
+        }
+
+        try {
+            const header = JSON.parse(b64decode(parts[0]));
+            const payload = JSON.parse(b64decode(parts[1]));
+
+            // Colored token
+            colored.innerHTML = '<div class="jwt-colored">' +
+                '<span class="c-header">' + parts[0] + '</span>' +
+                '<span class="c-dot">.</span>' +
+                '<span class="c-payload">' + parts[1] + '</span>' +
+                '<span class="c-dot">.</span>' +
+                '<span class="c-signature">' + parts[2] + '</span>' +
+                '</div>';
+
+            // Header
+            document.getElementById('header-json').innerHTML = syntaxHighlight(JSON.stringify(header, null, 2));
+
+            // Payload with timestamp info
+            let payloadHtml = syntaxHighlight(JSON.stringify(payload, null, 2));
+            if (payload.exp) payloadHtml = payloadHtml.replace(/(\"exp\"\s*:\s*)(\d+)/, '$1$2' + formatTimestamp(payload.exp));
+            if (payload.iat) payloadHtml = payloadHtml.replace(/(\"iat\"\s*:\s*)(\d+)/, function(m, p1, p2) { return p1 + p2 + ' <span class="claim-info">(' + new Date(parseInt(p2)*1000).toUTCString() + ')</span>'; });
+            if (payload.nbf) payloadHtml = payloadHtml.replace(/(\"nbf\"\s*:\s*)(\d+)/, function(m, p1, p2) { return p1 + p2 + ' <span class="claim-info">(' + new Date(parseInt(p2)*1000).toUTCString() + ')</span>'; });
+            document.getElementById('payload-json').innerHTML = payloadHtml;
+
+            // Signature
+            document.getElementById('sig-json').textContent = parts[2];
+
+            output.style.display = 'grid';
+            status.textContent = 'Decoded ✓';
+            status.className = 'status status-ok';
+        } catch (e) {
+            status.textContent = 'Failed to decode: ' + e.message;
+            status.className = 'status status-err';
+            output.style.display = 'none';
+            colored.innerHTML = '';
+        }
+    }
+
+    function loadSample() {
+        document.getElementById('jwt-input').value = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huQGV4YW1wbGUuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE3MzIwMDAwMDB9.DqG1jRRz0fFHkyIiMqo7t7VDwljnIWFYMDIBzWOYsNs';
+        decode();
+    }
+
+    function clearAll() {
+        document.getElementById('jwt-input').value = '';
+        document.getElementById('output').style.display = 'none';
+        document.getElementById('jwt-colored').innerHTML = '';
+        document.getElementById('status').textContent = '';
+    }
+
+    document.getElementById('jwt-input').addEventListener('input', decode);
+    </script>
+</body>
+</html>
