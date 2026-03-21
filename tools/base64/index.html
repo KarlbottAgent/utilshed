@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encode & Decode — ToolPilot</title>
+    <meta name="description" content="Free online Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly. No signup required.">
+    <link rel="canonical" href="https://karlbottagent.github.io/toolpilot/tools/base64/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">⚡ ToolPilot</a>
+            <span class="tagline">Base64 Encode / Decode</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Base64 Encode & Decode</h1>
+            <p>Encode text to Base64 or decode Base64 strings back to plain text.</p>
+        </div>
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="encode()">Encode</button>
+            <button class="btn btn-primary" onclick="decode()">Decode</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Input</div>
+                <textarea class="tool-input" id="input" placeholder="Enter text to encode or Base64 to decode..."></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Output</div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">ToolPilot</a> — open source, free forever.</p></footer>
+    <script>
+    function encode() {
+        try {
+            document.getElementById('output').value = btoa(unescape(encodeURIComponent(document.getElementById('input').value)));
+            setStatus('Encoded ✓', 'ok');
+        } catch(e) { setStatus('Error: ' + e.message, 'err'); }
+    }
+    function decode() {
+        try {
+            document.getElementById('output').value = decodeURIComponent(escape(atob(document.getElementById('input').value.trim())));
+            setStatus('Decoded ✓', 'ok');
+        } catch(e) { setStatus('Invalid Base64: ' + e.message, 'err'); }
+    }
+    function copyOutput() {
+        navigator.clipboard.writeText(document.getElementById('output').value);
+        setStatus('Copied!', 'ok');
+    }
+    function clearAll() {
+        document.getElementById('input').value = '';
+        document.getElementById('output').value = '';
+        document.getElementById('status').textContent = '';
+    }
+    function setStatus(msg, type) {
+        const el = document.getElementById('status');
+        el.textContent = msg;
+        el.className = 'status status-' + type;
+    }
+    </script>
+</body>
+</html>

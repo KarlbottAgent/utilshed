@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash Generator — MD5, SHA-1, SHA-256, SHA-512 — ToolPilot</title>
+    <meta name="description" content="Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. Free online hash generator, no signup required.">
+    <link rel="canonical" href="https://karlbottagent.github.io/toolpilot/tools/hash/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">⚡ ToolPilot</a>
+            <span class="tagline">Hash Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Hash Generator</h1>
+            <p>Generate cryptographic hashes from any text. Click any hash to copy.</p>
+        </div>
+        <div class="tool-single">
+            <textarea class="tool-input" id="input" placeholder="Type or paste text to hash..." style="min-height:120px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.875rem;width:100%;margin-bottom:1rem"></textarea>
+            <div id="results" style="display:flex;flex-direction:column;gap:0.75rem"></div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">ToolPilot</a> — open source, free forever.</p></footer>
+    <script>
+    const algos = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1'];
+    async function computeHash(algo, text) {
+        const data = new TextEncoder().encode(text);
+        const hash = await crypto.subtle.digest(algo, data);
+        return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    async function hashAll() {
+        const text = document.getElementById('input').value;
+        const container = document.getElementById('results');
+        container.innerHTML = '';
+        for (const algo of algos) {
+            const hash = text ? await computeHash(algo, text) : '';
+            const row = document.createElement('div');
+            row.innerHTML = `<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px;font-weight:600">${algo}</div>`;
+            const box = document.createElement('div');
+            box.className = 'result-box';
+            box.textContent = hash || '—';
+            box.onclick = () => { if(hash) { navigator.clipboard.writeText(hash); box.style.borderColor='var(--green)'; setTimeout(()=>box.style.borderColor='',500); }};
+            row.appendChild(box);
+            container.appendChild(row);
+        }
+    }
+    document.getElementById('input').addEventListener('input', hashAll);
+    hashAll();
+    </script>
+</body>
+</html>

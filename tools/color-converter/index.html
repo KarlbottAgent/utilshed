@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Converter — HEX, RGB, HSL — ToolPilot</title>
+    <meta name="description" content="Convert colors between HEX, RGB, and HSL formats. Free online color converter with live preview. No signup required.">
+    <link rel="canonical" href="https://karlbottagent.github.io/toolpilot/tools/color-converter/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">⚡ ToolPilot</a>
+            <span class="tagline">Color Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Color Converter</h1>
+            <p>Convert between HEX, RGB, and HSL. Click any value to copy.</p>
+        </div>
+        <div class="tool-single">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem">
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;display:block;margin-bottom:4px">HEX</label>
+                    <input type="text" id="hex" value="#3b82f6" placeholder="#3b82f6">
+                </div>
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;display:block;margin-bottom:4px">RGB</label>
+                    <input type="text" id="rgb" placeholder="59, 130, 246">
+                </div>
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;display:block;margin-bottom:4px">HSL</label>
+                    <input type="text" id="hsl" placeholder="217, 91%, 60%">
+                </div>
+            </div>
+            <div class="color-preview" id="preview" style="background:#3b82f6"></div>
+            <div style="text-align:center">
+                <input type="color" id="picker" value="#3b82f6" style="width:48px;height:32px;cursor:pointer;border:none;background:none">
+                <span style="color:var(--text-muted);font-size:0.75rem;margin-left:8px">or use the color picker</span>
+            </div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">ToolPilot</a> — open source, free forever.</p></footer>
+    <script>
+    function hexToRgb(hex) {
+        hex = hex.replace('#','');
+        if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+        const n = parseInt(hex, 16);
+        return [(n>>16)&255, (n>>8)&255, n&255];
+    }
+    function rgbToHex(r,g,b) { return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join(''); }
+    function rgbToHsl(r,g,b) {
+        r/=255; g/=255; b/=255;
+        const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
+        let h=0, s=0, l=(max+min)/2;
+        if(d) { s=l>0.5?d/(2-max-min):d/(max+min); h=max===r?(g-b)/d+(g<b?6:0):max===g?(b-r)/d+2:(r-g)/d+4; h*=60; }
+        return [Math.round(h), Math.round(s*100), Math.round(l*100)];
+    }
+    function hslToRgb(h,s,l) {
+        s/=100; l/=100;
+        const a=s*Math.min(l,1-l);
+        const f=(n)=>{const k=(n+h/30)%12; return l-a*Math.max(-1,Math.min(k-3,9-k,1));};
+        return [Math.round(f(0)*255), Math.round(f(8)*255), Math.round(f(4)*255)];
+    }
+    function update(source) {
+        let r,g,b;
+        try {
+            if(source==='hex') {
+                [r,g,b] = hexToRgb(document.getElementById('hex').value);
+            } else if(source==='rgb') {
+                [r,g,b] = document.getElementById('rgb').value.split(',').map(s=>parseInt(s.trim()));
+            } else if(source==='hsl') {
+                const parts = document.getElementById('hsl').value.replace(/%/g,'').split(',').map(s=>parseFloat(s.trim()));
+                [r,g,b] = hslToRgb(parts[0],parts[1],parts[2]);
+            } else if(source==='picker') {
+                [r,g,b] = hexToRgb(document.getElementById('picker').value);
+            }
+            if(isNaN(r)||isNaN(g)||isNaN(b)) return;
+            const hex = rgbToHex(r,g,b);
+            const [h,s,l] = rgbToHsl(r,g,b);
+            if(source!=='hex') document.getElementById('hex').value = hex;
+            if(source!=='rgb') document.getElementById('rgb').value = `${r}, ${g}, ${b}`;
+            if(source!=='hsl') document.getElementById('hsl').value = `${h}, ${s}%, ${l}%`;
+            if(source!=='picker') document.getElementById('picker').value = hex;
+            document.getElementById('preview').style.background = hex;
+        } catch(e) {}
+    }
+    document.getElementById('hex').addEventListener('input', ()=>update('hex'));
+    document.getElementById('rgb').addEventListener('input', ()=>update('rgb'));
+    document.getElementById('hsl').addEventListener('input', ()=>update('hsl'));
+    document.getElementById('picker').addEventListener('input', ()=>update('picker'));
+    ['hex','rgb','hsl'].forEach(id => document.getElementById(id).addEventListener('click', function(){ navigator.clipboard.writeText(this.value); }));
+    update('hex');
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UUID Generator — ToolPilot</title>
+    <meta name="description" content="Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once. Free, no signup required.">
+    <link rel="canonical" href="https://karlbottagent.github.io/toolpilot/tools/uuid/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">⚡ ToolPilot</a>
+            <span class="tagline">UUID Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>UUID Generator</h1>
+            <p>Generate random UUID v4 identifiers. Click to copy.</p>
+        </div>
+        <div class="tool-single">
+            <div class="btn-row" style="margin-bottom:1rem;align-items:center">
+                <button class="btn btn-primary" onclick="generate()">Generate</button>
+                <label style="color:var(--text-muted);font-size:0.875rem">
+                    Count: <input type="number" id="count" value="1" min="1" max="100" style="width:60px;margin-left:4px">
+                </label>
+                <label style="color:var(--text-muted);font-size:0.875rem">
+                    <input type="checkbox" id="uppercase"> Uppercase
+                </label>
+                <button class="btn" onclick="copyAll()">Copy All</button>
+            </div>
+            <div id="results" style="display:flex;flex-direction:column;gap:0.5rem"></div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">ToolPilot</a> — open source, free forever.</p></footer>
+    <script>
+    function uuidv4() {
+        return crypto.randomUUID ? crypto.randomUUID() :
+            'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0;
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+    }
+    function generate() {
+        const count = Math.min(100, Math.max(1, parseInt(document.getElementById('count').value) || 1));
+        const upper = document.getElementById('uppercase').checked;
+        const container = document.getElementById('results');
+        container.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            let id = uuidv4();
+            if (upper) id = id.toUpperCase();
+            const box = document.createElement('div');
+            box.className = 'result-box';
+            box.textContent = id;
+            box.onclick = () => { navigator.clipboard.writeText(id); box.style.borderColor = 'var(--green)'; setTimeout(() => box.style.borderColor = '', 500); };
+            container.appendChild(box);
+        }
+    }
+    function copyAll() {
+        const boxes = document.querySelectorAll('.result-box');
+        const text = Array.from(boxes).map(b => b.textContent).join('\n');
+        navigator.clipboard.writeText(text);
+    }
+    generate();
+    </script>
+</body>
+</html>

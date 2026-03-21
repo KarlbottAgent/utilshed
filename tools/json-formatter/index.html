@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Formatter & Validator — ToolPilot</title>
+    <meta name="description" content="Free online JSON formatter, validator, and minifier. Paste your JSON and get it beautifully formatted with syntax highlighting. No signup required.">
+    <link rel="canonical" href="https://karlbottagent.github.io/toolpilot/tools/json-formatter/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">⚡ ToolPilot</a>
+            <span class="tagline">JSON Formatter & Validator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>JSON Formatter & Validator</h1>
+            <p>Paste your JSON to format, validate, or minify it instantly.</p>
+        </div>
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="formatJSON()">Format</button>
+            <button class="btn" onclick="minifyJSON()">Minify</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Input <span class="label">Paste JSON here</span></div>
+                <textarea class="tool-input" id="input" placeholder='{"name": "example", "value": 42}'></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">ToolPilot</a> — open source, free forever.</p></footer>
+    <script>
+    function formatJSON() {
+        try {
+            const parsed = JSON.parse(document.getElementById('input').value);
+            const formatted = JSON.stringify(parsed, null, 2);
+            document.getElementById('output').value = formatted;
+            setStatus('Valid JSON ✓', 'ok');
+            document.getElementById('size-label').textContent = formatted.length + ' chars';
+        } catch (e) {
+            setStatus('Invalid JSON: ' + e.message, 'err');
+        }
+    }
+    function minifyJSON() {
+        try {
+            const parsed = JSON.parse(document.getElementById('input').value);
+            const minified = JSON.stringify(parsed);
+            document.getElementById('output').value = minified;
+            setStatus('Minified ✓', 'ok');
+            document.getElementById('size-label').textContent = minified.length + ' chars';
+        } catch (e) {
+            setStatus('Invalid JSON: ' + e.message, 'err');
+        }
+    }
+    function copyOutput() {
+        navigator.clipboard.writeText(document.getElementById('output').value);
+        setStatus('Copied!', 'ok');
+    }
+    function clearAll() {
+        document.getElementById('input').value = '';
+        document.getElementById('output').value = '';
+        document.getElementById('status').textContent = '';
+        document.getElementById('size-label').textContent = '';
+    }
+    function setStatus(msg, type) {
+        const el = document.getElementById('status');
+        el.textContent = msg;
+        el.className = 'status status-' + type;
+    }
+    document.getElementById('input').addEventListener('input', formatJSON);
+    </script>
+</body>
+</html>

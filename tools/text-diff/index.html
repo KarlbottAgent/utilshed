@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Diff Checker — ToolPilot</title>
+    <meta name="description" content="Compare two texts and see differences highlighted. Free online diff checker, no signup required.">
+    <link rel="canonical" href="https://karlbottagent.github.io/toolpilot/tools/text-diff/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">⚡ ToolPilot</a>
+            <span class="tagline">Text Diff Checker</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Text Diff Checker</h1>
+            <p>Compare two texts side by side and see the differences highlighted.</p>
+        </div>
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="compare()">Compare</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Original</div>
+                <textarea class="tool-input" id="input1" placeholder="Paste original text here..."></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Modified</div>
+                <textarea class="tool-input" id="input2" placeholder="Paste modified text here..."></textarea>
+            </div>
+        </div>
+        <div class="tool-panel" style="margin-top:1rem">
+            <div class="panel-header">Diff Result</div>
+            <div id="result" style="padding:1rem;min-height:100px;font-family:var(--mono);font-size:0.8125rem"></div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">ToolPilot</a> — open source, free forever.</p></footer>
+    <script>
+    function compare() {
+        const a = document.getElementById('input1').value.split('\n');
+        const b = document.getElementById('input2').value.split('\n');
+        const result = document.getElementById('result');
+        result.innerHTML = '';
+        const maxLen = Math.max(a.length, b.length);
+        let adds = 0, removes = 0, same = 0;
+        for (let i = 0; i < maxLen; i++) {
+            const lineA = i < a.length ? a[i] : undefined;
+            const lineB = i < b.length ? b[i] : undefined;
+            if (lineA === lineB) {
+                result.innerHTML += `<div class="diff-line">&nbsp; ${esc(lineA)}</div>`;
+                same++;
+            } else {
+                if (lineA !== undefined) {
+                    result.innerHTML += `<div class="diff-line diff-remove">- ${esc(lineA)}</div>`;
+                    removes++;
+                }
+                if (lineB !== undefined) {
+                    result.innerHTML += `<div class="diff-line diff-add">+ ${esc(lineB)}</div>`;
+                    adds++;
+                }
+            }
+        }
+        document.getElementById('status').textContent = `${adds} additions, ${removes} removals, ${same} unchanged`;
+        document.getElementById('status').className = 'status status-ok';
+    }
+    function esc(s) { if(!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+    function clearAll() {
+        document.getElementById('input1').value='';
+        document.getElementById('input2').value='';
+        document.getElementById('result').innerHTML='';
+        document.getElementById('status').textContent='';
+    }
+    </script>
+</body>
+</html>

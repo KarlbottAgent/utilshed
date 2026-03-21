@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unix Timestamp Converter — ToolPilot</title>
+    <meta name="description" content="Convert Unix timestamps to human-readable dates and back. Shows current timestamp live. Free, no signup required.">
+    <link rel="canonical" href="https://karlbottagent.github.io/toolpilot/tools/timestamp/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">⚡ ToolPilot</a>
+            <span class="tagline">Timestamp Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Unix Timestamp Converter</h1>
+            <p>Convert between Unix timestamps and human-readable dates.</p>
+        </div>
+        <div class="tool-single">
+            <div style="text-align:center;margin-bottom:1.5rem">
+                <div style="color:var(--text-muted);font-size:0.75rem;font-weight:600;margin-bottom:4px">CURRENT UNIX TIMESTAMP</div>
+                <div id="now" class="result-box" style="font-size:1.5rem;text-align:center;cursor:pointer" onclick="navigator.clipboard.writeText(this.textContent)"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+                <div>
+                    <h3 style="font-size:0.875rem;margin-bottom:0.75rem">Timestamp → Date</h3>
+                    <input type="text" id="ts-input" placeholder="e.g. 1711036800" style="margin-bottom:0.5rem">
+                    <div class="btn-row" style="margin-bottom:0.5rem">
+                        <button class="btn btn-primary" onclick="tsToDate()">Convert</button>
+                        <label style="font-size:0.75rem;color:var(--text-muted)"><input type="checkbox" id="ts-ms"> Milliseconds</label>
+                    </div>
+                    <div class="result-box" id="ts-result" onclick="navigator.clipboard.writeText(this.textContent)">—</div>
+                </div>
+                <div>
+                    <h3 style="font-size:0.875rem;margin-bottom:0.75rem">Date → Timestamp</h3>
+                    <input type="datetime-local" id="date-input" style="margin-bottom:0.5rem">
+                    <div class="btn-row" style="margin-bottom:0.5rem">
+                        <button class="btn btn-primary" onclick="dateToTs()">Convert</button>
+                    </div>
+                    <div class="result-box" id="date-result" onclick="navigator.clipboard.writeText(this.textContent)">—</div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">ToolPilot</a> — open source, free forever.</p></footer>
+    <script>
+    function updateNow() { document.getElementById('now').textContent = Math.floor(Date.now()/1000); }
+    setInterval(updateNow, 1000); updateNow();
+    function tsToDate() {
+        let ts = parseInt(document.getElementById('ts-input').value);
+        if(isNaN(ts)) return;
+        if(!document.getElementById('ts-ms').checked && ts < 1e12) ts *= 1000;
+        const d = new Date(ts);
+        document.getElementById('ts-result').innerHTML =
+            `<div>${d.toUTCString()}</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:4px">Local: ${d.toLocaleString()}</div>`;
+    }
+    function dateToTs() {
+        const d = new Date(document.getElementById('date-input').value);
+        if(isNaN(d)) return;
+        document.getElementById('date-result').innerHTML =
+            `<div>${Math.floor(d.getTime()/1000)}</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:4px">ms: ${d.getTime()}</div>`;
+    }
+    document.getElementById('date-input').value = new Date().toISOString().slice(0,16);
+    </script>
+</body>
+</html>

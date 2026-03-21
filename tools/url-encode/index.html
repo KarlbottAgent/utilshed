@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Encode & Decode — ToolPilot</title>
+    <meta name="description" content="Free online URL encoder and decoder. Encode special characters for URLs or decode percent-encoded strings. No signup required.">
+    <link rel="canonical" href="https://karlbottagent.github.io/toolpilot/tools/url-encode/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">⚡ ToolPilot</a>
+            <span class="tagline">URL Encode / Decode</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>URL Encode & Decode</h1>
+            <p>Encode special characters for URLs or decode percent-encoded strings.</p>
+        </div>
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="encode()">Encode</button>
+            <button class="btn btn-primary" onclick="decode()">Decode</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <label style="color:var(--text-muted);font-size:0.875rem">
+                <input type="checkbox" id="component" checked> Component mode
+            </label>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Input</div>
+                <textarea class="tool-input" id="input" placeholder="Enter text to encode or URL-encoded text to decode..."></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Output</div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">ToolPilot</a> — open source, free forever.</p></footer>
+    <script>
+    function encode() {
+        const comp = document.getElementById('component').checked;
+        const val = document.getElementById('input').value;
+        document.getElementById('output').value = comp ? encodeURIComponent(val) : encodeURI(val);
+        setStatus('Encoded ✓', 'ok');
+    }
+    function decode() {
+        try {
+            const comp = document.getElementById('component').checked;
+            const val = document.getElementById('input').value;
+            document.getElementById('output').value = comp ? decodeURIComponent(val) : decodeURI(val);
+            setStatus('Decoded ✓', 'ok');
+        } catch(e) { setStatus('Invalid input: ' + e.message, 'err'); }
+    }
+    function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+    function clearAll() { document.getElementById('input').value=''; document.getElementById('output').value=''; document.getElementById('status').textContent=''; }
+    function setStatus(msg, type) { const el=document.getElementById('status'); el.textContent=msg; el.className='status status-'+type; }
+    </script>
+</body>
+</html>
