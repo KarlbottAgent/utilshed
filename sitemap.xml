@@ -126,4 +126,15 @@
   <url><loc>https://utilshed.com/blog/best-free-json-formatter-online/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://utilshed.com/blog/regex101-alternatives/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://utilshed.com/blog/jwt-io-alternatives/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://utilshed.com/web-development-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/json-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/css-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/data-conversion-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/security-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/math-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/xml-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/encoding-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/text-analysis-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/markdown-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://utilshed.com/networking-tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
