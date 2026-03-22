@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Counter — UtilShed</title>
+    <meta name="description" content="Free online word counter and character counter. Count words, characters, sentences, paragraphs, and reading time. Perfect for essays, social media, and SEO. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/word-counter/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
+    .stat-num { font-size: 1.75rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    </style>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Word Counter","description":"Free online word counter and character counter. Count words, characters, sentences, paragraphs, and reading time. Perfect for essays, social media, and SEO. No signup required.","url":"https://utilshed.com/tools/word-counter/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Word Counter","item":"https://utilshed.com/tools/word-counter/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Word Counter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Word Counter</h1>
+            <p>Count words, characters, sentences, and paragraphs in your text instantly.</p>
+        </div>
+
+        <div class="tool-single">
+            <div id="stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:1rem">
+                <div class="stat-card"><div class="stat-num" id="words">0</div><div class="stat-label">Words</div></div>
+                <div class="stat-card"><div class="stat-num" id="chars">0</div><div class="stat-label">Characters</div></div>
+                <div class="stat-card"><div class="stat-num" id="chars-no-space">0</div><div class="stat-label">No Spaces</div></div>
+                <div class="stat-card"><div class="stat-num" id="sentences">0</div><div class="stat-label">Sentences</div></div>
+                <div class="stat-card"><div class="stat-num" id="paragraphs">0</div><div class="stat-label">Paragraphs</div></div>
+                <div class="stat-card"><div class="stat-num" id="reading-time">0s</div><div class="stat-label">Reading Time</div></div>
+            </div>
+            <textarea class="tool-input" id="input" placeholder="Paste or type your text here..." style="min-height:300px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.875rem;width:100%"></textarea>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Word Counter</h2>
+            <p>Count words, characters (with and without spaces), sentences, paragraphs, and estimate reading time — all in real-time as you type.</p>
+            <p>Perfect for checking essay word limits, social media character limits (Twitter/X: 280 chars, Instagram: 2,200 chars), SEO meta descriptions (155 chars), and more.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+    function count() {
+        const text = document.getElementById('input').value;
+        const trimmed = text.trim();
+
+        // Words
+        const words = trimmed ? trimmed.split(/\s+/).length : 0;
+        document.getElementById('words').textContent = words.toLocaleString();
+
+        // Characters
+        document.getElementById('chars').textContent = text.length.toLocaleString();
+        document.getElementById('chars-no-space').textContent = text.replace(/\s/g, '').length.toLocaleString();
+
+        // Sentences
+        const sentences = trimmed ? (trimmed.match(/[.!?]+(?=\s|$)/g) || []).length || (trimmed.length > 0 ? 1 : 0) : 0;
+        document.getElementById('sentences').textContent = sentences.toLocaleString();
+
+        // Paragraphs
+        const paragraphs = trimmed ? trimmed.split(/\n\s*\n/).filter(p => p.trim()).length : 0;
+        document.getElementById('paragraphs').textContent = paragraphs.toLocaleString();
+
+        // Reading time (avg 200 wpm)
+        const mins = words / 200;
+        let timeStr;
+        if (mins < 1) timeStr = Math.round(mins * 60) + 's';
+        else if (mins < 60) timeStr = Math.round(mins) + 'min';
+        else timeStr = Math.floor(mins / 60) + 'h ' + Math.round(mins % 60) + 'm';
+        document.getElementById('reading-time').textContent = timeStr;
+    }
+
+    document.getElementById('input').addEventListener('input', count);
+    count();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../text-case-converter/" class="related-tool-card">
+                <strong>Text Case Converter</strong>
+                <span>Convert text between uppercase, lowercase, title case, and more</span>
+            </a>
+            <a href="../lorem-ipsum-generator/" class="related-tool-card">
+                <strong>Lorem Ipsum Generator</strong>
+                <span>Generate placeholder text for designs and layouts</span>
+            </a>
+            <a href="../text-diff/" class="related-tool-card">
+                <strong>Text Diff</strong>
+                <span>Compare two texts and see differences highlighted</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

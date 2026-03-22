@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator — UtilShed</title>
+    <meta name="description" content="Free online Lorem Ipsum generator. Generate placeholder text in paragraphs, sentences, or words for designs and layouts. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/lorem-ipsum-generator/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Lorem Ipsum Generator","description":"Free online Lorem Ipsum generator. Generate placeholder text in paragraphs, sentences, or words for designs and layouts. No signup required.","url":"https://utilshed.com/tools/lorem-ipsum-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Lorem Ipsum Generator","item":"https://utilshed.com/tools/lorem-ipsum-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Lorem Ipsum Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Lorem Ipsum Generator</h1>
+            <p>Generate placeholder text for your designs, layouts, and mockups.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:800px;margin:0 auto">
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem">
+                <label style="color:var(--text-muted);font-size:0.85rem">Generate</label>
+                <input type="number" id="amount" value="5" min="1" max="100" style="width:70px;padding:0.5rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center">
+                <select id="unit" style="padding:0.5rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text)">
+                    <option value="paragraphs">Paragraphs</option>
+                    <option value="sentences">Sentences</option>
+                    <option value="words">Words</option>
+                </select>
+                <label style="display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;cursor:pointer"><input type="checkbox" id="start-lorem" checked> Start with "Lorem ipsum..."</label>
+                <button onclick="generateLorem()" class="btn btn-primary">Generate</button>
+                <button onclick="copyText()" class="btn">Copy</button>
+            </div>
+            <div id="output" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;min-height:300px;line-height:1.8;color:var(--text);white-space:pre-wrap;font-size:0.95rem"></div>
+            <div style="margin-top:0.5rem;font-size:0.75rem;color:var(--text-muted)"><span id="word-count">0</span> words | <span id="char-count">0</span> characters</div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Lorem Ipsum Generator</h2>
+            <p>Generate Lorem Ipsum placeholder text for your designs, layouts, and mockups. Choose between paragraphs, sentences, or a specific word count.</p>
+            <p>Lorem Ipsum has been the industry's standard dummy text since the 1500s. It provides a natural-looking distribution of letters and words that helps designers focus on layout without being distracted by readable content.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+    const LOREM_WORDS = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum'.split(' ');
+
+    const EXTRA_WORDS = 'ac accumsan ad adipiscing aenean aliquam aliquet amet ante aptent arcu at auctor augue bibendum blandit class commodo condimentum congue consequat conubia convallis cras cubilia cum curabitur cursus dapibus diam dictum dictumst dignissim dis donec efficitur egestas eget eleifend elementum enim erat eros est etiam eu euismod facilisi facilisis fames faucibus felis fermentum feugiat finibus fringilla fusce gravida habitant habitasse hac hendrerit himenaeos iaculis imperdiet in inceptos integer interdum ipsum justo lacinia lacus laoreet lectus leo libero ligula litora lobortis luctus maecenas magna magnis malesuada massa mattis mauris maximus metus mi molestie mollis montes morbi mus nam nascetur natoque nec neque netus nibh nisi nisl non nostra nulla nullam nunc odio orci ornare parturient pellentesque penatibus per pharetra phasellus placerat platea porta porttitor posuere potenti praesent pretium primis proin pulvinar purus quam quis quisque rhoncus ridiculus risus rutrum sagittis sapien scelerisque sem semper senectus sociosqu sodales sollicitudin suscipit suspendisse taciti tellus tempor tempus tincidunt torquent tortor tristique turpis ullamcorper ultrices ultricies urna varius vehicula vel velit venenatis vestibulum vitae vivamus viverra volutpat vulputate'.split(' ');
+
+    const ALL_WORDS = [...LOREM_WORDS, ...EXTRA_WORDS];
+
+    function randWord() { return ALL_WORDS[Math.floor(Math.random() * ALL_WORDS.length)]; }
+
+    function randSentence(minWords, maxWords) {
+        const len = minWords + Math.floor(Math.random() * (maxWords - minWords + 1));
+        const words = [];
+        for (let i = 0; i < len; i++) words.push(randWord());
+        words[0] = words[0][0].toUpperCase() + words[0].slice(1);
+        // Add occasional commas
+        if (len > 6) {
+            const commaPos = 2 + Math.floor(Math.random() * (len - 4));
+            words[commaPos] += ',';
+        }
+        return words.join(' ') + '.';
+    }
+
+    function randParagraph(minSentences, maxSentences) {
+        const count = minSentences + Math.floor(Math.random() * (maxSentences - minSentences + 1));
+        const sentences = [];
+        for (let i = 0; i < count; i++) sentences.push(randSentence(5, 15));
+        return sentences.join(' ');
+    }
+
+    function generateLorem() {
+        const amount = parseInt(document.getElementById('amount').value) || 5;
+        const unit = document.getElementById('unit').value;
+        const startWithLorem = document.getElementById('start-lorem').checked;
+        let result = '';
+
+        if (unit === 'paragraphs') {
+            const paras = [];
+            for (let i = 0; i < amount; i++) paras.push(randParagraph(3, 7));
+            if (startWithLorem) paras[0] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' + paras[0];
+            result = paras.join('\n\n');
+        } else if (unit === 'sentences') {
+            const sents = [];
+            for (let i = 0; i < amount; i++) sents.push(randSentence(5, 15));
+            if (startWithLorem) sents[0] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+            result = sents.join(' ');
+        } else {
+            const words = [];
+            for (let i = 0; i < amount; i++) words.push(randWord());
+            if (startWithLorem && amount >= 2) { words[0] = 'lorem'; words[1] = 'ipsum'; }
+            result = words.join(' ');
+            result = result[0].toUpperCase() + result.slice(1) + '.';
+        }
+
+        document.getElementById('output').textContent = result;
+        document.getElementById('word-count').textContent = result.split(/\s+/).filter(w => w).length;
+        document.getElementById('char-count').textContent = result.length;
+    }
+
+    function copyText() {
+        const text = document.getElementById('output').textContent;
+        if (!text) return;
+        navigator.clipboard.writeText(text);
+        event.target.textContent = 'Copied!';
+        setTimeout(() => event.target.textContent = 'Copy', 1500);
+    }
+
+    document.getElementById('amount').addEventListener('change', generateLorem);
+    document.getElementById('unit').addEventListener('change', generateLorem);
+    document.getElementById('start-lorem').addEventListener('change', generateLorem);
+    generateLorem();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../word-counter/" class="related-tool-card">
+                <strong>Word Counter</strong>
+                <span>Count words, characters, sentences in your text</span>
+            </a>
+            <a href="../text-case-converter/" class="related-tool-card">
+                <strong>Text Case Converter</strong>
+                <span>Convert text between different cases</span>
+            </a>
+            <a href="../markdown-preview/" class="related-tool-card">
+                <strong>Markdown Preview</strong>
+                <span>Write and preview Markdown in real-time</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

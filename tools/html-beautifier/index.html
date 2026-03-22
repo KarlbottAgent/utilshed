@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Beautifier — UtilShed</title>
+    <meta name="description" content="Free online HTML beautifier and formatter. Format, indent, and beautify messy HTML code instantly. Also minify HTML to reduce file size. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/html-beautifier/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"HTML Beautifier","description":"Free online HTML beautifier and formatter. Format, indent, and beautify messy HTML code instantly. Also minify HTML to reduce file size. No signup required.","url":"https://utilshed.com/tools/html-beautifier/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"HTML Beautifier","item":"https://utilshed.com/tools/html-beautifier/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">HTML Beautifier</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>HTML Beautifier</h1>
+            <p>Format, beautify, and indent HTML code for better readability.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="beautify()">Beautify</button>
+            <button class="btn" onclick="minify()">Minify</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">HTML Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="Paste your HTML here..."></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Formatted Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About HTML Beautifier</h2>
+            <p>Format and beautify messy HTML code with proper indentation for better readability. Also minify HTML to reduce file size for production use.</p>
+            <p>The beautifier handles nested elements, self-closing tags, DOCTYPE declarations, and HTML comments. Auto-beautifies on paste for quick formatting.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+    function beautify() {
+        const input = document.getElementById('input').value;
+        if (!input.trim()) return;
+        const result = formatHtml(input, '    ');
+        document.getElementById('output').value = result;
+        showStatus('Beautified!');
+    }
+
+    function minify() {
+        const input = document.getElementById('input').value;
+        if (!input.trim()) return;
+        // Remove comments, collapse whitespace between tags
+        let result = input
+            .replace(/<!--[\s\S]*?-->/g, '')
+            .replace(/>\s+</g, '><')
+            .replace(/\s+/g, ' ')
+            .trim();
+        document.getElementById('output').value = result;
+        const saved = input.length - result.length;
+        showStatus('Minified! Saved ' + saved + ' chars (' + Math.round(saved/input.length*100) + '%)');
+    }
+
+    function formatHtml(html, indentStr) {
+        // Self-closing and inline tags
+        const voidTags = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+        const inlineTags = new Set(['a','abbr','b','bdo','br','cite','code','dfn','em','i','img','input','kbd','label','map','object','output','q','samp','select','small','span','strong','sub','sup','textarea','time','var']);
+
+        let result = '';
+        let indent = 0;
+
+        // Normalize
+        html = html.replace(/\r\n?/g, '\n').trim();
+
+        // Tokenize by tags
+        const tokens = [];
+        let pos = 0;
+        const re = /<(!DOCTYPE[^>]*|!--[\s\S]*?--|\/?[a-zA-Z][^>]*)>/gi;
+        let match;
+        while ((match = re.exec(html)) !== null) {
+            if (match.index > pos) {
+                const text = html.slice(pos, match.index).trim();
+                if (text) tokens.push({ type: 'text', value: text });
+            }
+            tokens.push({ type: 'tag', value: match[0], raw: match[1] });
+            pos = match.index + match[0].length;
+        }
+        if (pos < html.length) {
+            const text = html.slice(pos).trim();
+            if (text) tokens.push({ type: 'text', value: text });
+        }
+
+        const lines = [];
+        for (const token of tokens) {
+            if (token.type === 'text') {
+                lines.push(indentStr.repeat(indent) + token.value);
+                continue;
+            }
+            const raw = token.raw.trim();
+            const isClose = raw.startsWith('/');
+            const isSelfClose = raw.endsWith('/') || raw.startsWith('!');
+            const tagName = (raw.match(/^\/?([a-zA-Z][a-zA-Z0-9]*)/)||['',''])[1].toLowerCase();
+            const isVoid = voidTags.has(tagName);
+            const isInline = inlineTags.has(tagName);
+
+            if (isClose) {
+                indent = Math.max(0, indent - 1);
+                lines.push(indentStr.repeat(indent) + token.value);
+            } else if (isSelfClose || isVoid) {
+                lines.push(indentStr.repeat(indent) + token.value);
+            } else {
+                lines.push(indentStr.repeat(indent) + token.value);
+                indent++;
+            }
+        }
+        return lines.join('\n');
+    }
+
+    function copyOutput() {
+        const text = document.getElementById('output').value;
+        if (!text) return;
+        navigator.clipboard.writeText(text);
+        showStatus('Copied!');
+    }
+
+    function showStatus(msg) {
+        const el = document.getElementById('status');
+        if (el) { el.textContent = msg; setTimeout(() => el.textContent = '', 2000); }
+    }
+
+    // Auto-beautify on paste
+    document.getElementById('input').addEventListener('paste', () => setTimeout(beautify, 50));
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../css-minifier/" class="related-tool-card">
+                <strong>CSS Minifier</strong>
+                <span>Minify or beautify CSS code</span>
+            </a>
+            <a href="../js-minifier/" class="related-tool-card">
+                <strong>JS Minifier</strong>
+                <span>Minify or beautify JavaScript code</span>
+            </a>
+            <a href="../html-entity/" class="related-tool-card">
+                <strong>HTML Entity Encoder</strong>
+                <span>Encode and decode HTML entities</span>
+            </a>
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format and validate JSON</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

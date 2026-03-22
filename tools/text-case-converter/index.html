@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Case Converter — UtilShed</title>
+    <meta name="description" content="Free online text case converter. Convert text to uppercase, lowercase, title case, sentence case, camelCase, snake_case, and more. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/text-case-converter/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Text Case Converter","description":"Free online text case converter. Convert text to uppercase, lowercase, title case, sentence case, camelCase, snake_case, and more. No signup required.","url":"https://utilshed.com/tools/text-case-converter/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Text Case Converter","item":"https://utilshed.com/tools/text-case-converter/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Text Case Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Text Case Converter</h1>
+            <p>Convert text between uppercase, lowercase, title case, sentence case, camelCase, and more.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:800px;margin:0 auto">
+            <textarea class="tool-input" id="input" placeholder="Type or paste your text here..." style="min-height:150px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.875rem;width:100%;margin-bottom:1rem"></textarea>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem" id="buttons">
+                <button class="btn btn-primary" onclick="convert('upper')">UPPERCASE</button>
+                <button class="btn" onclick="convert('lower')">lowercase</button>
+                <button class="btn" onclick="convert('title')">Title Case</button>
+                <button class="btn" onclick="convert('sentence')">Sentence case</button>
+                <button class="btn" onclick="convert('camel')">camelCase</button>
+                <button class="btn" onclick="convert('pascal')">PascalCase</button>
+                <button class="btn" onclick="convert('snake')">snake_case</button>
+                <button class="btn" onclick="convert('kebab')">kebab-case</button>
+                <button class="btn" onclick="convert('constant')">CONSTANT_CASE</button>
+                <button class="btn" onclick="convert('dot')">dot.case</button>
+                <button class="btn" onclick="convert('toggle')">tOGGLE cASE</button>
+                <button class="btn" onclick="convert('alternating')">aLtErNaTiNg</button>
+            </div>
+            <div style="position:relative">
+                <textarea class="tool-output" id="output" readonly placeholder="Converted text will appear here..." style="min-height:150px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.875rem;width:100%"></textarea>
+                <button onclick="copyOutput()" style="position:absolute;right:8px;top:8px;background:var(--accent);color:#fff;border:none;border-radius:6px;padding:0.4rem 0.75rem;cursor:pointer;font-size:0.8rem" id="copy-btn">Copy</button>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Text Case Converter</h2>
+            <p>Convert text between 12 different cases including UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, dot.case, tOGGLE cASE, and aLtErNaTiNg CaSe.</p>
+            <p>Useful for developers converting between naming conventions, writers fixing capitalization, and anyone who needs to quickly transform text formatting.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+    function toWords(text) {
+        return text.replace(/([a-z])([A-Z])/g, '$1 $2')
+                   .replace(/[_\-./]/g, ' ')
+                   .split(/\s+/)
+                   .filter(w => w);
+    }
+
+    function convert(mode) {
+        const text = document.getElementById('input').value;
+        if (!text) return;
+        let result = '';
+        switch(mode) {
+            case 'upper': result = text.toUpperCase(); break;
+            case 'lower': result = text.toLowerCase(); break;
+            case 'title':
+                result = text.replace(/\b\w/g, c => c.toUpperCase()).replace(/\B\w/g, c => c.toLowerCase());
+                break;
+            case 'sentence':
+                result = text.toLowerCase().replace(/(^|[.!?]\s+)(\w)/g, (m, p, c) => p + c.toUpperCase());
+                if (result.length > 0) result = result[0].toUpperCase() + result.slice(1);
+                break;
+            case 'camel': {
+                const w = toWords(text);
+                result = w.map((word, i) => i === 0 ? word.toLowerCase() : word[0].toUpperCase() + word.slice(1).toLowerCase()).join('');
+                break;
+            }
+            case 'pascal': {
+                const w = toWords(text);
+                result = w.map(word => word[0].toUpperCase() + word.slice(1).toLowerCase()).join('');
+                break;
+            }
+            case 'snake': result = toWords(text).map(w => w.toLowerCase()).join('_'); break;
+            case 'kebab': result = toWords(text).map(w => w.toLowerCase()).join('-'); break;
+            case 'constant': result = toWords(text).map(w => w.toUpperCase()).join('_'); break;
+            case 'dot': result = toWords(text).map(w => w.toLowerCase()).join('.'); break;
+            case 'toggle': result = text.split('').map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join(''); break;
+            case 'alternating': result = text.split('').map((c, i) => i % 2 === 0 ? c.toLowerCase() : c.toUpperCase()).join(''); break;
+        }
+        document.getElementById('output').value = result;
+        // Highlight active button
+        document.querySelectorAll('#buttons .btn').forEach(b => b.style.borderColor = '');
+        event.target.style.borderColor = 'var(--accent)';
+    }
+
+    function copyOutput() {
+        const text = document.getElementById('output').value;
+        if (!text) return;
+        navigator.clipboard.writeText(text);
+        document.getElementById('copy-btn').textContent = 'Copied!';
+        setTimeout(() => document.getElementById('copy-btn').textContent = 'Copy', 1500);
+    }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../word-counter/" class="related-tool-card">
+                <strong>Word Counter</strong>
+                <span>Count words, characters, sentences in your text</span>
+            </a>
+            <a href="../text-diff/" class="related-tool-card">
+                <strong>Text Diff</strong>
+                <span>Compare two texts and see differences</span>
+            </a>
+            <a href="../lorem-ipsum-generator/" class="related-tool-card">
+                <strong>Lorem Ipsum Generator</strong>
+                <span>Generate placeholder text</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

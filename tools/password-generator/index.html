@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator — UtilShed</title>
+    <meta name="description" content="Free online password generator. Create strong, secure random passwords with custom length, uppercase, lowercase, numbers, and symbols. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/password-generator/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Password Generator","description":"Free online password generator. Create strong, secure random passwords with custom length, uppercase, lowercase, numbers, and symbols. No signup required.","url":"https://utilshed.com/tools/password-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Password Generator","item":"https://utilshed.com/tools/password-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Password Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Password Generator</h1>
+            <p>Generate strong, secure random passwords with customizable length and character options.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:600px;margin:0 auto">
+            <div style="display:flex;flex-direction:column;gap:1rem">
+                <div style="position:relative">
+                    <input type="text" id="password-output" readonly style="width:100%;padding:1rem;font-size:1.25rem;font-family:monospace;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);letter-spacing:1px">
+                    <button onclick="copyPassword()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--accent);color:#fff;border:none;border-radius:6px;padding:0.5rem 1rem;cursor:pointer;font-size:0.85rem" id="copy-btn">Copy</button>
+                </div>
+                <div id="strength-bar" style="height:6px;border-radius:3px;background:var(--border);overflow:hidden"><div id="strength-fill" style="height:100%;width:0;transition:all 0.3s;border-radius:3px"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><span id="strength-label" style="font-size:0.85rem;color:var(--text-muted)"></span><span id="entropy-label" style="font-size:0.75rem;color:var(--text-muted)"></span></div>
+                <div style="display:flex;align-items:center;gap:1rem">
+                    <label style="color:var(--text-muted);font-size:0.85rem;white-space:nowrap">Length: <span id="length-val">16</span></label>
+                    <input type="range" id="length" min="4" max="128" value="16" style="flex:1;accent-color:var(--accent)">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+                    <label style="display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;cursor:pointer"><input type="checkbox" id="uppercase" checked> Uppercase (A-Z)</label>
+                    <label style="display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;cursor:pointer"><input type="checkbox" id="lowercase" checked> Lowercase (a-z)</label>
+                    <label style="display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;cursor:pointer"><input type="checkbox" id="numbers" checked> Numbers (0-9)</label>
+                    <label style="display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;cursor:pointer"><input type="checkbox" id="symbols" checked> Symbols (!@#$...)</label>
+                </div>
+                <button onclick="generate()" class="btn btn-primary" style="padding:0.75rem;font-size:1rem">Generate Password</button>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Password Generator</h2>
+            <p>Generate cryptographically secure random passwords using the Web Crypto API. All generation happens in your browser — no passwords are ever sent to a server.</p>
+            <p>Features: adjustable length (4-128 characters), character set options (uppercase, lowercase, numbers, symbols), real-time strength indicator with entropy calculation.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+    const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lower = 'abcdefghijklmnopqrstuvwxyz';
+    const nums = '0123456789';
+    const syms = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+    function generate() {
+        let chars = '';
+        if (document.getElementById('uppercase').checked) chars += upper;
+        if (document.getElementById('lowercase').checked) chars += lower;
+        if (document.getElementById('numbers').checked) chars += nums;
+        if (document.getElementById('symbols').checked) chars += syms;
+        if (!chars) { chars = lower + nums; }
+        const len = parseInt(document.getElementById('length').value);
+        const arr = new Uint32Array(len);
+        crypto.getRandomValues(arr);
+        let pw = '';
+        for (let i = 0; i < len; i++) pw += chars[arr[i] % chars.length];
+        document.getElementById('password-output').value = pw;
+        updateStrength(pw, chars.length);
+    }
+
+    function updateStrength(pw, poolSize) {
+        const entropy = Math.log2(poolSize) * pw.length;
+        const fill = document.getElementById('strength-fill');
+        const label = document.getElementById('strength-label');
+        const elabel = document.getElementById('entropy-label');
+        elabel.textContent = Math.round(entropy) + ' bits of entropy';
+        let pct, color, text;
+        if (entropy < 30) { pct = 20; color = '#e74c3c'; text = 'Very Weak'; }
+        else if (entropy < 50) { pct = 40; color = '#e67e22'; text = 'Weak'; }
+        else if (entropy < 70) { pct = 60; color = '#f1c40f'; text = 'Fair'; }
+        else if (entropy < 100) { pct = 80; color = '#2ecc71'; text = 'Strong'; }
+        else { pct = 100; color = '#27ae60'; text = 'Very Strong'; }
+        fill.style.width = pct + '%';
+        fill.style.background = color;
+        label.textContent = text;
+        label.style.color = color;
+    }
+
+    function copyPassword() {
+        const pw = document.getElementById('password-output').value;
+        if (!pw) return;
+        navigator.clipboard.writeText(pw);
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1500);
+    }
+
+    document.getElementById('length').addEventListener('input', function() {
+        document.getElementById('length-val').textContent = this.value;
+        generate();
+    });
+    ['uppercase','lowercase','numbers','symbols'].forEach(id => {
+        document.getElementById(id).addEventListener('change', generate);
+    });
+    generate();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator</strong>
+                <span>Generate MD5, SHA-1, SHA-256 hashes</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUIDs (v4)</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode/Decode</strong>
+                <span>Encode and decode Base64 strings</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
