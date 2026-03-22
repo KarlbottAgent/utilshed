@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Convert JSON to TypeScript Types — UtilShed</title>
+    <meta name="description" content="Learn how to convert JSON objects to TypeScript interfaces and types. Covers manual conversion, automated tools, quicktype, and best practices for type safety.">
+    <meta name="keywords" content="JSON to TypeScript, convert JSON to TypeScript, JSON to interface, TypeScript types from JSON, quicktype, json2ts, TypeScript interface generator">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-convert-json-to-typescript/">
+    <meta property="og:title" content="How to Convert JSON to TypeScript Types — UtilShed">
+    <meta property="og:description" content="Convert JSON objects to TypeScript interfaces and types. Manual methods, automated tools, and best practices.">
+    <meta property="og:url" content="https://utilshed.com/blog/how-to-convert-json-to-typescript/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Convert JSON to TypeScript Types","description":"Convert JSON objects to TypeScript interfaces and types. Manual methods, automated tools, and best practices.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-convert-json-to-typescript/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Convert JSON to TypeScript Types</div>
+            <div class="tool-header">
+                <h1>How to Convert JSON to TypeScript Types</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 7 min read</p>
+            </div>
+
+            <p>You've got a JSON response from an API. You need TypeScript types for it. You could write them by hand, but that's tedious and error-prone — especially for deeply nested objects with dozens of fields. Here's how to convert JSON to TypeScript interfaces quickly and correctly.</p>
+
+            <h2>Why You Need TypeScript Types for JSON</h2>
+
+            <p>Without types, your API response is <span class="code-inline">any</span> — which means TypeScript can't catch property name typos, missing fields, or type mismatches. Adding proper interfaces gives you:</p>
+
+            <ul>
+                <li><strong>Autocomplete</strong> — your editor knows every field and its type</li>
+                <li><strong>Compile-time errors</strong> — catch <span class="code-inline">user.nmae</span> typos before they become runtime bugs</li>
+                <li><strong>Refactoring safety</strong> — rename a field and see every place it's used</li>
+                <li><strong>Documentation</strong> — interfaces serve as living API documentation</li>
+            </ul>
+
+            <h2>Method 1: Use an Online Converter</h2>
+
+            <p>The fastest way — paste your JSON and get TypeScript interfaces instantly.</p>
+
+            <div class="cta-box">
+                <strong>Convert JSON to TypeScript Now</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Paste any JSON object to generate TypeScript interfaces automatically.</p>
+                <a href="../../tools/json-to-typescript/">Open JSON to TypeScript Converter</a>
+            </div>
+
+            <h2>Method 2: Manual Conversion</h2>
+
+            <p>Understanding the manual process helps you write better types. Here's a JSON object and its TypeScript equivalent:</p>
+
+            <h3>The JSON</h3>
+            <div class="code-block">{
+  "id": 42,
+  "name": "Alice",
+  "email": "alice@example.com",
+  "isActive": true,
+  "roles": ["admin", "editor"],
+  "address": {
+    "street": "123 Main St",
+    "city": "Springfield",
+    "zip": "62701"
+  },
+  "lastLogin": "2026-03-22T10:30:00Z",
+  "metadata": null
+}</div>
+
+            <h3>The TypeScript Interface</h3>
+            <div class="code-block">interface User {
+  id: number;
+  name: string;
+  email: string;
+  isActive: boolean;
+  roles: string[];
+  address: Address;
+  lastLogin: string;
+  metadata: unknown | null;
+}
+
+interface Address {
+  street: string;
+  city: string;
+  zip: string;
+}</div>
+
+            <h3>JSON-to-TypeScript Type Mapping</h3>
+            <ul>
+                <li><span class="code-inline">42</span> (number) &rarr; <span class="code-inline">number</span></li>
+                <li><span class="code-inline">"hello"</span> (string) &rarr; <span class="code-inline">string</span></li>
+                <li><span class="code-inline">true</span>/<span class="code-inline">false</span> &rarr; <span class="code-inline">boolean</span></li>
+                <li><span class="code-inline">[1, 2, 3]</span> &rarr; <span class="code-inline">number[]</span></li>
+                <li><span class="code-inline">["a", "b"]</span> &rarr; <span class="code-inline">string[]</span></li>
+                <li><span class="code-inline">[1, "a"]</span> (mixed) &rarr; <span class="code-inline">(number | string)[]</span></li>
+                <li><span class="code-inline">{...}</span> (nested object) &rarr; separate <span class="code-inline">interface</span></li>
+                <li><span class="code-inline">null</span> &rarr; <span class="code-inline">null</span> (or <span class="code-inline">unknown | null</span> if unsure)</li>
+            </ul>
+
+            <h2>Method 3: quicktype (CLI)</h2>
+
+            <p><span class="code-inline">quicktype</span> is the gold standard for generating types from JSON. It handles edge cases like optional fields, union types, and deeply nested structures:</p>
+
+            <div class="code-block"># Install
+npm install -g quicktype
+
+# From a JSON file
+quicktype -s json -l typescript -o types.ts data.json
+
+# From a URL (fetches the JSON automatically)
+quicktype -s json -l typescript -o types.ts \
+  "https://api.example.com/users/1"
+
+# From stdin
+echo '{"name": "Alice", "age": 30}' | quicktype -s json -l typescript</div>
+
+            <p>quicktype is smart — give it multiple JSON samples and it will infer optional fields and union types:</p>
+
+            <div class="code-block"># Multiple samples for better type inference
+quicktype -s json -l typescript -o types.ts sample1.json sample2.json sample3.json</div>
+
+            <h2>Method 4: In Your Editor (VS Code)</h2>
+
+            <p>Several VS Code extensions can generate TypeScript interfaces from JSON:</p>
+
+            <ul>
+                <li><strong>Paste JSON as Code</strong> — Select "Paste JSON as TypeScript" from the command palette</li>
+                <li><strong>JSON to TS</strong> — Right-click in a .ts file, select "Convert JSON to TypeScript"</li>
+            </ul>
+
+            <p>Or use the built-in approach — create a temporary .ts file and let TypeScript infer:</p>
+
+            <div class="code-block">// Paste your JSON as a const
+const response = {
+  id: 42,
+  name: "Alice",
+  roles: ["admin", "editor"]
+} as const;
+
+// Extract the type
+type User = typeof response;
+// Now User is { readonly id: 42; readonly name: "Alice"; ... }</div>
+
+            <h2>Handling Common Edge Cases</h2>
+
+            <h3>Optional Fields</h3>
+            <p>If some fields aren't always present in the API response, mark them optional:</p>
+            <div class="code-block">interface User {
+  id: number;
+  name: string;
+  email: string;
+  avatar?: string;     // Not always present
+  bio?: string | null; // Sometimes missing, sometimes null
+}</div>
+
+            <h3>Union Types (Multiple Possible Shapes)</h3>
+            <div class="code-block">// API returns different shapes based on status
+type ApiResponse =
+  | { status: "success"; data: User }
+  | { status: "error"; message: string; code: number };</div>
+
+            <h3>Date Strings</h3>
+            <p>JSON doesn't have a date type — dates come as strings. Use a branded type for clarity:</p>
+            <div class="code-block">type ISODateString = string &amp; { readonly __brand: "ISODateString" };
+
+interface Event {
+  name: string;
+  startDate: ISODateString;
+  endDate: ISODateString;
+}</div>
+
+            <h3>Dynamic Keys</h3>
+            <div class="code-block">// JSON: { "en": "Hello", "es": "Hola", "fr": "Bonjour" }
+interface Translations {
+  [languageCode: string]: string;
+}
+
+// Or with Record:
+type Translations = Record&lt;string, string&gt;;</div>
+
+            <h2>Interface vs. Type — Which to Use?</h2>
+
+            <p>Both work for JSON conversion. The practical differences:</p>
+
+            <ul>
+                <li><strong>Use <span class="code-inline">interface</span></strong> for object shapes — they can be extended and merged, and produce clearer error messages.</li>
+                <li><strong>Use <span class="code-inline">type</span></strong> for unions, intersections, and computed types.</li>
+                <li>For simple JSON-to-TypeScript conversion, <span class="code-inline">interface</span> is the conventional choice.</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <ul>
+                <li><strong>Don't use <span class="code-inline">any</span></strong> — the whole point is type safety. Use <span class="code-inline">unknown</span> if you genuinely don't know the type.</li>
+                <li><strong>Generate from real API responses</strong> — don't guess the shape. Hit the endpoint, copy the response, convert it.</li>
+                <li><strong>Keep types in sync</strong> — if the API changes, regenerate. Consider using quicktype in CI to catch drift.</li>
+                <li><strong>Validate at runtime too</strong> — TypeScript types are erased at runtime. Use <span class="code-inline">zod</span> or <span class="code-inline">io-ts</span> to validate API responses match your types.</li>
+            </ul>
+
+            <h2>Try It Now</h2>
+
+            <p>Got a JSON response you need types for? Use the <a href="../../tools/json-to-typescript/">free JSON to TypeScript converter</a> on UtilShed — paste your JSON and get interfaces instantly.</p>
+
+            <p>Related tools:</p>
+            <ul>
+                <li><a href="../../tools/json-formatter/">JSON Formatter</a> — pretty-print your JSON before converting</li>
+                <li><a href="../../tools/json-validator/">JSON Validator</a> — make sure your JSON is valid first</li>
+                <li><a href="../../tools/typescript-formatter/">TypeScript Formatter</a> — format the generated interfaces</li>
+                <li><a href="../../tools/json-to-yaml/">JSON to YAML Converter</a> — for config file conversions</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

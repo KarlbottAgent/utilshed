@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Generate QR Codes — UtilShed</title>
+    <meta name="description" content="Learn how to generate QR codes for URLs, text, WiFi, and more. Covers QR code basics, JavaScript libraries, Python scripts, and a free online QR code generator.">
+    <meta name="keywords" content="generate QR code, QR code generator, how to make QR code, create QR code online free, QR code JavaScript, qrcode npm, QR code API">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-generate-qr-codes/">
+    <meta property="og:title" content="How to Generate QR Codes — UtilShed">
+    <meta property="og:description" content="Learn how to generate QR codes for URLs, text, WiFi, and more. Free online tool and code examples included.">
+    <meta property="og:url" content="https://utilshed.com/blog/how-to-generate-qr-codes/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Generate QR Codes","description":"Learn how to generate QR codes for URLs, text, WiFi, and more. Free online tool and code examples included.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-generate-qr-codes/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Generate QR Codes</div>
+            <div class="tool-header">
+                <h1>How to Generate QR Codes</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 6 min read</p>
+            </div>
+
+            <p>QR codes are those square barcodes you see everywhere — restaurant menus, event tickets, product packaging, and marketing materials. They encode data (usually a URL) that any smartphone camera can scan instantly. Whether you need to generate one for a project, a business card, or a WiFi login, this guide covers every approach.</p>
+
+            <h2>What Is a QR Code?</h2>
+
+            <p>QR stands for "Quick Response." Invented in 1994 by Denso Wave for tracking automotive parts, QR codes can encode up to 4,296 alphanumeric characters. They use Reed-Solomon error correction, meaning they still work even if part of the code is damaged or obscured.</p>
+
+            <p>QR codes can encode several types of data:</p>
+            <ul>
+                <li><strong>URLs</strong> — the most common use case (e.g., <span class="code-inline">https://utilshed.com</span>)</li>
+                <li><strong>Plain text</strong> — any string up to ~4KB</li>
+                <li><strong>WiFi credentials</strong> — format: <span class="code-inline">WIFI:T:WPA;S:NetworkName;P:Password;;</span></li>
+                <li><strong>vCards</strong> — contact information</li>
+                <li><strong>Email addresses</strong> — <span class="code-inline">mailto:user@example.com</span></li>
+                <li><strong>Phone numbers</strong> — <span class="code-inline">tel:+15551234567</span></li>
+            </ul>
+
+            <h2>Method 1: Use a Free Online Generator</h2>
+
+            <p>The fastest way to create a QR code is with an online tool. No signup, no install — just paste your data and download the image.</p>
+
+            <div class="cta-box">
+                <strong>Generate a QR Code Instantly</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Enter any URL or text to generate a downloadable QR code.</p>
+                <a href="../../tools/qr-code-generator/">Open QR Code Generator</a>
+            </div>
+
+            <h2>Method 2: Generate QR Codes in JavaScript</h2>
+
+            <p>The <span class="code-inline">qrcode</span> npm package is the most popular choice for Node.js and browser-based QR code generation.</p>
+
+            <h3>Install</h3>
+            <div class="code-block">npm install qrcode</div>
+
+            <h3>Generate in Node.js (save to file)</h3>
+            <div class="code-block">const QRCode = require('qrcode');
+
+// Generate and save as PNG
+await QRCode.toFile('qr.png', 'https://utilshed.com', {
+  width: 300,
+  margin: 2,
+  color: { dark: '#000000', light: '#ffffff' }
+});
+
+// Generate as data URL (for embedding in HTML)
+const dataUrl = await QRCode.toDataURL('https://utilshed.com');
+console.log(dataUrl); // data:image/png;base64,...</div>
+
+            <h3>Generate in the browser</h3>
+            <div class="code-block">&lt;canvas id="qr"&gt;&lt;/canvas&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  QRCode.toCanvas(document.getElementById('qr'), 'https://utilshed.com');
+&lt;/script&gt;</div>
+
+            <h2>Method 3: Generate QR Codes in Python</h2>
+
+            <div class="code-block">pip install qrcode[pil]</div>
+
+            <div class="code-block">import qrcode
+
+# Simple generation
+img = qrcode.make('https://utilshed.com')
+img.save('qr.png')
+
+# With customization
+qr = qrcode.QRCode(
+    version=1,
+    error_correction=qrcode.constants.ERROR_CORRECT_H,
+    box_size=10,
+    border=4,
+)
+qr.add_data('https://utilshed.com')
+qr.make(fit=True)
+img = qr.make_image(fill_color='black', back_color='white')
+img.save('qr_custom.png')</div>
+
+            <p>The <span class="code-inline">error_correction</span> parameter controls how much of the QR code can be damaged and still scan:</p>
+            <ul>
+                <li><span class="code-inline">ERROR_CORRECT_L</span> — 7% recovery</li>
+                <li><span class="code-inline">ERROR_CORRECT_M</span> — 15% (default)</li>
+                <li><span class="code-inline">ERROR_CORRECT_Q</span> — 25%</li>
+                <li><span class="code-inline">ERROR_CORRECT_H</span> — 30% (use this if you want to add a logo overlay)</li>
+            </ul>
+
+            <h2>Method 4: Command Line</h2>
+
+            <p>Generate QR codes directly from the terminal:</p>
+
+            <div class="code-block"># Using qrencode (Linux/macOS)
+sudo apt install qrencode   # Debian/Ubuntu
+brew install qrencode        # macOS
+
+qrencode -o qr.png 'https://utilshed.com'
+qrencode -t UTF8 'https://utilshed.com'  # Print to terminal</div>
+
+            <h2>Method 5: Using a QR Code API</h2>
+
+            <p>If you need to generate QR codes dynamically without installing anything, use a public API:</p>
+
+            <div class="code-block"># Google Charts API (simple, no auth needed)
+https://chart.googleapis.com/chart?chs=300x300&amp;cht=qr&amp;chl=https://utilshed.com
+
+# Or use curl to download
+curl -o qr.png "https://chart.googleapis.com/chart?chs=300x300&amp;cht=qr&amp;chl=https://utilshed.com"</div>
+
+            <h2>WiFi QR Codes</h2>
+
+            <p>One of the most practical QR code use cases — let guests connect to your WiFi by scanning a code instead of typing the password:</p>
+
+            <div class="code-block"># WiFi QR code format
+WIFI:T:WPA;S:MyNetworkName;P:MyPassword;;
+
+# For open networks (no password)
+WIFI:T:nopass;S:MyNetworkName;;
+
+# For WEP (legacy)
+WIFI:T:WEP;S:MyNetworkName;P:MyPassword;;</div>
+
+            <p>Paste the WiFi string into any <a href="../../tools/qr-code-generator/">QR code generator</a> and share the resulting image. Most modern phones will auto-detect the WiFi format and offer to connect.</p>
+
+            <h2>Best Practices</h2>
+
+            <ul>
+                <li><strong>Size matters</strong> — QR codes should be at least 2cm x 2cm for reliable scanning. For billboards or signs, use at least 10cm.</li>
+                <li><strong>Contrast is key</strong> — Use dark foreground on light background. Avoid low-contrast color combinations.</li>
+                <li><strong>Use URL shorteners for long URLs</strong> — Shorter data = simpler QR code = easier to scan.</li>
+                <li><strong>Test before printing</strong> — Always scan your QR code with multiple phones before using it in print.</li>
+                <li><strong>Use high error correction for print</strong> — <span class="code-inline">ERROR_CORRECT_H</span> (30%) is recommended for physical media that might get scratched or folded.</li>
+                <li><strong>Add a quiet zone</strong> — Leave white space around the QR code (most libraries add this by default with the <span class="code-inline">margin</span> option).</li>
+            </ul>
+
+            <h2>Try It Now</h2>
+
+            <p>Need a QR code right now? Use the <a href="../../tools/qr-code-generator/">free QR Code Generator</a> on UtilShed — paste any URL or text, customize the size, and download instantly.</p>
+
+            <p>Related tools you might find useful:</p>
+            <ul>
+                <li><a href="../../tools/url-encode/">URL Encoder</a> — encode URLs before embedding them in QR codes</li>
+                <li><a href="../../tools/base64/">Base64 Encoder</a> — encode binary data as text for QR payloads</li>
+                <li><a href="../../tools/password-generator/">Password Generator</a> — generate a strong WiFi password, then create a QR code for it</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
