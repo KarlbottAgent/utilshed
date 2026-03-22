@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON to YAML Converter — UtilShed</title>
+    <meta name="description" content="Free online JSON to YAML converter. Transform JSON data into clean, readable YAML format instantly. Perfect for Docker, Kubernetes, and DevOps config files. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/json-to-yaml/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JSON to YAML Converter","description":"Free online JSON to YAML converter. Transform JSON data into clean, readable YAML format instantly. Perfect for Docker, Kubernetes, and DevOps config files. No signup required.","url":"https://utilshed.com/tools/json-to-yaml/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"JSON to YAML Converter","item":"https://utilshed.com/tools/json-to-yaml/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">JSON to YAML Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>JSON to YAML Converter</h1>
+            <p>Convert JSON data to YAML format instantly. Free, fast, no signup required.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convert()">Convert</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">JSON Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="{&quot;name&quot;: &quot;example&quot;, &quot;items&quot;: [1, 2, 3]}"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">YAML Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About JSON to YAML Converter</h2>
+            <p>This free online JSON to YAML converter transforms your JSON data into clean, readable YAML format. YAML (YAML Ain't Markup Language) is commonly used for configuration files in Docker, Kubernetes, Ansible, and many other DevOps tools.</p>
+            <p><strong>Features:</strong> Handles nested objects, arrays, strings with special characters, null values, and all JSON data types. Output is properly indented and formatted according to YAML specification.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+function convert() {
+  try {
+    const input = document.getElementById("input").value.trim();
+    if (!input) { setStatus("Paste JSON to convert", "err"); return; }
+    const parsed = JSON.parse(input);
+    const yaml = jsonToYaml(parsed, 0);
+    document.getElementById("output").value = yaml;
+    setStatus("Converted to YAML", "ok");
+    document.getElementById("size-label").textContent = yaml.length + " chars";
+  } catch (e) {
+    setStatus("Invalid JSON: " + e.message, "err");
+  }
+}
+function jsonToYaml(obj, indent) {
+  const prefix = "  ".repeat(indent);
+  if (obj === null) return "null";
+  if (typeof obj === "boolean") return obj ? "true" : "false";
+  if (typeof obj === "number") return String(obj);
+  if (typeof obj === "string") {
+    if (obj === "" || obj === "true" || obj === "false" || obj === "null" || obj === "~" || /^[\d.eE+-]+$/.test(obj) || /[:#{}\[\],&*?|>!%@`]/.test(obj) || obj.includes("\n")) {
+      return JSON.stringify(obj);
+    }
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    if (obj.length === 0) return "[]";
+    return obj.map(item => {
+      const val = jsonToYaml(item, indent + 1);
+      if (typeof item === "object" && item !== null) {
+        return prefix + "- " + val.trimStart();
+      }
+      return prefix + "- " + val;
+    }).join("\n");
+  }
+  if (typeof obj === "object") {
+    const keys = Object.keys(obj);
+    if (keys.length === 0) return "{}";
+    return keys.map(key => {
+      const val = obj[key];
+      const yamlKey = /[:#{}\[\],&*?|>!%@`\s]/.test(key) ? JSON.stringify(key) : key;
+      if (typeof val === "object" && val !== null && !Array.isArray(val) && Object.keys(val).length > 0) {
+        return prefix + yamlKey + ":\n" + jsonToYaml(val, indent + 1);
+      }
+      if (Array.isArray(val) && val.length > 0) {
+        return prefix + yamlKey + ":\n" + jsonToYaml(val, indent + 1);
+      }
+      return prefix + yamlKey + ": " + jsonToYaml(val, indent + 1);
+    }).join("\n");
+  }
+  return String(obj);
+}
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById("output").value);
+  setStatus("Copied!", "ok");
+}
+function clearAll() {
+  document.getElementById("input").value = "";
+  document.getElementById("output").value = "";
+  document.getElementById("status").textContent = "";
+  document.getElementById("size-label").textContent = "";
+}
+function loadSample() {
+  document.getElementById("input").value = JSON.stringify({"server":{"host":"localhost","port":8080,"ssl":true},"database":{"driver":"postgres","connection":{"host":"db.example.com","port":5432,"name":"myapp"},"pool":{"min":2,"max":10}},"logging":{"level":"info","outputs":["stdout","file"]},"features":["auth","api","websockets"]}, null, 2);
+  convert();
+}
+function setStatus(msg, type) {
+  const el = document.getElementById("status");
+  el.textContent = msg;
+  el.className = "status status-" + type;
+}
+document.getElementById("input").addEventListener("input", convert);
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../yaml-to-json/" class="related-tool-card">
+                <strong>YAML to JSON Converter</strong>
+                <span>Convert YAML back to JSON format</span>
+            </a>
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format and validate JSON data</span>
+            </a>
+            <a href="../json-to-csv/" class="related-tool-card">
+                <strong>JSON to CSV Converter</strong>
+                <span>Convert JSON arrays to CSV format</span>
+            </a>
+            <a href="../json-diff/" class="related-tool-card">
+                <strong>JSON Diff</strong>
+                <span>Compare two JSON objects</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

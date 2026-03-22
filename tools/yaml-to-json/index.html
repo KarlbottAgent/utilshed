@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML to JSON Converter — UtilShed</title>
+    <meta name="description" content="Free online YAML to JSON converter. Transform YAML configuration files into valid JSON format instantly. Supports nested objects, arrays, and all YAML types. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/yaml-to-json/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"YAML to JSON Converter","description":"Free online YAML to JSON converter. Transform YAML configuration files into valid JSON format instantly. Supports nested objects, arrays, and all YAML types. No signup required.","url":"https://utilshed.com/tools/yaml-to-json/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"YAML to JSON Converter","item":"https://utilshed.com/tools/yaml-to-json/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">YAML to JSON Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>YAML to JSON Converter</h1>
+            <p>Convert YAML data to JSON format instantly. Free, fast, no signup required.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convert()">Convert</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">YAML Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="server:
+  host: localhost
+  port: 8080
+  ssl: true"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">JSON Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About YAML to JSON Converter</h2>
+            <p>This free online YAML to JSON converter transforms your YAML data into valid JSON format. YAML is widely used for configuration in Docker, Kubernetes, GitHub Actions, and CI/CD pipelines.</p>
+            <p><strong>Features:</strong> Handles nested objects, arrays, comments (stripped), quoted strings, and all common YAML data types. Output is properly formatted JSON with 2-space indentation.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+function convert() {
+  try {
+    const input = document.getElementById('input').value.trim();
+    if (!input) { setStatus('Paste YAML to convert', 'err'); return; }
+    const parsed = parseYaml(input);
+    const json = JSON.stringify(parsed, null, 2);
+    document.getElementById('output').value = json;
+    setStatus('Converted to JSON', 'ok');
+    document.getElementById('size-label').textContent = json.length + ' chars';
+  } catch (e) {
+    setStatus('Invalid YAML: ' + e.message, 'err');
+  }
+}
+function parseYaml(str) {
+  const lines = str.split('\n');
+  return parseYamlLines(lines, 0).value;
+}
+function getIndent(line) {
+  const match = line.match(/^( *)/);
+  return match ? match[1].length : 0;
+}
+function parseYamlLines(lines, startIdx) {
+  let i = startIdx;
+  while (i < lines.length && (lines[i].trim() === '' || lines[i].trim().startsWith('#'))) i++;
+  if (i >= lines.length) return { value: null, nextIdx: i };
+  const trimmed = lines[i].trim();
+  if (trimmed.startsWith('- ') || trimmed === '-') return parseYamlArray(lines, i);
+  if (trimmed.includes(': ') || trimmed.endsWith(':')) return parseYamlObject(lines, i);
+  return { value: parseScalar(trimmed), nextIdx: i + 1 };
+}
+function parseYamlArray(lines, startIdx) {
+  const result = [];
+  const baseIndent = getIndent(lines[startIdx]);
+  let i = startIdx;
+  while (i < lines.length) {
+    while (i < lines.length && (lines[i].trim() === '' || lines[i].trim().startsWith('#'))) i++;
+    if (i >= lines.length) break;
+    const indent = getIndent(lines[i]);
+    const trimmed = lines[i].trim();
+    if (indent < baseIndent || indent > baseIndent || !trimmed.startsWith('-')) break;
+    const afterDash = trimmed.slice(1).trim();
+    if (afterDash === '') {
+      let j = i + 1;
+      const subLines = [];
+      while (j < lines.length) {
+        if (lines[j].trim() === '' || lines[j].trim().startsWith('#')) { j++; continue; }
+        if (getIndent(lines[j]) <= baseIndent) break;
+        subLines.push(lines[j]); j++;
+      }
+      result.push(subLines.length > 0 ? parseYamlLines(subLines, 0).value : null);
+      i = j;
+    } else if (afterDash.includes(': ') || afterDash.endsWith(':')) {
+      const subLines = [' '.repeat(indent + 2) + afterDash];
+      let j = i + 1;
+      while (j < lines.length) {
+        if (lines[j].trim() === '' || lines[j].trim().startsWith('#')) { j++; continue; }
+        if (getIndent(lines[j]) <= baseIndent) break;
+        subLines.push(lines[j]); j++;
+      }
+      result.push(parseYamlLines(subLines, 0).value);
+      i = j;
+    } else {
+      result.push(parseScalar(afterDash));
+      i++;
+    }
+  }
+  return { value: result, nextIdx: i };
+}
+function parseYamlObject(lines, startIdx) {
+  const result = {};
+  const baseIndent = getIndent(lines[startIdx]);
+  let i = startIdx;
+  while (i < lines.length) {
+    while (i < lines.length && (lines[i].trim() === '' || lines[i].trim().startsWith('#'))) i++;
+    if (i >= lines.length) break;
+    const indent = getIndent(lines[i]);
+    if (indent !== baseIndent) break;
+    const trimmed = lines[i].trim();
+    const colonIdx = trimmed.indexOf(': ');
+    let key, valStr;
+    if (colonIdx !== -1) { key = trimmed.slice(0, colonIdx).trim(); valStr = trimmed.slice(colonIdx + 2).trim(); }
+    else if (trimmed.endsWith(':')) { key = trimmed.slice(0, -1).trim(); valStr = ''; }
+    else { i++; continue; }
+    if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) key = key.slice(1, -1);
+    if (valStr === '') {
+      const subLines = [];
+      let j = i + 1;
+      while (j < lines.length) {
+        if (lines[j].trim() === '' || lines[j].trim().startsWith('#')) { j++; continue; }
+        if (getIndent(lines[j]) <= baseIndent) break;
+        subLines.push(lines[j]); j++;
+      }
+      result[key] = subLines.length > 0 ? parseYamlLines(subLines, 0).value : null;
+      i = j;
+    } else {
+      result[key] = parseScalar(valStr);
+      i++;
+    }
+  }
+  return { value: result, nextIdx: i };
+}
+function parseScalar(str) {
+  if (str === 'null' || str === '~' || str === '') return null;
+  if (str === 'true') return true;
+  if (str === 'false') return false;
+  if (/^-?\d+$/.test(str)) return parseInt(str, 10);
+  if (/^-?[\d.]+([eE][+-]?\d+)?$/.test(str) && !isNaN(Number(str))) return parseFloat(str);
+  if ((str.startsWith("'") && str.endsWith("'")) || (str.startsWith('"') && str.endsWith('"'))) return str.slice(1, -1);
+  if (str.startsWith('[') || str.startsWith('{')) { try { return JSON.parse(str); } catch(e) {} }
+  return str;
+}
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+function clearAll() { document.getElementById('input').value = ''; document.getElementById('output').value = ''; document.getElementById('status').textContent = ''; document.getElementById('size-label').textContent = ''; }
+function loadSample() {
+  document.getElementById('input').value = 'server:\n  host: localhost\n  port: 8080\n  ssl: true\ndatabase:\n  driver: postgres\n  connection:\n    host: db.example.com\n    port: 5432\n    name: myapp\n  pool:\n    min: 2\n    max: 10\nlogging:\n  level: info\n  outputs:\n    - stdout\n    - file\nfeatures:\n  - auth\n  - api\n  - websockets';
+  convert();
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+document.getElementById('input').addEventListener('input', convert);
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-to-yaml/" class="related-tool-card">
+                <strong>JSON to YAML Converter</strong>
+                <span>Convert JSON data to YAML format</span>
+            </a>
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format and validate JSON data</span>
+            </a>
+            <a href="../csv-to-json/" class="related-tool-card">
+                <strong>CSV to JSON Converter</strong>
+                <span>Convert CSV data to JSON format</span>
+            </a>
+            <a href="../json-diff/" class="related-tool-card">
+                <strong>JSON Diff</strong>
+                <span>Compare two JSON objects</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

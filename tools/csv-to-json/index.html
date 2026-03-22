@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to JSON Converter — UtilShed</title>
+    <meta name="description" content="Free online CSV to JSON converter. Transform CSV spreadsheet data into structured JSON arrays instantly. Auto-detects types, handles quoted fields, supports file upload. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/csv-to-json/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+    #fileInput { display: none; }
+    </style>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"CSV to JSON Converter","description":"Free online CSV to JSON converter. Transform CSV spreadsheet data into structured JSON arrays instantly. Auto-detects types, handles quoted fields, supports file upload. No signup required.","url":"https://utilshed.com/tools/csv-to-json/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"CSV to JSON Converter","item":"https://utilshed.com/tools/csv-to-json/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">CSV to JSON Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>CSV to JSON Converter</h1>
+            <p>Convert CSV data to JSON format instantly. Free, fast, no signup required.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convert()">Convert</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <button class="btn" onclick="document.getElementById('fileInput').click()">Upload CSV</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">CSV Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="name,age,city
+Alice,30,NYC
+Bob,25,LA
+Charlie,35,Chicago"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">JSON Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About CSV to JSON Converter</h2>
+            <p>This free online CSV to JSON converter transforms CSV (Comma-Separated Values) data into structured JSON format. Perfect for importing spreadsheet data into web applications, APIs, or databases.</p>
+            <p><strong>Features:</strong> Uses the first row as column headers, auto-detects data types (numbers, booleans, null), handles quoted fields with commas and newlines, supports file upload, and properly handles RFC 4180 CSV format with escaped quotes.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+function convert() {
+  try {
+    const input = document.getElementById('input').value.trim();
+    if (!input) { setStatus('Paste CSV to convert', 'err'); return; }
+    const rows = parseCsv(input);
+    if (rows.length < 2) { setStatus('Need at least a header row and one data row', 'err'); return; }
+    const headers = rows[0];
+    const result = [];
+    for (let i = 1; i < rows.length; i++) {
+      const obj = {};
+      headers.forEach((h, idx) => {
+        let val = rows[i][idx] || '';
+        if (val === '') obj[h] = null;
+        else if (val === 'true') obj[h] = true;
+        else if (val === 'false') obj[h] = false;
+        else if (val === 'null') obj[h] = null;
+        else if (/^-?\d+$/.test(val) && val.length < 16) obj[h] = parseInt(val, 10);
+        else if (/^-?[\d.]+([eE][+-]?\d+)?$/.test(val) && !isNaN(Number(val))) obj[h] = parseFloat(val);
+        else obj[h] = val;
+      });
+      result.push(obj);
+    }
+    const json = JSON.stringify(result, null, 2);
+    document.getElementById('output').value = json;
+    setStatus('Converted ' + result.length + ' rows', 'ok');
+    document.getElementById('size-label').textContent = json.length + ' chars';
+  } catch (e) {
+    setStatus('Error: ' + e.message, 'err');
+  }
+}
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (i + 1 < text.length && text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else { field += ch; }
+    } else {
+      if (ch === '"') { inQuotes = true; }
+      else if (ch === ',') { row.push(field.trim()); field = ''; }
+      else if (ch === '\n') {
+        row.push(field.trim()); field = '';
+        if (row.some(c => c !== '')) rows.push(row);
+        row = [];
+      } else if (ch === '\r') { continue; }
+      else { field += ch; }
+    }
+  }
+  row.push(field.trim());
+  if (row.some(c => c !== '')) rows.push(row);
+  return rows;
+}
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+function clearAll() { document.getElementById('input').value = ''; document.getElementById('output').value = ''; document.getElementById('status').textContent = ''; document.getElementById('size-label').textContent = ''; }
+function loadSample() {
+  document.getElementById('input').value = 'id,name,email,age,city,active\n1,Alice Johnson,alice@example.com,30,New York,true\n2,Bob Smith,bob@example.com,25,Los Angeles,false\n3,Charlie Brown,charlie@example.com,35,Chicago,true\n4,Diana Prince,diana@example.com,28,San Francisco,true\n5,Eve Wilson,eve@example.com,32,Seattle,false';
+  convert();
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+document.getElementById('input').addEventListener('input', convert);
+
+// File upload
+const fi = document.createElement('input');
+fi.type = 'file'; fi.id = 'fileInput'; fi.accept = '.csv,.tsv,.txt';
+fi.style.display = 'none';
+document.body.appendChild(fi);
+fi.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    document.getElementById('input').value = ev.target.result;
+    convert();
+    setStatus('Loaded: ' + file.name, 'ok');
+  };
+  reader.readAsText(file);
+});
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-to-csv/" class="related-tool-card">
+                <strong>JSON to CSV Converter</strong>
+                <span>Convert JSON arrays back to CSV format</span>
+            </a>
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format and validate JSON data</span>
+            </a>
+            <a href="../yaml-to-json/" class="related-tool-card">
+                <strong>YAML to JSON Converter</strong>
+                <span>Convert YAML to JSON format</span>
+            </a>
+            <a href="../json-diff/" class="related-tool-card">
+                <strong>JSON Diff</strong>
+                <span>Compare two JSON objects</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
