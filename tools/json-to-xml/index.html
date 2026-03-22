@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON to XML Converter — UtilShed</title>
+    <meta name="description" content="Free online json to xml converter. Convert JSON data to XML format instantly. Free, fast, no signup required. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/json-to-xml/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JSON to XML Converter","description":"Free online json to xml converter. Convert JSON data to XML format instantly. Free, fast, no signup required. No signup required.","url":"https://utilshed.com/tools/json-to-xml/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"JSON to XML Converter","item":"https://utilshed.com/tools/json-to-xml/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">JSON to XML Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>JSON to XML Converter</h1>
+            <p>Convert JSON data to XML format instantly. Free, fast, no signup required.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convert()">Convert</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">JSON Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="{
+  &quot;users&quot;: [
+    {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30},
+    {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25}
+  ]
+}"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">XML Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About JSON to XML Converter</h2>
+            <p>Convert any valid JSON to well-formed XML. Handles nested objects, arrays, and primitive types. Arrays are repeated as sibling elements. Special characters are properly escaped.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+function convert() {
+  try {
+    const input = document.getElementById('input').value.trim();
+    if (!input) { setStatus('Paste JSON to convert', 'err'); return; }
+    const obj = JSON.parse(input);
+    const xml = jsonToXml(obj, 'root');
+    const formatted = '<?xml version="1.0" encoding="UTF-8"?>\n' + xml;
+    document.getElementById('output').value = formatted;
+    setStatus('Converted successfully', 'ok');
+    document.getElementById('size-label').textContent = formatted.length + ' chars';
+  } catch (e) {
+    setStatus('Error: ' + e.message, 'err');
+  }
+}
+function jsonToXml(obj, tagName) {
+  if (obj === null || obj === undefined) return indent(tagName, '', 0);
+  if (typeof obj !== 'object') return indent(tagName, escXml(String(obj)), 0);
+  if (Array.isArray(obj)) {
+    return obj.map(item => jsonToXml(item, tagName)).join('\n');
+  }
+  const inner = Object.entries(obj).map(([key, val]) => {
+    const safeKey = key.replace(/[^a-zA-Z0-9_.-]/g, '_');
+    if (Array.isArray(val)) {
+      return val.map(item => jsonToXml(item, safeKey)).join('\n');
+    }
+    return jsonToXml(val, safeKey);
+  }).join('\n');
+  return '<' + tagName + '>\n' + indentBlock(inner, 2) + '\n</' + tagName + '>';
+}
+function indentBlock(str, spaces) {
+  const pad = ' '.repeat(spaces);
+  return str.split('\n').map(l => pad + l).join('\n');
+}
+function indent(tag, content, spaces) {
+  return '<' + tag + '>' + content + '</' + tag + '>';
+}
+function escXml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+function clearAll() { document.getElementById('input').value = ''; document.getElementById('output').value = ''; document.getElementById('status').textContent = ''; document.getElementById('size-label').textContent = ''; }
+function loadSample() {
+  document.getElementById('input').value = JSON.stringify({"company":"Acme Corp","employees":[{"id":1,"name":"Alice","role":"Engineer","skills":["JavaScript","Python"]},{"id":2,"name":"Bob","role":"Designer","skills":["Figma","CSS"]}],"location":{"city":"San Francisco","state":"CA","zip":"94105"}}, null, 2);
+  convert();
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+document.getElementById('input').addEventListener('input', convert);
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../xml-to-json/" class="related-tool-card">
+                <strong>XML to JSON Converter</strong>
+                <span>Convert XML data to JSON format</span>
+            </a>
+            <a href="../json-to-yaml/" class="related-tool-card">
+                <strong>JSON to YAML Converter</strong>
+                <span>Convert JSON to YAML format</span>
+            </a>
+            <a href="../json-to-csv/" class="related-tool-card">
+                <strong>JSON to CSV Converter</strong>
+                <span>Convert JSON arrays to CSV</span>
+            </a>
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format and beautify JSON data</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

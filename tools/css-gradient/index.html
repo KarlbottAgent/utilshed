@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Gradient Generator — UtilShed</title>
+    <meta name="description" content="Free online css gradient generator. Create beautiful CSS gradients with a visual editor. Linear, radial, and conic gradients with real-time preview. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/css-gradient/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+    .grad-control { margin-bottom: 1rem; }
+    .grad-control label { color: #aaa; font-size: 0.85rem; display: block; margin-bottom: 0.3rem; }
+    .grad-control input[type=range] { width: 100%; accent-color: #3b82f6; }
+    .grad-control input[type=color] { width: 40px; height: 34px; border: none; background: none; cursor: pointer; }
+    .btn-group { display: flex; gap: 4px; }
+    .btn-sm { padding: 6px 16px; background: #1a1a2e; color: #aaa; border: 1px solid #333; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+    .btn-sm.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+    .preset-swatch { width: 100%; height: 32px; border-radius: 6px; border: 1px solid #333; cursor: pointer; transition: transform 0.15s; }
+    .preset-swatch:hover { transform: scale(1.1); }
+    @media (max-width: 768px) { #main-grid { grid-template-columns: 1fr !important; } }
+    </style>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"CSS Gradient Generator","description":"Free online css gradient generator. Create beautiful CSS gradients with a visual editor. Linear, radial, and conic gradients with real-time preview. No signup required.","url":"https://utilshed.com/tools/css-gradient/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"CSS Gradient Generator","item":"https://utilshed.com/tools/css-gradient/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">CSS Gradient Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>CSS Gradient Generator</h1>
+            <p>Create beautiful CSS gradients with a visual editor. Linear, radial, and conic gradients with real-time preview.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="copyCss()">Copy CSS</button>
+            <button class="btn" onclick="randomGradient()">Random</button>
+            <button class="btn" onclick="swapColors()">Swap Colors</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1rem" id="main-grid">
+            <div>
+                <div class="grad-control">
+                    <label>Type</label>
+                    <div class="btn-group">
+                        <button class="btn-sm active" onclick="setType('linear')" id="btn-linear">Linear</button>
+                        <button class="btn-sm" onclick="setType('radial')" id="btn-radial">Radial</button>
+                        <button class="btn-sm" onclick="setType('conic')" id="btn-conic">Conic</button>
+                    </div>
+                </div>
+                <div class="grad-control" id="angle-control">
+                    <label>Angle: <span id="angle-val">135</span>deg</label>
+                    <input type="range" id="angle" min="0" max="360" value="135" oninput="updateGradient()">
+                </div>
+                <div class="grad-control">
+                    <label>Color 1</label>
+                    <div style="display:flex;align-items:center;gap:0.75rem">
+                        <input type="color" id="color1" value="#667eea" oninput="updateGradient()">
+                        <input type="text" id="color1-hex" value="#667eea" style="width:90px;background:#1a1a2e;color:#e0e0e0;border:1px solid #333;border-radius:4px;padding:4px 8px;font-family:monospace" oninput="syncColor(1)">
+                        <label style="margin:0;font-size:0.8rem">Stop: <span id="stop1-val">0</span>%</label>
+                        <input type="range" id="stop1" min="0" max="100" value="0" style="width:80px" oninput="updateGradient()">
+                    </div>
+                </div>
+                <div class="grad-control">
+                    <label>Color 2</label>
+                    <div style="display:flex;align-items:center;gap:0.75rem">
+                        <input type="color" id="color2" value="#764ba2" oninput="updateGradient()">
+                        <input type="text" id="color2-hex" value="#764ba2" style="width:90px;background:#1a1a2e;color:#e0e0e0;border:1px solid #333;border-radius:4px;padding:4px 8px;font-family:monospace" oninput="syncColor(2)">
+                        <label style="margin:0;font-size:0.8rem">Stop: <span id="stop2-val">100</span>%</label>
+                        <input type="range" id="stop2" min="0" max="100" value="100" style="width:80px" oninput="updateGradient()">
+                    </div>
+                </div>
+                <div style="margin-top:1.5rem">
+                    <label style="color:#aaa;font-size:0.9rem">Generated CSS:</label>
+                    <textarea id="output" readonly style="width:100%;height:80px;background:#1a1a2e;color:#e0e0e0;border:1px solid #333;border-radius:6px;padding:0.75rem;font-family:monospace;font-size:0.85rem;resize:none;margin-top:0.5rem"></textarea>
+                </div>
+            </div>
+            <div>
+                <div id="preview-box" style="width:100%;height:300px;border-radius:12px;border:1px solid #333"></div>
+                <div id="presets" style="margin-top:1.5rem">
+                    <label style="color:#aaa;font-size:0.9rem;display:block;margin-bottom:0.5rem">Presets:</label>
+                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px" id="preset-grid"></div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About CSS Gradient Generator</h2>
+            <p>Create CSS gradients visually. Choose from linear, radial, or conic gradient types. Adjust colors, angle, and color stops with real-time preview. Pick from 12 curated presets or generate random gradients. Copy the CSS directly into your project.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+let gradType = 'linear';
+
+const presets = [
+  ['#667eea','#764ba2'],['#f093fb','#f5576c'],['#4facfe','#00f2fe'],
+  ['#43e97b','#38f9d7'],['#fa709a','#fee140'],['#a18cd1','#fbc2eb'],
+  ['#fccb90','#d57eeb'],['#e0c3fc','#8ec5fc'],['#f5576c','#ff6f61'],
+  ['#667eea','#43e97b'],['#ff9a9e','#fad0c4'],['#a1c4fd','#c2e9fb']
+];
+
+function setType(t) {
+  gradType = t;
+  document.querySelectorAll('.btn-sm').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + t).classList.add('active');
+  document.getElementById('angle-control').style.display = t === 'radial' ? 'none' : 'block';
+  updateGradient();
+}
+
+function syncColor(n) {
+  const hex = document.getElementById('color' + n + '-hex').value;
+  if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+    document.getElementById('color' + n).value = hex;
+    updateGradient();
+  }
+}
+
+function updateGradient() {
+  const c1 = document.getElementById('color1').value;
+  const c2 = document.getElementById('color2').value;
+  const angle = document.getElementById('angle').value;
+  const s1 = document.getElementById('stop1').value;
+  const s2 = document.getElementById('stop2').value;
+  document.getElementById('color1-hex').value = c1;
+  document.getElementById('color2-hex').value = c2;
+  document.getElementById('angle-val').textContent = angle;
+  document.getElementById('stop1-val').textContent = s1;
+  document.getElementById('stop2-val').textContent = s2;
+  let css;
+  if (gradType === 'linear') css = `linear-gradient(${angle}deg, ${c1} ${s1}%, ${c2} ${s2}%)`;
+  else if (gradType === 'radial') css = `radial-gradient(circle, ${c1} ${s1}%, ${c2} ${s2}%)`;
+  else css = `conic-gradient(from ${angle}deg, ${c1} ${s1}%, ${c2} ${s2}%)`;
+  document.getElementById('preview-box').style.background = css;
+  document.getElementById('output').value = `background: ${css};`;
+}
+
+function copyCss() {
+  navigator.clipboard.writeText(document.getElementById('output').value);
+  setStatus('Copied!', 'ok');
+}
+
+function swapColors() {
+  const c1 = document.getElementById('color1').value;
+  const c2 = document.getElementById('color2').value;
+  document.getElementById('color1').value = c2;
+  document.getElementById('color2').value = c1;
+  updateGradient();
+  setStatus('Colors swapped', 'ok');
+}
+
+function randomGradient() {
+  const rh = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
+  document.getElementById('color1').value = rh();
+  document.getElementById('color2').value = rh();
+  document.getElementById('angle').value = Math.floor(Math.random()*360);
+  updateGradient();
+  setStatus('Random gradient!', 'ok');
+}
+
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+
+// Render presets
+const grid = document.getElementById('preset-grid');
+presets.forEach(([c1,c2]) => {
+  const el = document.createElement('div');
+  el.className = 'preset-swatch';
+  el.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+  el.onclick = () => { document.getElementById('color1').value = c1; document.getElementById('color2').value = c2; updateGradient(); };
+  grid.appendChild(el);
+});
+
+updateGradient();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../css-box-shadow/" class="related-tool-card">
+                <strong>CSS Box Shadow Generator</strong>
+                <span>Generate CSS box-shadow with visual editor</span>
+            </a>
+            <a href="../color-converter/" class="related-tool-card">
+                <strong>Color Converter</strong>
+                <span>Convert between HEX, RGB, and HSL</span>
+            </a>
+            <a href="../hex-to-rgb/" class="related-tool-card">
+                <strong>Hex to RGB Converter</strong>
+                <span>Convert HEX colors to RGB</span>
+            </a>
+            <a href="../css-minifier/" class="related-tool-card">
+                <strong>CSS Minifier</strong>
+                <span>Minify CSS code</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

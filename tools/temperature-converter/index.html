@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter — UtilShed</title>
+    <meta name="description" content="Free online temperature converter. Convert between Fahrenheit, Celsius, and Kelvin instantly. Free temperature conversion calculator. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/temperature-converter/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+    .temp-field { margin-bottom: 1rem; }
+    .temp-field label { display: block; color: #aaa; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .temp-field input { width: 100%; padding: 0.75rem; background: #1a1a2e; color: #e0e0e0; border: 1px solid #333; border-radius: 6px; font-size: 1.1rem; box-sizing: border-box; }
+    .temp-field input:focus { border-color: #3b82f6; outline: none; }
+    .common-temps { display: grid; gap: 6px; }
+    .temp-ref { padding: 0.5rem 0.75rem; background: #1a1a2e; border: 1px solid #333; border-radius: 6px; color: #aaa; font-size: 0.85rem; cursor: pointer; }
+    .temp-ref:hover { border-color: #3b82f6; color: #e0e0e0; }
+    </style>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Temperature Converter","description":"Free online temperature converter. Convert between Fahrenheit, Celsius, and Kelvin instantly. Free temperature conversion calculator. No signup required.","url":"https://utilshed.com/tools/temperature-converter/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Temperature Converter","item":"https://utilshed.com/tools/temperature-converter/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Temperature Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Temperature Converter</h1>
+            <p>Convert between Fahrenheit, Celsius, and Kelvin instantly. Free temperature conversion calculator.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="swapFC()">Swap F/C</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="max-width:500px;margin:0 auto">
+            <div class="temp-field">
+                <label>Fahrenheit (F)</label>
+                <input type="number" id="fahrenheit" placeholder="Enter Fahrenheit" oninput="fromF()" step="any">
+            </div>
+            <div class="temp-field">
+                <label>Celsius (C)</label>
+                <input type="number" id="celsius" placeholder="Enter Celsius" oninput="fromC()" step="any">
+            </div>
+            <div class="temp-field">
+                <label>Kelvin (K)</label>
+                <input type="number" id="kelvin" placeholder="Enter Kelvin" oninput="fromK()" step="any">
+            </div>
+            <div id="formula-display" style="margin-top:1.5rem;padding:1rem;background:#1a1a2e;border-radius:8px;border:1px solid #333;color:#aaa;font-size:0.9rem;display:none">
+                <div id="formula-text"></div>
+            </div>
+            <div style="margin-top:1.5rem">
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:0.75rem">Common Temperatures</h3>
+                <div class="common-temps">
+                    <div class="temp-ref" onclick="setC(0)">Water freezes: 0C / 32F / 273.15K</div>
+                    <div class="temp-ref" onclick="setC(100)">Water boils: 100C / 212F / 373.15K</div>
+                    <div class="temp-ref" onclick="setC(37)">Body temp: 37C / 98.6F / 310.15K</div>
+                    <div class="temp-ref" onclick="setC(20)">Room temp: 20C / 68F / 293.15K</div>
+                    <div class="temp-ref" onclick="setC(-40)">F = C: -40C / -40F / 233.15K</div>
+                    <div class="temp-ref" onclick="setK(0)">Absolute zero: -273.15C / -459.67F / 0K</div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Temperature Converter</h2>
+            <p>Convert temperatures between Fahrenheit, Celsius, and Kelvin. Type in any field and the other two update instantly. Shows the conversion formula for each calculation. Includes quick-access to common reference temperatures like body temperature, water boiling/freezing points, and absolute zero.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+function round(n) { return Math.round(n * 1000) / 1000; }
+
+function fromF() {
+  const f = parseFloat(document.getElementById('fahrenheit').value);
+  if (isNaN(f)) { document.getElementById('celsius').value = ''; document.getElementById('kelvin').value = ''; hideFormula(); return; }
+  const c = (f - 32) * 5 / 9;
+  const k = c + 273.15;
+  document.getElementById('celsius').value = round(c);
+  document.getElementById('kelvin').value = round(k);
+  showFormula(`(${f}F - 32) x 5/9 = ${round(c)}C`);
+  setStatus(`${round(f)}F = ${round(c)}C = ${round(k)}K`, 'ok');
+}
+
+function fromC() {
+  const c = parseFloat(document.getElementById('celsius').value);
+  if (isNaN(c)) { document.getElementById('fahrenheit').value = ''; document.getElementById('kelvin').value = ''; hideFormula(); return; }
+  const f = c * 9 / 5 + 32;
+  const k = c + 273.15;
+  document.getElementById('fahrenheit').value = round(f);
+  document.getElementById('kelvin').value = round(k);
+  showFormula(`(${c}C x 9/5) + 32 = ${round(f)}F`);
+  setStatus(`${round(c)}C = ${round(f)}F = ${round(k)}K`, 'ok');
+}
+
+function fromK() {
+  const k = parseFloat(document.getElementById('kelvin').value);
+  if (isNaN(k)) { document.getElementById('fahrenheit').value = ''; document.getElementById('celsius').value = ''; hideFormula(); return; }
+  const c = k - 273.15;
+  const f = c * 9 / 5 + 32;
+  document.getElementById('celsius').value = round(c);
+  document.getElementById('fahrenheit').value = round(f);
+  showFormula(`${k}K - 273.15 = ${round(c)}C`);
+  setStatus(`${round(k)}K = ${round(c)}C = ${round(f)}F`, 'ok');
+}
+
+function showFormula(text) {
+  document.getElementById('formula-display').style.display = 'block';
+  document.getElementById('formula-text').textContent = text;
+}
+
+function hideFormula() {
+  document.getElementById('formula-display').style.display = 'none';
+}
+
+function clearAll() {
+  document.getElementById('fahrenheit').value = '';
+  document.getElementById('celsius').value = '';
+  document.getElementById('kelvin').value = '';
+  hideFormula();
+  setStatus('Cleared', 'ok');
+}
+
+function swapFC() {
+  const f = document.getElementById('fahrenheit').value;
+  const c = document.getElementById('celsius').value;
+  document.getElementById('fahrenheit').value = c;
+  document.getElementById('celsius').value = f;
+  fromF();
+}
+
+function setC(c) {
+  document.getElementById('celsius').value = c;
+  fromC();
+}
+
+function setK(k) {
+  document.getElementById('kelvin').value = k;
+  fromK();
+}
+
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../color-converter/" class="related-tool-card">
+                <strong>Color Converter</strong>
+                <span>Convert between color formats</span>
+            </a>
+            <a href="../hex-to-rgb/" class="related-tool-card">
+                <strong>Hex to RGB Converter</strong>
+                <span>Convert HEX to RGB colors</span>
+            </a>
+            <a href="../timestamp/" class="related-tool-card">
+                <strong>Timestamp Converter</strong>
+                <span>Convert Unix timestamps to dates</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encoder/Decoder</strong>
+                <span>Encode and decode Base64 strings</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

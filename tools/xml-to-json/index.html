@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML to JSON Converter — UtilShed</title>
+    <meta name="description" content="Free online xml to json converter. Convert XML data to JSON format instantly. Free, fast, no signup required. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/xml-to-json/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"XML to JSON Converter","description":"Free online xml to json converter. Convert XML data to JSON format instantly. Free, fast, no signup required. No signup required.","url":"https://utilshed.com/tools/xml-to-json/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"XML to JSON Converter","item":"https://utilshed.com/tools/xml-to-json/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">XML to JSON Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>XML to JSON Converter</h1>
+            <p>Convert XML data to JSON format instantly. Free, fast, no signup required.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convert()">Convert</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">XML Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="&lt;root&gt;
+  &lt;user&gt;
+    &lt;name&gt;Alice&lt;/name&gt;
+    &lt;age&gt;30&lt;/age&gt;
+  &lt;/user&gt;
+  &lt;user&gt;
+    &lt;name&gt;Bob&lt;/name&gt;
+    &lt;age&gt;25&lt;/age&gt;
+  &lt;/user&gt;
+&lt;/root&gt;"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">JSON Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About XML to JSON Converter</h2>
+            <p>Convert any well-formed XML to JSON. Handles nested elements, attributes (prefixed with @), arrays (repeated sibling elements), and auto-detects numbers and booleans. Uses the browser's built-in DOMParser for reliable parsing.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+function convert() {
+  try {
+    const input = document.getElementById('input').value.trim();
+    if (!input) { setStatus('Paste XML to convert', 'err'); return; }
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(input, 'text/xml');
+    const err = doc.querySelector('parsererror');
+    if (err) { setStatus('Invalid XML: ' + err.textContent.split('\n')[0], 'err'); return; }
+    const json = xmlToJson(doc.documentElement);
+    const result = JSON.stringify(json, null, 2);
+    document.getElementById('output').value = result;
+    setStatus('Converted successfully', 'ok');
+    document.getElementById('size-label').textContent = result.length + ' chars';
+  } catch (e) {
+    setStatus('Error: ' + e.message, 'err');
+  }
+}
+function xmlToJson(node) {
+  if (node.nodeType === 3) return node.textContent.trim();
+  if (node.nodeType !== 1) return null;
+  const obj = {};
+  // Handle attributes
+  if (node.attributes && node.attributes.length > 0) {
+    for (let i = 0; i < node.attributes.length; i++) {
+      obj['@' + node.attributes[i].name] = node.attributes[i].value;
+    }
+  }
+  // Handle children
+  const children = Array.from(node.childNodes).filter(n => n.nodeType === 1 || (n.nodeType === 3 && n.textContent.trim()));
+  if (children.length === 0) return '';
+  if (children.length === 1 && children[0].nodeType === 3) {
+    const text = children[0].textContent.trim();
+    if (Object.keys(obj).length === 0) {
+      // Try to parse as number/boolean
+      if (text === 'true') return true;
+      if (text === 'false') return false;
+      if (text === 'null') return null;
+      if (/^-?\d+$/.test(text) && text.length < 16) return parseInt(text, 10);
+      if (/^-?[\d.]+([eE][+-]?\d+)?$/.test(text) && !isNaN(Number(text))) return parseFloat(text);
+      return text;
+    }
+    obj['#text'] = text;
+    return obj;
+  }
+  for (const child of children) {
+    if (child.nodeType === 3) continue;
+    const name = child.nodeName;
+    const val = xmlToJson(child);
+    if (obj[name] !== undefined) {
+      if (!Array.isArray(obj[name])) obj[name] = [obj[name]];
+      obj[name].push(val);
+    } else {
+      obj[name] = val;
+    }
+  }
+  return obj;
+}
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+function clearAll() { document.getElementById('input').value = ''; document.getElementById('output').value = ''; document.getElementById('status').textContent = ''; document.getElementById('size-label').textContent = ''; }
+function loadSample() {
+  document.getElementById('input').value = '<?xml version="1.0" encoding="UTF-8"?>\n<company>\n  <name>Acme Corp</name>\n  <founded>1995</founded>\n  <employees>\n    <employee id="1">\n      <name>Alice Johnson</name>\n      <role>Engineer</role>\n      <skills>\n        <skill>JavaScript</skill>\n        <skill>Python</skill>\n      </skills>\n    </employee>\n    <employee id="2">\n      <name>Bob Smith</name>\n      <role>Designer</role>\n      <skills>\n        <skill>Figma</skill>\n        <skill>CSS</skill>\n      </skills>\n    </employee>\n  </employees>\n  <location>\n    <city>San Francisco</city>\n    <state>CA</state>\n  </location>\n</company>';
+  convert();
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+document.getElementById('input').addEventListener('input', convert);
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-to-xml/" class="related-tool-card">
+                <strong>JSON to XML Converter</strong>
+                <span>Convert JSON data to XML format</span>
+            </a>
+            <a href="../json-to-yaml/" class="related-tool-card">
+                <strong>JSON to YAML Converter</strong>
+                <span>Convert JSON to YAML format</span>
+            </a>
+            <a href="../xml-formatter/" class="related-tool-card">
+                <strong>XML Formatter</strong>
+                <span>Format and beautify XML data</span>
+            </a>
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format and beautify JSON data</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
