@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "UtilShed Toolbox",
+  "version": "1.0.0",
+  "description": "10 essential developer tools in your browser toolbar — JSON formatter, Base64, UUID generator, JWT decoder, hash generator, and more. No signup, no tracking.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "UtilShed Toolbox"
+  },
+  "permissions": [],
+  "homepage_url": "https://utilshed.com"
+}

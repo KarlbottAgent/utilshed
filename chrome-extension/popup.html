@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UtilShed Toolbox</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="logo-icon">&#9881;</span>
+      <span class="logo-text">UtilShed Toolbox</span>
+    </div>
+    <a href="https://utilshed.com" target="_blank" class="site-link">utilshed.com</a>
+  </header>
+
+  <nav class="tool-tabs" id="toolTabs">
+    <button class="tab active" data-tool="json" title="JSON Formatter">{ }</button>
+    <button class="tab" data-tool="base64" title="Base64 Encode/Decode">B64</button>
+    <button class="tab" data-tool="url" title="URL Encode/Decode">URL</button>
+    <button class="tab" data-tool="uuid" title="UUID Generator">UUID</button>
+    <button class="tab" data-tool="hash" title="Hash Generator">#</button>
+    <button class="tab" data-tool="jwt" title="JWT Decoder">JWT</button>
+    <button class="tab" data-tool="color" title="Color Converter">CLR</button>
+    <button class="tab" data-tool="timestamp" title="Timestamp Converter">TS</button>
+    <button class="tab" data-tool="textcase" title="Text Case Converter">Aa</button>
+    <button class="tab" data-tool="lorem" title="Lorem Ipsum Generator">Lrm</button>
+  </nav>
+
+  <!-- JSON Formatter -->
+  <div class="tool-panel active" id="tool-json">
+    <div class="tool-header">JSON Formatter & Validator</div>
+    <textarea id="json-input" placeholder="Paste JSON here..."></textarea>
+    <div class="btn-row">
+      <button onclick="formatJSON()">Format</button>
+      <button onclick="minifyJSON()">Minify</button>
+      <button onclick="copyOutput('json-output')">Copy</button>
+    </div>
+    <div class="status" id="json-status"></div>
+    <textarea id="json-output" readonly placeholder="Formatted output..."></textarea>
+  </div>
+
+  <!-- Base64 -->
+  <div class="tool-panel" id="tool-base64">
+    <div class="tool-header">Base64 Encode / Decode</div>
+    <textarea id="base64-input" placeholder="Enter text or Base64 string..."></textarea>
+    <div class="btn-row">
+      <button onclick="base64Encode()">Encode</button>
+      <button onclick="base64Decode()">Decode</button>
+      <button onclick="copyOutput('base64-output')">Copy</button>
+    </div>
+    <div class="status" id="base64-status"></div>
+    <textarea id="base64-output" readonly placeholder="Result..."></textarea>
+  </div>
+
+  <!-- URL Encode/Decode -->
+  <div class="tool-panel" id="tool-url">
+    <div class="tool-header">URL Encode / Decode</div>
+    <textarea id="url-input" placeholder="Enter URL or text..."></textarea>
+    <div class="btn-row">
+      <button onclick="urlEncode()">Encode</button>
+      <button onclick="urlDecode()">Decode</button>
+      <button onclick="copyOutput('url-output')">Copy</button>
+    </div>
+    <div class="status" id="url-status"></div>
+    <textarea id="url-output" readonly placeholder="Result..."></textarea>
+  </div>
+
+  <!-- UUID Generator -->
+  <div class="tool-panel" id="tool-uuid">
+    <div class="tool-header">UUID Generator</div>
+    <div class="btn-row">
+      <button onclick="generateUUID()">Generate UUID</button>
+      <button onclick="generateBulkUUID()">Generate 5</button>
+      <button onclick="copyOutput('uuid-output')">Copy</button>
+    </div>
+    <textarea id="uuid-output" readonly placeholder="Click Generate..."></textarea>
+  </div>
+
+  <!-- Hash Generator -->
+  <div class="tool-panel" id="tool-hash">
+    <div class="tool-header">Hash Generator</div>
+    <textarea id="hash-input" placeholder="Enter text to hash..."></textarea>
+    <div class="btn-row">
+      <button onclick="generateHash('SHA-256')">SHA-256</button>
+      <button onclick="generateHash('SHA-1')">SHA-1</button>
+      <button onclick="generateHash('SHA-512')">SHA-512</button>
+      <button onclick="copyOutput('hash-output')">Copy</button>
+    </div>
+    <textarea id="hash-output" readonly placeholder="Hash result..."></textarea>
+  </div>
+
+  <!-- JWT Decoder -->
+  <div class="tool-panel" id="tool-jwt">
+    <div class="tool-header">JWT Decoder</div>
+    <textarea id="jwt-input" placeholder="Paste JWT token here..."></textarea>
+    <div class="btn-row">
+      <button onclick="decodeJWT()">Decode</button>
+      <button onclick="copyOutput('jwt-output')">Copy</button>
+    </div>
+    <div class="status" id="jwt-status"></div>
+    <textarea id="jwt-output" readonly placeholder="Decoded JWT..."></textarea>
+  </div>
+
+  <!-- Color Converter -->
+  <div class="tool-panel" id="tool-color">
+    <div class="tool-header">Color Converter</div>
+    <div class="color-row">
+      <input type="color" id="color-picker" value="#3b82f6" onchange="colorFromPicker()">
+      <input type="text" id="color-input" placeholder="#3b82f6 or rgb(59,130,246)" value="#3b82f6">
+      <button onclick="convertColor()">Convert</button>
+    </div>
+    <div class="color-preview" id="color-preview" style="background:#3b82f6"></div>
+    <textarea id="color-output" readonly placeholder="Color values..."></textarea>
+    <div class="btn-row">
+      <button onclick="copyOutput('color-output')">Copy All</button>
+    </div>
+  </div>
+
+  <!-- Timestamp Converter -->
+  <div class="tool-panel" id="tool-timestamp">
+    <div class="tool-header">Timestamp Converter</div>
+    <input type="text" id="ts-input" placeholder="Unix timestamp or date string">
+    <div class="btn-row">
+      <button onclick="tsNow()">Now</button>
+      <button onclick="convertTimestamp()">Convert</button>
+      <button onclick="copyOutput('ts-output')">Copy</button>
+    </div>
+    <textarea id="ts-output" readonly placeholder="Converted timestamp..."></textarea>
+  </div>
+
+  <!-- Text Case Converter -->
+  <div class="tool-panel" id="tool-textcase">
+    <div class="tool-header">Text Case Converter</div>
+    <textarea id="tc-input" placeholder="Enter text to convert..."></textarea>
+    <div class="btn-row">
+      <button onclick="toCase('upper')">UPPER</button>
+      <button onclick="toCase('lower')">lower</button>
+      <button onclick="toCase('title')">Title</button>
+      <button onclick="toCase('sentence')">Sentence</button>
+      <button onclick="toCase('camel')">camelCase</button>
+      <button onclick="toCase('snake')">snake_case</button>
+    </div>
+    <textarea id="tc-output" readonly placeholder="Result..."></textarea>
+    <div class="btn-row">
+      <button onclick="copyOutput('tc-output')">Copy</button>
+    </div>
+  </div>
+
+  <!-- Lorem Ipsum Generator -->
+  <div class="tool-panel" id="tool-lorem">
+    <div class="tool-header">Lorem Ipsum Generator</div>
+    <div class="lorem-options">
+      <label>Paragraphs: <input type="number" id="lorem-count" value="3" min="1" max="20"></label>
+    </div>
+    <div class="btn-row">
+      <button onclick="generateLorem()">Generate</button>
+      <button onclick="copyOutput('lorem-output')">Copy</button>
+    </div>
+    <textarea id="lorem-output" readonly placeholder="Lorem ipsum..."></textarea>
+  </div>
+
+  <footer>
+    <a href="https://utilshed.com" target="_blank">70+ free tools at utilshed.com</a>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
