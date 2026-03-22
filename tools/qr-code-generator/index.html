@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator — UtilShed</title>
+    <meta name="description" content="Free online QR code generator. Create QR codes for URLs, text, WiFi, email, and more. Download as PNG. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/qr-code-generator/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"QR Code Generator","description":"Free online QR code generator. Create QR codes for URLs, text, WiFi, email, and more. Download as PNG. No signup required.","url":"https://utilshed.com/tools/qr-code-generator/","applicationCategory":"UtilityApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"QR Code Generator","item":"https://utilshed.com/tools/qr-code-generator/"}]}</script>
+    <style>
+        .qr-container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+        .qr-preview { display: flex; justify-content: center; padding: 2rem; background: #fff; border-radius: 8px; min-height: 200px; align-items: center; }
+        .qr-preview canvas { max-width: 100%; }
+        .qr-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .qr-options label { color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.25rem; }
+        .qr-options select, .qr-options input[type="number"], .qr-options input[type="color"] {
+            padding: 0.5rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.9rem;
+        }
+        .qr-input { width: 100%; padding: 1rem; font-size: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; min-height: 80px; font-family: inherit; }
+        .btn-row-qr { display: flex; gap: 0.5rem; }
+        .btn-row-qr button { flex: 1; }
+        @media (max-width: 480px) { .qr-options { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">QR Code Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>QR Code Generator</h1>
+            <p>Generate QR codes for URLs, text, WiFi networks, and more. Download as PNG.</p>
+        </div>
+        <div class="qr-container">
+            <label style="color:var(--text-muted);font-size:0.85rem">Type
+                <select id="qr-type" onchange="updatePlaceholder()" style="padding:0.5rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.9rem">
+                    <option value="text">Text / URL</option>
+                    <option value="wifi">WiFi Network</option>
+                    <option value="email">Email</option>
+                    <option value="phone">Phone Number</option>
+                </select>
+            </label>
+            <div id="input-text">
+                <textarea class="qr-input" id="qr-data" placeholder="Enter URL or text..." oninput="generateQR()"></textarea>
+            </div>
+            <div id="input-wifi" style="display:none">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+                    <label style="color:var(--text-muted);font-size:0.85rem">SSID <input type="text" id="wifi-ssid" class="qr-input" style="min-height:auto;padding:0.5rem" placeholder="Network name" oninput="generateQR()"></label>
+                    <label style="color:var(--text-muted);font-size:0.85rem">Password <input type="text" id="wifi-pass" class="qr-input" style="min-height:auto;padding:0.5rem" placeholder="Password" oninput="generateQR()"></label>
+                    <label style="color:var(--text-muted);font-size:0.85rem">Encryption
+                        <select id="wifi-enc" onchange="generateQR()" style="padding:0.5rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text)">
+                            <option value="WPA">WPA/WPA2</option>
+                            <option value="WEP">WEP</option>
+                            <option value="nopass">None</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div id="input-email" style="display:none">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+                    <label style="color:var(--text-muted);font-size:0.85rem">To <input type="email" id="email-to" class="qr-input" style="min-height:auto;padding:0.5rem" placeholder="email@example.com" oninput="generateQR()"></label>
+                    <label style="color:var(--text-muted);font-size:0.85rem">Subject <input type="text" id="email-subject" class="qr-input" style="min-height:auto;padding:0.5rem" placeholder="Subject" oninput="generateQR()"></label>
+                </div>
+            </div>
+            <div id="input-phone" style="display:none">
+                <input type="tel" id="phone-num" class="qr-input" style="min-height:auto" placeholder="+1234567890" oninput="generateQR()">
+            </div>
+            <div class="qr-options">
+                <label>Size
+                    <input type="number" id="qr-size" value="256" min="64" max="1024" step="32" onchange="generateQR()">
+                </label>
+                <label>Error Correction
+                    <select id="qr-ec" onchange="generateQR()">
+                        <option value="M" selected>Medium (15%)</option>
+                        <option value="L">Low (7%)</option>
+                        <option value="Q">Quartile (25%)</option>
+                        <option value="H">High (30%)</option>
+                    </select>
+                </label>
+                <label>Foreground <input type="color" id="qr-fg" value="#000000" onchange="generateQR()"></label>
+                <label>Background <input type="color" id="qr-bg" value="#ffffff" onchange="generateQR()"></label>
+            </div>
+            <div class="qr-preview" id="qr-preview">
+                <span style="color:#999">Enter text above to generate QR code</span>
+            </div>
+            <div class="btn-row-qr">
+                <button class="btn btn-primary" onclick="downloadQR()">Download PNG</button>
+                <button class="btn" onclick="copyQRDataURL()">Copy as Data URL</button>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About QR Code Generator</h2>
+            <p>Create QR codes instantly in your browser. Supports plain text, URLs, WiFi network credentials, email addresses, and phone numbers. Customize size, colors, and error correction level. Download as PNG or copy as a data URL for embedding in HTML/CSS.</p>
+            <p>All QR code generation happens client-side — your data never leaves your browser.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+    <script>
+    let currentCanvas = null;
+
+    function updatePlaceholder() {
+        const type = document.getElementById('qr-type').value;
+        document.getElementById('input-text').style.display = type === 'text' ? '' : 'none';
+        document.getElementById('input-wifi').style.display = type === 'wifi' ? '' : 'none';
+        document.getElementById('input-email').style.display = type === 'email' ? '' : 'none';
+        document.getElementById('input-phone').style.display = type === 'phone' ? '' : 'none';
+        generateQR();
+    }
+
+    function getQRData() {
+        const type = document.getElementById('qr-type').value;
+        switch (type) {
+            case 'text': return document.getElementById('qr-data').value;
+            case 'wifi': {
+                const ssid = document.getElementById('wifi-ssid').value;
+                const pass = document.getElementById('wifi-pass').value;
+                const enc = document.getElementById('wifi-enc').value;
+                if (!ssid) return '';
+                return `WIFI:T:${enc};S:${ssid};P:${pass};;`;
+            }
+            case 'email': {
+                const to = document.getElementById('email-to').value;
+                const subj = document.getElementById('email-subject').value;
+                if (!to) return '';
+                return `mailto:${to}${subj ? '?subject=' + encodeURIComponent(subj) : ''}`;
+            }
+            case 'phone': {
+                const num = document.getElementById('phone-num').value;
+                return num ? `tel:${num}` : '';
+            }
+        }
+        return '';
+    }
+
+    function generateQR() {
+        const data = getQRData();
+        const preview = document.getElementById('qr-preview');
+        if (!data) {
+            preview.innerHTML = '<span style="color:#999">Enter text above to generate QR code</span>';
+            currentCanvas = null;
+            return;
+        }
+        const size = parseInt(document.getElementById('qr-size').value) || 256;
+        const ec = document.getElementById('qr-ec').value;
+        const fg = document.getElementById('qr-fg').value;
+        const bg = document.getElementById('qr-bg').value;
+
+        const canvas = document.createElement('canvas');
+        QRCode.toCanvas(canvas, data, {
+            width: size,
+            margin: 2,
+            errorCorrectionLevel: ec,
+            color: { dark: fg, light: bg }
+        }, function(err) {
+            if (err) {
+                preview.innerHTML = '<span style="color:#e74c3c">Error: ' + err.message + '</span>';
+                currentCanvas = null;
+                return;
+            }
+            preview.innerHTML = '';
+            preview.appendChild(canvas);
+            currentCanvas = canvas;
+        });
+    }
+
+    function downloadQR() {
+        if (!currentCanvas) return;
+        const a = document.createElement('a');
+        a.download = 'qrcode.png';
+        a.href = currentCanvas.toDataURL('image/png');
+        a.click();
+    }
+
+    function copyQRDataURL() {
+        if (!currentCanvas) return;
+        navigator.clipboard.writeText(currentCanvas.toDataURL('image/png'));
+    }
+    </script>
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode/Decode</strong>
+                <span>Encode and decode Base64 strings</span>
+            </a>
+            <a href="../url-encode/" class="related-tool-card">
+                <strong>URL Encoder/Decoder</strong>
+                <span>Encode and decode URLs</span>
+            </a>
+            <a href="../image-to-base64/" class="related-tool-card">
+                <strong>Image to Base64</strong>
+                <span>Convert images to Base64 strings</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

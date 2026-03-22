@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diff Checker — UtilShed</title>
+    <meta name="description" content="Free online diff checker. Compare two texts side-by-side and see differences highlighted. Find changes between files instantly. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/diff-checker/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Diff Checker","description":"Free online diff checker. Compare two texts side-by-side and see differences highlighted. Find changes between files instantly. No signup required.","url":"https://utilshed.com/tools/diff-checker/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Diff Checker","item":"https://utilshed.com/tools/diff-checker/"}]}</script>
+    <style>
+        .diff-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .diff-inputs textarea { width: 100%; min-height: 200px; padding: 0.75rem; font-family: monospace; font-size: 0.85rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; }
+        .diff-inputs label { color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.25rem; }
+        .diff-output { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; font-family: monospace; font-size: 0.85rem; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; word-break: break-word; min-height: 150px; }
+        .diff-line { padding: 1px 0.5rem; border-radius: 3px; }
+        .diff-add { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
+        .diff-del { background: rgba(231, 76, 60, 0.15); color: #e74c3c; }
+        .diff-ctx { color: var(--text-muted); }
+        .diff-header { color: var(--accent); font-weight: bold; margin: 0.5rem 0; }
+        .diff-stats { display: flex; gap: 1rem; font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-muted); }
+        .diff-stats .adds { color: #2ecc71; }
+        .diff-stats .dels { color: #e74c3c; }
+        @media (max-width: 600px) { .diff-inputs { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Diff Checker</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Diff Checker</h1>
+            <p>Compare two blocks of text and see the differences highlighted line by line.</p>
+        </div>
+        <div class="diff-inputs">
+            <label>Original
+                <textarea id="original" placeholder="Paste original text here..."></textarea>
+            </label>
+            <label>Modified
+                <textarea id="modified" placeholder="Paste modified text here..."></textarea>
+            </label>
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;align-items:center">
+            <button class="btn btn-primary" onclick="runDiff()">Compare</button>
+            <button class="btn" onclick="swapInputs()">Swap</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <label style="color:var(--text-muted);font-size:0.85rem;display:flex;align-items:center;gap:0.25rem;margin-left:auto">
+                <input type="checkbox" id="ignore-whitespace"> Ignore whitespace
+            </label>
+        </div>
+        <div class="diff-stats" id="stats" style="display:none">
+            <span class="adds" id="stat-adds"></span>
+            <span class="dels" id="stat-dels"></span>
+            <span id="stat-same"></span>
+        </div>
+        <div class="diff-output" id="output">Differences will appear here...</div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Diff Checker</h2>
+            <p>Compare two pieces of text and instantly see what changed. Added lines are shown in green, removed lines in red. Uses a line-by-line diff algorithm similar to Unix diff.</p>
+            <p>All comparison happens in your browser — your text is never sent to any server.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    function runDiff() {
+        const a = document.getElementById('original').value;
+        const b = document.getElementById('modified').value;
+        const ignoreWs = document.getElementById('ignore-whitespace').checked;
+
+        const linesA = a.split('\n');
+        const linesB = b.split('\n');
+        const normA = ignoreWs ? linesA.map(l => l.trim()) : linesA;
+        const normB = ignoreWs ? linesB.map(l => l.trim()) : linesB;
+
+        // Myers diff (simplified LCS approach)
+        const ops = diffLines(normA, normB, linesA, linesB);
+        renderDiff(ops, linesA, linesB);
+    }
+
+    function diffLines(normA, normB, origA, origB) {
+        const m = normA.length, n = normB.length;
+        // LCS table
+        const dp = Array.from({length: m + 1}, () => new Uint16Array(n + 1));
+        for (let i = 1; i <= m; i++) {
+            for (let j = 1; j <= n; j++) {
+                if (normA[i-1] === normB[j-1]) dp[i][j] = dp[i-1][j-1] + 1;
+                else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+        // Backtrack
+        const ops = [];
+        let i = m, j = n;
+        while (i > 0 || j > 0) {
+            if (i > 0 && j > 0 && normA[i-1] === normB[j-1]) {
+                ops.unshift({type: 'ctx', lineA: i, lineB: j, text: origA[i-1]});
+                i--; j--;
+            } else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) {
+                ops.unshift({type: 'add', lineB: j, text: origB[j-1]});
+                j--;
+            } else {
+                ops.unshift({type: 'del', lineA: i, text: origA[i-1]});
+                i--;
+            }
+        }
+        return ops;
+    }
+
+    function renderDiff(ops, linesA, linesB) {
+        let adds = 0, dels = 0, same = 0;
+        let html = '';
+        for (const op of ops) {
+            const escaped = escHtml(op.text);
+            if (op.type === 'add') {
+                html += `<div class="diff-line diff-add">+ ${escaped}</div>`;
+                adds++;
+            } else if (op.type === 'del') {
+                html += `<div class="diff-line diff-del">- ${escaped}</div>`;
+                dels++;
+            } else {
+                html += `<div class="diff-line diff-ctx">  ${escaped}</div>`;
+                same++;
+            }
+        }
+
+        if (adds === 0 && dels === 0) {
+            html = '<div style="color:var(--text-muted);padding:1rem;text-align:center">No differences found — texts are identical.</div>';
+        }
+
+        document.getElementById('output').innerHTML = html;
+        const stats = document.getElementById('stats');
+        stats.style.display = 'flex';
+        document.getElementById('stat-adds').textContent = `+${adds} added`;
+        document.getElementById('stat-dels').textContent = `-${dels} removed`;
+        document.getElementById('stat-same').textContent = `${same} unchanged`;
+    }
+
+    function escHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function swapInputs() {
+        const a = document.getElementById('original');
+        const b = document.getElementById('modified');
+        const tmp = a.value;
+        a.value = b.value;
+        b.value = tmp;
+    }
+
+    function clearAll() {
+        document.getElementById('original').value = '';
+        document.getElementById('modified').value = '';
+        document.getElementById('output').innerHTML = 'Differences will appear here...';
+        document.getElementById('stats').style.display = 'none';
+    }
+    </script>
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../text-diff/" class="related-tool-card">
+                <strong>Text Diff</strong>
+                <span>Compare text with inline highlighting</span>
+            </a>
+            <a href="../json-diff/" class="related-tool-card">
+                <strong>JSON Diff</strong>
+                <span>Compare JSON objects structurally</span>
+            </a>
+            <a href="../text-case-converter/" class="related-tool-card">
+                <strong>Text Case Converter</strong>
+                <span>Convert between text cases</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

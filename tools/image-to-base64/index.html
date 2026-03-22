@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Base64 Converter — UtilShed</title>
+    <meta name="description" content="Free online image to Base64 converter. Upload an image and get its Base64 encoded string, data URL, or CSS background snippet. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/image-to-base64/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Image to Base64 Converter","description":"Free online image to Base64 converter. Upload an image and get its Base64 encoded string, data URL, or CSS background snippet. No signup required.","url":"https://utilshed.com/tools/image-to-base64/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Image to Base64 Converter","item":"https://utilshed.com/tools/image-to-base64/"}]}</script>
+    <style>
+        .upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; color: var(--text-muted); }
+        .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: rgba(99,102,241,0.05); }
+        .upload-zone input { display: none; }
+        .preview-row { display: grid; grid-template-columns: 200px 1fr; gap: 1rem; align-items: start; margin: 1rem 0; }
+        .preview-img { max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid var(--border); }
+        .file-info { font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; }
+        .output-tabs { display: flex; gap: 0; margin-bottom: 0; }
+        .output-tabs button { padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; font-size: 0.85rem; border-bottom: none; }
+        .output-tabs button:first-child { border-radius: 8px 0 0 0; }
+        .output-tabs button:last-child { border-radius: 0 8px 0 0; }
+        .output-tabs button.active { background: var(--bg); color: var(--text); border-bottom-color: var(--bg); }
+        .output-box { background: var(--bg); border: 1px solid var(--border); border-radius: 0 0 8px 8px; padding: 1rem; font-family: monospace; font-size: 0.8rem; max-height: 200px; overflow: auto; word-break: break-all; white-space: pre-wrap; color: var(--text); }
+        @media (max-width: 600px) { .preview-row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Image to Base64</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Image to Base64 Converter</h1>
+            <p>Convert any image to a Base64 encoded string, data URL, or CSS background snippet.</p>
+        </div>
+        <div style="max-width:700px;margin:0 auto">
+            <div class="upload-zone" id="dropzone" onclick="document.getElementById('file-input').click()">
+                <input type="file" id="file-input" accept="image/*" onchange="handleFile(this.files[0])">
+                <div style="font-size:2rem;margin-bottom:0.5rem">IMG</div>
+                <p>Drop an image here or click to upload</p>
+                <p style="font-size:0.8rem">Supports PNG, JPG, GIF, SVG, WebP, BMP, ICO</p>
+            </div>
+            <div id="result" style="display:none">
+                <div class="preview-row">
+                    <img id="preview" class="preview-img">
+                    <div class="file-info" id="file-info"></div>
+                </div>
+                <div class="output-tabs">
+                    <button class="active" onclick="showTab('dataurl',this)">Data URL</button>
+                    <button onclick="showTab('base64',this)">Base64 Only</button>
+                    <button onclick="showTab('css',this)">CSS</button>
+                    <button onclick="showTab('html',this)">HTML &lt;img&gt;</button>
+                </div>
+                <div class="output-box" id="output"></div>
+                <div style="display:flex;gap:0.5rem;margin-top:0.75rem">
+                    <button class="btn btn-primary" onclick="copyOutput()">Copy to Clipboard</button>
+                    <button class="btn" onclick="reset()">Upload Another</button>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6;max-width:700px;margin-left:auto;margin-right:auto">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Image to Base64</h2>
+            <p>Convert images to Base64 encoded strings for embedding directly in HTML, CSS, or JavaScript. Useful for reducing HTTP requests, embedding icons in stylesheets, or including images in JSON/API payloads.</p>
+            <p>All conversion happens in your browser using the FileReader API — your images never leave your device.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    let currentDataUrl = '';
+    let currentBase64 = '';
+    let currentMime = '';
+    let currentTab = 'dataurl';
+
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            currentDataUrl = e.target.result;
+            currentBase64 = currentDataUrl.split(',')[1];
+            currentMime = file.type;
+
+            document.getElementById('preview').src = currentDataUrl;
+            const kb = (file.size / 1024).toFixed(1);
+            const b64kb = (currentBase64.length / 1024).toFixed(1);
+            document.getElementById('file-info').innerHTML =
+                `<strong>${escHtml(file.name)}</strong><br>` +
+                `Type: ${file.type}<br>` +
+                `File size: ${kb} KB<br>` +
+                `Base64 size: ${b64kb} KB (~${Math.round(b64kb / kb * 100)}% of original)<br>` +
+                `Characters: ${currentBase64.length.toLocaleString()}`;
+
+            document.getElementById('result').style.display = '';
+            dropzone.style.display = 'none';
+            showTab(currentTab);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function showTab(tab, btn) {
+        currentTab = tab;
+        const output = document.getElementById('output');
+        if (tab === 'dataurl') output.textContent = currentDataUrl;
+        else if (tab === 'base64') output.textContent = currentBase64;
+        else if (tab === 'css') output.textContent = `background-image: url(${currentDataUrl});`;
+        else if (tab === 'html') output.textContent = `<img src="${currentDataUrl}" alt="">`;
+
+        document.querySelectorAll('.output-tabs button').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        else document.querySelectorAll('.output-tabs button').forEach((b, i) => {
+            if ((i === 0 && tab === 'dataurl') || (i === 1 && tab === 'base64') || (i === 2 && tab === 'css') || (i === 3 && tab === 'html'))
+                b.classList.add('active');
+        });
+    }
+
+    function copyOutput() {
+        const text = document.getElementById('output').textContent;
+        navigator.clipboard.writeText(text);
+    }
+
+    function reset() {
+        document.getElementById('result').style.display = 'none';
+        dropzone.style.display = '';
+        document.getElementById('file-input').value = '';
+        currentDataUrl = '';
+        currentBase64 = '';
+    }
+
+    function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    </script>
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode/Decode</strong>
+                <span>Encode and decode Base64 strings</span>
+            </a>
+            <a href="../color-converter/" class="related-tool-card">
+                <strong>Color Converter</strong>
+                <span>Convert between HEX, RGB, and HSL</span>
+            </a>
+            <a href="../url-encode/" class="related-tool-card">
+                <strong>URL Encoder/Decoder</strong>
+                <span>Encode and decode URLs</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
