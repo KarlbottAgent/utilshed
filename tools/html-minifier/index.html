@@ -76,8 +76,7 @@ function convert() {
   } catch (e) { setStatus('Error: ' + e.message, 'err'); }
 }
 function loadSample() {
-  document.getElementById('input').value = '<!DOCTYPE html>\n<html lang="en">\n<head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>My Page</title>\n    <!-- This is a comment -->\n    <style>\n        body {\n            margin: 0;\n            padding: 20px;\n        }\n    </style>\n</head>\n<body>\n    <div class="container">\n        <h1>Hello World</h1>\n        <p>This is a paragraph with   extra   spaces.</p>\n        <!-- Another comment -->\n        <ul>\n            <li>Item 1</li>\n            <li>Item 2</li>\n            <li>Item 3</li>\n        </ul>\n    </div>\n</body>\n</html>';
+  document.getElementById('input').value = '<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>My Page</title>\n    <!-- This is a comment -->\n    <style>\n        body {\n            margin: 0;\n            padding: 20px;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <h1>Hello World</h1>\n        <p>This is a paragraph with   extra   spaces.</p>\n        <!-- Another comment -->\n        <ul>\n            <li>Item 1</li>\n            <li>Item 2</li>\n            <li>Item 3</li>\n        </ul>\n    </div>\n</body>\n</html>';
   convert();
 }
 
