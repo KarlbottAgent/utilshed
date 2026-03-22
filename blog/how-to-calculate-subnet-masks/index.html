@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Calculate Subnet Masks — UtilShed</title>
+    <meta name="description" content="Learn how to calculate subnet masks step by step. Covers CIDR notation, network/broadcast addresses, subnetting formulas, and practical examples.">
+    <meta name="keywords" content="how to calculate subnet mask, subnet mask calculator, CIDR notation explained, subnetting tutorial, IP subnet mask, network address calculation, subnet cheat sheet">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-calculate-subnet-masks/">
+    <meta property="og:title" content="How to Calculate Subnet Masks — UtilShed">
+    <meta property="og:description" content="Learn how to calculate subnet masks — CIDR notation, network addresses, host ranges, and subnetting formulas with examples.">
+    <meta property="og:url" content="https://utilshed.com/blog/how-to-calculate-subnet-masks/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Calculate Subnet Masks","description":"Learn how to calculate subnet masks step by step — CIDR notation, network addresses, host ranges, and subnetting formulas.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-calculate-subnet-masks/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.875rem; }
+        .comparison-table th, .comparison-table td { border: 1px solid var(--border); padding: 0.6rem 0.75rem; text-align: left; }
+        .comparison-table th { background: var(--surface); font-weight: 600; }
+        .comparison-table tr:nth-child(even) { background: var(--surface); }
+        .verdict { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 var(--radius) var(--radius) 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; Calculate Subnet Masks</div>
+            <div class="tool-header">
+                <h1>How to Calculate Subnet Masks</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 10 min read</p>
+            </div>
+
+            <p>Subnetting is one of those networking topics that seems intimidating until you understand the binary math behind it. Whether you're studying for the CCNA, configuring a VPC in AWS, or just trying to figure out why two devices can't talk to each other — understanding subnet masks is essential.</p>
+
+            <p>This guide teaches you to calculate subnet masks by hand, explains CIDR notation, and gives you the formulas to quickly determine network addresses, broadcast addresses, and host ranges.</p>
+
+            <h2>What Is a Subnet Mask?</h2>
+
+            <p>A subnet mask tells a device which part of an IP address identifies the <strong>network</strong> and which part identifies the <strong>host</strong>. It's a 32-bit number, just like an IPv4 address, written in the same dotted-decimal format.</p>
+
+            <div class="code-block">IP Address:    192.168.1.100
+Subnet Mask:   255.255.255.0
+               ─────────── ─
+               Network      Host</div>
+
+            <p>The subnet mask works like a stencil: where the mask has <span class="code-inline">1</span> bits, the IP address bits belong to the network portion. Where the mask has <span class="code-inline">0</span> bits, the IP address bits belong to the host portion.</p>
+
+            <h2>CIDR Notation</h2>
+
+            <p>Instead of writing out the full subnet mask, CIDR (Classless Inter-Domain Routing) notation uses a slash followed by the number of network bits:</p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>CIDR</th>
+                        <th>Subnet Mask</th>
+                        <th>Binary</th>
+                        <th>Usable Hosts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>/8</td>
+                        <td>255.0.0.0</td>
+                        <td>11111111.00000000.00000000.00000000</td>
+                        <td>16,777,214</td>
+                    </tr>
+                    <tr>
+                        <td>/16</td>
+                        <td>255.255.0.0</td>
+                        <td>11111111.11111111.00000000.00000000</td>
+                        <td>65,534</td>
+                    </tr>
+                    <tr>
+                        <td>/24</td>
+                        <td>255.255.255.0</td>
+                        <td>11111111.11111111.11111111.00000000</td>
+                        <td>254</td>
+                    </tr>
+                    <tr>
+                        <td>/25</td>
+                        <td>255.255.255.128</td>
+                        <td>11111111.11111111.11111111.10000000</td>
+                        <td>126</td>
+                    </tr>
+                    <tr>
+                        <td>/26</td>
+                        <td>255.255.255.192</td>
+                        <td>11111111.11111111.11111111.11000000</td>
+                        <td>62</td>
+                    </tr>
+                    <tr>
+                        <td>/27</td>
+                        <td>255.255.255.224</td>
+                        <td>11111111.11111111.11111111.11100000</td>
+                        <td>30</td>
+                    </tr>
+                    <tr>
+                        <td>/28</td>
+                        <td>255.255.255.240</td>
+                        <td>11111111.11111111.11111111.11110000</td>
+                        <td>14</td>
+                    </tr>
+                    <tr>
+                        <td>/30</td>
+                        <td>255.255.255.252</td>
+                        <td>11111111.11111111.11111111.11111100</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>/32</td>
+                        <td>255.255.255.255</td>
+                        <td>11111111.11111111.11111111.11111111</td>
+                        <td>1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>The Key Formulas</h2>
+
+            <p>Three formulas let you calculate everything you need:</p>
+
+            <div class="code-block">Total addresses   = 2^(32 - CIDR prefix)
+Usable hosts      = 2^(32 - CIDR prefix) - 2
+Number of subnets = 2^(CIDR prefix - original prefix)</div>
+
+            <p>The <span class="code-inline">- 2</span> in the usable hosts formula accounts for the network address (all host bits = 0) and broadcast address (all host bits = 1), which can't be assigned to devices.</p>
+
+            <h2>Step-by-Step: Calculate Network and Broadcast Addresses</h2>
+
+            <p>Let's work through <span class="code-inline">192.168.1.100/26</span>:</p>
+
+            <h3>Step 1: Convert to Binary</h3>
+
+            <div class="code-block">IP:   192.168.1.100
+      11000000.10101000.00000001.01100100
+
+Mask: /26 = 255.255.255.192
+      11111111.11111111.11111111.11000000
+                                  ──────
+                                  Host bits (6 bits)</div>
+
+            <h3>Step 2: Find the Network Address (AND operation)</h3>
+
+            <p>Perform a bitwise AND between the IP and the mask. This zeros out the host bits:</p>
+
+            <div class="code-block">IP:      11000000.10101000.00000001.01100100
+Mask:    11111111.11111111.11111111.11000000
+         ───────────────────────────────────
+Network: 11000000.10101000.00000001.01000000
+       = 192.168.1.64</div>
+
+            <h3>Step 3: Find the Broadcast Address</h3>
+
+            <p>Set all host bits to 1:</p>
+
+            <div class="code-block">Network: 11000000.10101000.00000001.01000000
+Set host bits to 1:
+         11000000.10101000.00000001.01111111
+       = 192.168.1.127</div>
+
+            <h3>Step 4: Determine the Host Range</h3>
+
+            <div class="code-block">Network address:   192.168.1.64   (not assignable)
+First usable host: 192.168.1.65
+Last usable host:  192.168.1.126
+Broadcast address: 192.168.1.127  (not assignable)
+Usable hosts:      2^6 - 2 = 62</div>
+
+            <h2>The Quick Method (No Binary Needed)</h2>
+
+            <p>For common subnets, you can skip binary entirely using the <strong>block size</strong> method:</p>
+
+            <ol>
+                <li>Find the block size: <span class="code-inline">256 - subnet mask octet value</span></li>
+                <li>The network address is the nearest multiple of the block size below the IP</li>
+                <li>The broadcast address is network address + block size - 1</li>
+            </ol>
+
+            <p>For <span class="code-inline">192.168.1.100/26</span>:</p>
+
+            <div class="code-block">Block size = 256 - 192 = 64
+
+Multiples of 64: 0, 64, 128, 192...
+100 falls between 64 and 128
+
+Network:   192.168.1.64
+Broadcast: 192.168.1.64 + 64 - 1 = 192.168.1.127
+Host range: .65 to .126</div>
+
+            <h2>Common Subnetting Scenarios</h2>
+
+            <h3>Splitting a /24 into smaller subnets</h3>
+
+            <p>You have <span class="code-inline">10.0.0.0/24</span> and need 4 equal subnets:</p>
+
+            <div class="code-block">Need 4 subnets → borrow 2 bits (2^2 = 4)
+New prefix: /24 + 2 = /26
+Each subnet: 64 addresses (62 usable hosts)
+
+Subnet 1: 10.0.0.0/26    → hosts .1 to .62
+Subnet 2: 10.0.0.64/26   → hosts .65 to .126
+Subnet 3: 10.0.0.128/26  → hosts .129 to .190
+Subnet 4: 10.0.0.192/26  → hosts .193 to .254</div>
+
+            <h3>Cloud VPC subnetting (AWS/GCP/Azure)</h3>
+
+            <p>Cloud providers typically recommend:</p>
+
+            <ul>
+                <li><strong>/16 VPC</strong> — 65,534 addresses for the entire VPC</li>
+                <li><strong>/24 subnets</strong> — 254 hosts per subnet (one per availability zone)</li>
+                <li><strong>/28 minimum</strong> — AWS requires at least /28 for subnets (14 usable IPs, minus 5 AWS reserves = 11)</li>
+            </ul>
+
+            <div class="code-block"># Typical AWS VPC layout
+VPC:           10.0.0.0/16       (65,534 IPs)
+├── Public-AZ1:  10.0.1.0/24    (254 IPs)
+├── Public-AZ2:  10.0.2.0/24    (254 IPs)
+├── Private-AZ1: 10.0.10.0/24   (254 IPs)
+├── Private-AZ2: 10.0.11.0/24   (254 IPs)
+├── DB-AZ1:      10.0.20.0/24   (254 IPs)
+└── DB-AZ2:      10.0.21.0/24   (254 IPs)</div>
+
+            <h2>Subnet Mask Cheat Sheet</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>CIDR</th>
+                        <th>Mask</th>
+                        <th>Block Size</th>
+                        <th>Hosts</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>/30</td>
+                        <td>255.255.255.252</td>
+                        <td>4</td>
+                        <td>2</td>
+                        <td>Point-to-point links</td>
+                    </tr>
+                    <tr>
+                        <td>/28</td>
+                        <td>255.255.255.240</td>
+                        <td>16</td>
+                        <td>14</td>
+                        <td>Small office, AWS minimum</td>
+                    </tr>
+                    <tr>
+                        <td>/27</td>
+                        <td>255.255.255.224</td>
+                        <td>32</td>
+                        <td>30</td>
+                        <td>Department LAN</td>
+                    </tr>
+                    <tr>
+                        <td>/26</td>
+                        <td>255.255.255.192</td>
+                        <td>64</td>
+                        <td>62</td>
+                        <td>Medium office</td>
+                    </tr>
+                    <tr>
+                        <td>/25</td>
+                        <td>255.255.255.128</td>
+                        <td>128</td>
+                        <td>126</td>
+                        <td>Large department</td>
+                    </tr>
+                    <tr>
+                        <td>/24</td>
+                        <td>255.255.255.0</td>
+                        <td>256</td>
+                        <td>254</td>
+                        <td>Standard LAN, cloud subnet</td>
+                    </tr>
+                    <tr>
+                        <td>/16</td>
+                        <td>255.255.0.0</td>
+                        <td>65,536</td>
+                        <td>65,534</td>
+                        <td>Cloud VPC, campus network</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Subnetting with Python</h2>
+
+            <p>Python's <span class="code-inline">ipaddress</span> module makes subnetting trivial:</p>
+
+            <div class="code-block">import ipaddress
+
+# Parse a network
+network = ipaddress.ip_network('192.168.1.0/26', strict=False)
+
+print(f"Network:    {network.network_address}")   # 192.168.1.0
+print(f"Broadcast:  {network.broadcast_address}")  # 192.168.1.63
+print(f"Mask:       {network.netmask}")            # 255.255.255.192
+print(f"Hosts:      {network.num_addresses - 2}")  # 62
+print(f"First host: {list(network.hosts())[0]}")   # 192.168.1.1
+print(f"Last host:  {list(network.hosts())[-1]}")  # 192.168.1.62
+
+# Check if an IP is in a subnet
+ip = ipaddress.ip_address('192.168.1.50')
+print(f"{ip} in {network}? {ip in network}")       # True
+
+# Split into smaller subnets
+for subnet in network.subnets(prefixlen_diff=2):
+    print(f"  {subnet} → {subnet.num_addresses - 2} hosts")</div>
+
+            <h2>JavaScript Subnetting</h2>
+
+            <div class="code-block">function subnetInfo(ip, cidr) {
+  const ipNum = ip.split('.').reduce((acc, oct) => (acc << 8) + parseInt(oct), 0) >>> 0;
+  const mask = (~0 << (32 - cidr)) >>> 0;
+  const network = (ipNum & mask) >>> 0;
+  const broadcast = (network | ~mask) >>> 0;
+
+  const toIP = n => [(n>>>24)&255, (n>>>16)&255, (n>>>8)&255, n&255].join('.');
+
+  return {
+    network: toIP(network),
+    broadcast: toIP(broadcast),
+    firstHost: toIP(network + 1),
+    lastHost: toIP(broadcast - 1),
+    mask: toIP(mask),
+    hosts: Math.pow(2, 32 - cidr) - 2
+  };
+}
+
+console.log(subnetInfo('192.168.1.100', 26));
+// { network: '192.168.1.64', broadcast: '192.168.1.127',
+//   firstHost: '192.168.1.65', lastHost: '192.168.1.126',
+//   mask: '255.255.255.192', hosts: 62 }</div>
+
+            <div class="verdict">
+                <strong>Bottom line:</strong> Subnetting boils down to one concept: how many bits belong to the network vs. the host. Use the block-size shortcut for quick mental math, the binary method for exam-style precision, or Python/JavaScript for automation. For instant results, use the calculator below.
+            </div>
+
+            <div class="cta-box">
+                <strong>Calculate subnets instantly</strong>
+                <br>Enter any IP and CIDR prefix — get network address, broadcast, host range, and more.
+                <br><a href="../../tools/subnet-calculator/">Open Subnet Calculator</a>
+            </div>
+
+            <h2>Related Reading</h2>
+            <ul>
+                <li><a href="../how-to-convert-between-number-systems/">How to Convert Between Number Systems</a> — binary, decimal, hex conversions used in subnetting</li>
+                <li><a href="../online-calculator-tools-for-developers/">Online Calculator Tools for Developers</a> — subnet calculator and more</li>
+                <li><a href="../../networking-tools/">Networking Tools</a> — IP lookup, subnet calculator, HTTP status codes</li>
+                <li><a href="../../tools/ip-lookup/">IP Address Lookup</a> — find geolocation and ISP info for any IP</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

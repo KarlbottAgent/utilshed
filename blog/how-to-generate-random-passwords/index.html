@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Generate Random Passwords (Secure Methods) — UtilShed</title>
+    <meta name="description" content="Learn how to generate cryptographically secure random passwords. Covers JavaScript, Python, CLI methods, entropy math, and passphrase alternatives.">
+    <meta name="keywords" content="how to generate random passwords, random password generator, secure password generation, password entropy, cryptographically secure random, password generator code, passphrase generator">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-generate-random-passwords/">
+    <meta property="og:title" content="How to Generate Random Passwords (Secure Methods) — UtilShed">
+    <meta property="og:description" content="Generate cryptographically secure passwords — code examples, entropy math, and why Math.random() isn't safe.">
+    <meta property="og:url" content="https://utilshed.com/blog/how-to-generate-random-passwords/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Generate Random Passwords (Secure Methods)","description":"Learn how to generate cryptographically secure random passwords — JavaScript, Python, CLI methods, entropy math, and passphrase alternatives.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-generate-random-passwords/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.875rem; }
+        .comparison-table th, .comparison-table td { border: 1px solid var(--border); padding: 0.6rem 0.75rem; text-align: left; }
+        .comparison-table th { background: var(--surface); font-weight: 600; }
+        .comparison-table tr:nth-child(even) { background: var(--surface); }
+        .verdict { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 var(--radius) var(--radius) 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; Generate Random Passwords</div>
+            <div class="tool-header">
+                <h1>How to Generate Random Passwords (Secure Methods)</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 8 min read</p>
+            </div>
+
+            <p>You need a strong password. Maybe you're creating a database credential, generating an API key, or just signing up for yet another service. You know "password123" won't cut it — but how do you actually generate a password that's cryptographically secure?</p>
+
+            <p>This guide covers the right way to generate random passwords in JavaScript, Python, and the command line, explains the math behind password strength, and shows you why <span class="code-inline">Math.random()</span> is never safe for security.</p>
+
+            <h2>Why Math.random() Is Not Secure</h2>
+
+            <p>The most common mistake: using <span class="code-inline">Math.random()</span> for password generation. Here's why that's dangerous:</p>
+
+            <ul>
+                <li><strong>Predictable</strong> — <span class="code-inline">Math.random()</span> uses a PRNG (pseudo-random number generator) seeded from a predictable source. An attacker who knows the seed can reproduce every "random" value.</li>
+                <li><strong>Not uniform</strong> — the distribution has subtle biases that reduce effective entropy.</li>
+                <li><strong>State can be leaked</strong> — in V8 (Chrome/Node.js), the internal state of <span class="code-inline">Math.random()</span> can be reconstructed from a few outputs.</li>
+            </ul>
+
+            <p>Instead, use a <strong>cryptographically secure</strong> random source:</p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Language</th>
+                        <th>Insecure</th>
+                        <th>Secure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>JavaScript (browser)</td>
+                        <td><span class="code-inline">Math.random()</span></td>
+                        <td><span class="code-inline">crypto.getRandomValues()</span></td>
+                    </tr>
+                    <tr>
+                        <td>JavaScript (Node.js)</td>
+                        <td><span class="code-inline">Math.random()</span></td>
+                        <td><span class="code-inline">crypto.randomBytes()</span></td>
+                    </tr>
+                    <tr>
+                        <td>Python</td>
+                        <td><span class="code-inline">random.choice()</span></td>
+                        <td><span class="code-inline">secrets.choice()</span></td>
+                    </tr>
+                    <tr>
+                        <td>Go</td>
+                        <td><span class="code-inline">math/rand</span></td>
+                        <td><span class="code-inline">crypto/rand</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>JavaScript: Secure Password Generator</h2>
+
+            <h3>Browser (Web Crypto API)</h3>
+
+            <div class="code-block">function generatePassword(length = 16, options = {}) {
+  const {
+    uppercase = true,
+    lowercase = true,
+    numbers = true,
+    symbols = true
+  } = options;
+
+  let charset = '';
+  if (lowercase)  charset += 'abcdefghijklmnopqrstuvwxyz';
+  if (uppercase)  charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (numbers)    charset += '0123456789';
+  if (symbols)    charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+  const array = new Uint32Array(length);
+  crypto.getRandomValues(array);
+
+  return Array.from(array, n => charset[n % charset.length]).join('');
+}
+
+// Generate a 20-character password with all character types
+console.log(generatePassword(20));
+// Example: "kR7#mP2$xL9&nQ4@wJ6!"
+
+// Numbers only (e.g., for a PIN)
+console.log(generatePassword(6, { uppercase: false, lowercase: false, symbols: false }));
+// Example: "847293"</div>
+
+            <h3>Node.js</h3>
+
+            <div class="code-block">const crypto = require('crypto');
+
+function generatePassword(length = 16) {
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=';
+  const bytes = crypto.randomBytes(length);
+  return Array.from(bytes, b => charset[b % charset.length]).join('');
+}
+
+console.log(generatePassword(24));
+
+// Even simpler — random hex string
+console.log(crypto.randomBytes(16).toString('hex'));
+// "a3f7c2e891d4b506f8a1e3c7d9b2f041"
+
+// Random base64 string (URL-safe)
+console.log(crypto.randomBytes(24).toString('base64url'));
+// "k7Rm2PxL9nQ4wJ6hB8vT3sY1uE5i"</div>
+
+            <h2>Python: Secure Password Generator</h2>
+
+            <div class="code-block">import secrets
+import string
+
+def generate_password(length=16, use_symbols=True):
+    charset = string.ascii_letters + string.digits
+    if use_symbols:
+        charset += string.punctuation
+
+    # Ensure at least one of each required type
+    password = [
+        secrets.choice(string.ascii_lowercase),
+        secrets.choice(string.ascii_uppercase),
+        secrets.choice(string.digits),
+    ]
+    if use_symbols:
+        password.append(secrets.choice(string.punctuation))
+
+    # Fill remaining length
+    password += [secrets.choice(charset) for _ in range(length - len(password))]
+
+    # Shuffle to avoid predictable positions
+    secrets.SystemRandom().shuffle(password)
+    return ''.join(password)
+
+print(generate_password(20))
+
+# Quick one-liner for a token
+print(secrets.token_urlsafe(32))  # 43-char URL-safe token
+print(secrets.token_hex(16))      # 32-char hex string</div>
+
+            <h2>Command Line Methods</h2>
+
+            <div class="code-block"># Linux/macOS — using /dev/urandom
+openssl rand -base64 24    # 32-char base64 password
+openssl rand -hex 16       # 32-char hex password
+
+# Using /dev/urandom directly
+tr -dc 'A-Za-z0-9!@#$%' &lt; /dev/urandom | head -c 20; echo
+
+# macOS — using security framework
+security random -c 20
+
+# Python one-liner
+python3 -c "import secrets; print(secrets.token_urlsafe(24))"
+
+# Node.js one-liner
+node -e "console.log(require('crypto').randomBytes(24).toString('base64url'))"</div>
+
+            <h2>Understanding Password Entropy</h2>
+
+            <p>Password strength is measured in <strong>bits of entropy</strong> — the number of possible combinations expressed as a power of 2:</p>
+
+            <div class="code-block">Entropy = length × log2(charset_size)</div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Charset</th>
+                        <th>Size</th>
+                        <th>Bits per char</th>
+                        <th>12-char entropy</th>
+                        <th>16-char entropy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Digits only</td>
+                        <td>10</td>
+                        <td>3.32</td>
+                        <td>39.9 bits</td>
+                        <td>53.2 bits</td>
+                    </tr>
+                    <tr>
+                        <td>Lowercase</td>
+                        <td>26</td>
+                        <td>4.70</td>
+                        <td>56.4 bits</td>
+                        <td>75.2 bits</td>
+                    </tr>
+                    <tr>
+                        <td>Alphanumeric</td>
+                        <td>62</td>
+                        <td>5.95</td>
+                        <td>71.5 bits</td>
+                        <td>95.3 bits</td>
+                    </tr>
+                    <tr>
+                        <td>All printable ASCII</td>
+                        <td>95</td>
+                        <td>6.57</td>
+                        <td>78.8 bits</td>
+                        <td>105.1 bits</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>General guidelines:</p>
+            <ul>
+                <li><strong>64+ bits</strong> — minimum for online accounts (rate-limited by server)</li>
+                <li><strong>80+ bits</strong> — good for most purposes</li>
+                <li><strong>128+ bits</strong> — strong enough for encryption keys, master passwords</li>
+            </ul>
+
+            <p>A 16-character password using mixed case + digits + symbols gives you ~105 bits — very strong.</p>
+
+            <h2>Passphrases: The Better Alternative</h2>
+
+            <p>Random character passwords are strong but hard to remember. Passphrases — random word combinations — offer high entropy with better memorability:</p>
+
+            <div class="code-block"># Python passphrase generator (Diceware-style)
+import secrets
+
+wordlist = [
+    "correct", "horse", "battery", "staple", "quantum", "forest",
+    "bridge", "hammer", "violet", "orange", "rocket", "marble",
+    "cosmic", "thunder", "garden", "silver", "dragon", "puzzle",
+    "beacon", "crystal", "nebula", "falcon", "harbor", "zenith",
+    # ... use a full Diceware or EFF wordlist (7776 words)
+]
+
+def generate_passphrase(words=5, separator='-'):
+    return separator.join(secrets.choice(wordlist) for _ in range(words))
+
+print(generate_passphrase())
+# Example: "cosmic-hammer-violet-beacon-falcon"</div>
+
+            <p>With a 7,776-word list (standard Diceware), each word adds ~12.9 bits of entropy. A 5-word passphrase gives ~64.6 bits — equivalent to a random 10-character mixed-case alphanumeric password, but much easier to type and remember.</p>
+
+            <h2>Password Generation Mistakes to Avoid</h2>
+
+            <ol>
+                <li><strong>Using Math.random() or random.random()</strong> — these are predictable. Always use crypto-grade randomness.</li>
+                <li><strong>Modulo bias</strong> — <span class="code-inline">randomByte % charsetLength</span> introduces slight bias when the charset doesn't evenly divide 256. For most passwords this is negligible, but for high-security use, implement rejection sampling.</li>
+                <li><strong>Hardcoding seeds</strong> — never seed a PRNG with a fixed value or timestamp for password generation.</li>
+                <li><strong>Insufficient length</strong> — 8-character passwords are crackable with modern hardware. Use 16+ characters.</li>
+                <li><strong>Generating in the wrong layer</strong> — generate passwords server-side when possible. Client-side generation in JavaScript is fine for tools (like ours), but API keys and database passwords should be generated on the server.</li>
+                <li><strong>Logging passwords</strong> — never log, print, or store generated passwords in plaintext after use.</li>
+            </ol>
+
+            <div class="verdict">
+                <strong>Bottom line:</strong> Use <span class="code-inline">crypto.getRandomValues()</span> in browsers, <span class="code-inline">secrets</span> in Python, or <span class="code-inline">crypto.randomBytes()</span> in Node.js. Generate at least 16 characters with mixed character types, or use a 5+ word passphrase from a large wordlist. Never use <span class="code-inline">Math.random()</span> for anything security-related.
+            </div>
+
+            <div class="cta-box">
+                <strong>Generate secure passwords instantly</strong>
+                <br>Customizable length, character sets, and passphrase mode — all generated in your browser, nothing sent to a server.
+                <br><a href="../../tools/password-generator/">Open Password Generator</a>
+            </div>
+
+            <h2>Related Reading</h2>
+            <ul>
+                <li><a href="../how-to-use-regex-for-email-validation/">How to Use Regex for Email Validation</a> — another common security-adjacent coding task</li>
+                <li><a href="../how-to-decode-jwt-tokens/">How to Decode JWT Tokens</a> — understand token-based authentication</li>
+                <li><a href="../how-to-calculate-chmod-permissions/">How to Calculate Chmod Permissions</a> — Unix security fundamentals</li>
+                <li><a href="../../security-tools/">Security Tools</a> — password generators, hash tools, AES encryption, and more</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
