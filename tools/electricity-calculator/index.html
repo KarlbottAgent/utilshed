@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Calculator — UtilShed</title>
+    <meta name="description" content="Free online electricity calculator. Calculate watts, amps, volts, and ohms using Ohm's Law and the power equation. Includes energy cost calculator. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/electricity-calculator/">
+    <meta property="og:title" content="Electricity Calculator — UtilShed">
+    <meta property="og:description" content="Free online electricity calculator. Calculate watts, amps, volts, and ohms using Ohm's Law and the power equation. Includes energy cost calculator. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/electricity-calculator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Electricity Calculator","description":"Free online electricity calculator. Calculate watts, amps, volts, and ohms using Ohm's Law and the power equation. Includes energy cost calculator. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/electricity-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Electricity Calculator","item":"https://utilshed.com/tools/electricity-calculator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Electricity Calculator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Electricity Calculator</h1>
+            <p>Calculate watts, amps, volts, and ohms using Ohm's Law and the power equation. Includes energy cost calculator.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+<div class="tool-form"><h3>Ohm's Law & Power Calculator</h3><p style="opacity:0.7;margin-bottom:16px">Enter any two values to calculate the rest</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px"><div><label>Voltage (V)</label><input type="number" id="volts" placeholder="Volts" oninput="calcElec()"></div><div><label>Current (A)</label><input type="number" id="amps" placeholder="Amps" oninput="calcElec()"></div><div><label>Resistance (Ω)</label><input type="number" id="ohms" placeholder="Ohms" oninput="calcElec()"></div><div><label>Power (W)</label><input type="number" id="watts" placeholder="Watts" oninput="calcElec()"></div></div><div id="elecResult" style="padding:16px;background:#1a1a2e;border-radius:8px;margin-bottom:24px"></div><h3>Energy Cost Calculator</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px"><div><label>Power (Watts)</label><input type="number" id="costWatts" value="100" oninput="calcCost()"></div><div><label>Hours per Day</label><input type="number" id="costHours" value="8" oninput="calcCost()"></div><div><label>Cost per kWh ($)</label><input type="number" id="costRate" value="0.12" step="0.01" oninput="calcCost()"></div></div><div id="costResult" style="padding:16px;background:#1a1a2e;border-radius:8px"></div><div id="result" style="display:none"></div></div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Electricity Calculator</h2>
+            <p>This free online electricity calculator lets you calculate watts, amps, volts, and ohms using ohm's law and the power equation. includes energy cost calculator — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function calcElec(){const v=parseFloat(document.getElementById('volts').value);const i=parseFloat(document.getElementById('amps').value);const r=parseFloat(document.getElementById('ohms').value);const p=parseFloat(document.getElementById('watts').value);const has=[!isNaN(v),!isNaN(i),!isNaN(r),!isNaN(p)];const count=has.filter(Boolean).length;if(count<2){document.getElementById('elecResult').innerHTML='<span style="opacity:0.5">Enter any two values...</span>';return}let rv=v,ri=i,rr=r,rp=p;if(!isNaN(v)&&!isNaN(i)){rr=v/i;rp=v*i}else if(!isNaN(v)&&!isNaN(r)){ri=v/r;rp=v*v/r}else if(!isNaN(v)&&!isNaN(p)){ri=p/v;rr=v*v/p}else if(!isNaN(i)&&!isNaN(r)){rv=i*r;rp=i*i*r}else if(!isNaN(i)&&!isNaN(p)){rv=p/i;rr=p/(i*i)}else if(!isNaN(r)&&!isNaN(p)){rv=Math.sqrt(p*r);ri=Math.sqrt(p/r)}const fmt=n=>Number.isFinite(n)?n<0.01?n.toExponential(3):n.toFixed(4).replace(/\.?0+$/,''):'—';document.getElementById('elecResult').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="padding:12px;background:#16213e;border-radius:6px"><div style="opacity:0.7;font-size:0.85em">Voltage</div><div style="font-size:1.3em;color:#64ffda">${fmt(rv)} V</div></div><div style="padding:12px;background:#16213e;border-radius:6px"><div style="opacity:0.7;font-size:0.85em">Current</div><div style="font-size:1.3em;color:#64ffda">${fmt(ri)} A</div></div><div style="padding:12px;background:#16213e;border-radius:6px"><div style="opacity:0.7;font-size:0.85em">Resistance</div><div style="font-size:1.3em;color:#64ffda">${fmt(rr)} Ω</div></div><div style="padding:12px;background:#16213e;border-radius:6px"><div style="opacity:0.7;font-size:0.85em">Power</div><div style="font-size:1.3em;color:#64ffda">${fmt(rp)} W</div></div></div>`}
+function calcCost(){const w=parseFloat(document.getElementById('costWatts').value)||0;const h=parseFloat(document.getElementById('costHours').value)||0;const r=parseFloat(document.getElementById('costRate').value)||0;const daily=w*h/1000;const monthly=daily*30;const yearly=daily*365;document.getElementById('costResult').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"><div style="text-align:center"><div style="opacity:0.7;font-size:0.85em">Daily</div><div style="color:#64ffda">${daily.toFixed(2)} kWh</div><div style="color:#bb86fc">$${(daily*r).toFixed(2)}</div></div><div style="text-align:center"><div style="opacity:0.7;font-size:0.85em">Monthly</div><div style="color:#64ffda">${monthly.toFixed(1)} kWh</div><div style="color:#bb86fc">$${(monthly*r).toFixed(2)}</div></div><div style="text-align:center"><div style="opacity:0.7;font-size:0.85em">Yearly</div><div style="color:#64ffda">${yearly.toFixed(0)} kWh</div><div style="color:#bb86fc">$${(yearly*r).toFixed(2)}</div></div></div>`}
+function calculate(){calcElec();calcCost()}
+window.addEventListener('load',()=>{calcCost()});
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  document.querySelectorAll('input, textarea, select').forEach(el => { if (el.type !== 'button' && el.type !== 'submit') el.value = ''; });
+  const out = document.getElementById('output') || document.getElementById('result');
+  if (out) { if (out.value !== undefined) out.value = ''; else out.innerHTML = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free online JSON formatter, validator, and minifier. Paste your JSON and get it beautifully formatted with syntax highlighting</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free online Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. Free online hash generator, no signup required.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once. Free, no signup required.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

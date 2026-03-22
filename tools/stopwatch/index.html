@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Stopwatch — UtilShed</title>
+    <meta name="description" content="Free online online stopwatch. Free online stopwatch and countdown timer with lap tracking and millisecond precision. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/stopwatch/">
+    <meta property="og:title" content="Online Stopwatch — UtilShed">
+    <meta property="og:description" content="Free online online stopwatch. Free online stopwatch and countdown timer with lap tracking and millisecond precision. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/stopwatch/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Online Stopwatch","description":"Free online online stopwatch. Free online stopwatch and countdown timer with lap tracking and millisecond precision. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/stopwatch/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Online Stopwatch","item":"https://utilshed.com/tools/stopwatch/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Online Stopwatch</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Online Stopwatch</h1>
+            <p>Free online stopwatch and countdown timer with lap tracking and millisecond precision.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+<div class="tool-form" style="text-align:center"><div id="time" style="font-size:4em;font-family:monospace;color:#64ffda;margin:20px 0">00:00:00.000</div><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px"><button onclick="startStop()" id="startBtn" style="padding:14px 32px;font-size:1.1em;border:none;border-radius:8px;cursor:pointer;background:#64ffda;color:#0f0f23;font-weight:bold">Start</button><button onclick="lapMark()" style="padding:14px 24px;font-size:1.1em;border:none;border-radius:8px;cursor:pointer;background:#16213e;color:#e0e0e0">Lap</button><button onclick="resetSW()" style="padding:14px 24px;font-size:1.1em;border:none;border-radius:8px;cursor:pointer;background:#e74c3c;color:white">Reset</button></div><h3 style="margin-top:32px">Countdown Timer</h3><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px"><input type="number" id="timerMin" value="5" min="0" style="width:80px;text-align:center" placeholder="min"><span style="line-height:42px">min</span><input type="number" id="timerSec" value="0" min="0" max="59" style="width:80px;text-align:center" placeholder="sec"><span style="line-height:42px">sec</span><button onclick="startTimer()" id="timerBtn" style="padding:10px 24px;border:none;border-radius:8px;cursor:pointer;background:#bb86fc;color:#0f0f23;font-weight:bold">Start Timer</button></div><div id="timerDisplay" style="font-size:2.5em;font-family:monospace;color:#bb86fc;margin:12px 0;display:none">05:00.000</div><div id="laps" style="margin-top:24px;text-align:left"></div><div id="result" style="display:none"></div></div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Online Stopwatch</h2>
+            <p>This free online online stopwatch lets you free online stopwatch and countdown timer with lap tracking and millisecond precision — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+let running=false,startTime=0,elapsed=0,interval=null,lapCount=0,laps=[];
+let timerRunning=false,timerEnd=0,timerInterval=null;
+function startStop(){if(running){clearInterval(interval);elapsed+=Date.now()-startTime;running=false;document.getElementById('startBtn').textContent='Resume';document.getElementById('startBtn').style.background='#64ffda'}else{startTime=Date.now();running=true;document.getElementById('startBtn').textContent='Stop';document.getElementById('startBtn').style.background='#e74c3c';interval=setInterval(updateDisplay,10)}}
+function updateDisplay(){const t=elapsed+(Date.now()-startTime);document.getElementById('time').textContent=formatTime(t)}
+function formatTime(ms){const h=Math.floor(ms/3600000);const m=Math.floor((ms%3600000)/60000);const s=Math.floor((ms%60000)/1000);const mil=ms%1000;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+String(mil).padStart(3,'0')}
+function lapMark(){if(!running)return;const t=elapsed+(Date.now()-startTime);lapCount++;const prev=laps.length?laps[laps.length-1].total:0;laps.push({num:lapCount,total:t,split:t-prev});const el=document.getElementById('laps');el.innerHTML='<table style="width:100%;border-collapse:collapse"><tr style="border-bottom:1px solid #333"><th style="padding:8px;text-align:left">Lap</th><th style="text-align:right;padding:8px">Split</th><th style="text-align:right;padding:8px">Total</th></tr>'+laps.slice().reverse().map(l=>`<tr style="border-bottom:1px solid #1a1a2e"><td style="padding:6px 8px">#${l.num}</td><td style="text-align:right;padding:6px 8px">${formatTime(l.split)}</td><td style="text-align:right;padding:6px 8px">${formatTime(l.total)}</td></tr>`).join('')+'</table>'}
+function resetSW(){clearInterval(interval);running=false;elapsed=0;lapCount=0;laps=[];document.getElementById('time').textContent='00:00:00.000';document.getElementById('startBtn').textContent='Start';document.getElementById('startBtn').style.background='#64ffda';document.getElementById('laps').innerHTML=''}
+function startTimer(){if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume';return}const m=parseInt(document.getElementById('timerMin').value)||0;const s=parseInt(document.getElementById('timerSec').value)||0;if(!timerRunning&&document.getElementById('timerBtn').textContent!=='Resume'){timerEnd=Date.now()+(m*60+s)*1000}else{timerEnd=Date.now()+timerRemaining}timerRunning=true;document.getElementById('timerBtn').textContent='Pause';document.getElementById('timerDisplay').style.display='block';timerInterval=setInterval(()=>{const rem=timerEnd-Date.now();if(rem<=0){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerDisplay').textContent='00:00.000';document.getElementById('timerDisplay').style.color='#e74c3c';document.getElementById('timerBtn').textContent='Start Timer';try{new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=').play()}catch(e){}}else{timerRemaining=rem;const min=Math.floor(rem/60000);const sec=Math.floor((rem%60000)/1000);const ms=rem%1000;document.getElementById('timerDisplay').textContent=String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')+'.'+String(ms).padStart(3,'0');document.getElementById('timerDisplay').style.color='#bb86fc'}},10)}
+let timerRemaining=0;
+function calculate(){startStop()}
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  document.querySelectorAll('input, textarea, select').forEach(el => { if (el.type !== 'button' && el.type !== 'submit') el.value = ''; });
+  const out = document.getElementById('output') || document.getElementById('result');
+  if (out) { if (out.value !== undefined) out.value = ''; else out.innerHTML = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free online JSON formatter, validator, and minifier. Paste your JSON and get it beautifully formatted with syntax highlighting</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free online Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. Free online hash generator, no signup required.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once. Free, no signup required.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

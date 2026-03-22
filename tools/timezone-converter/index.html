@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Converter — UtilShed</title>
+    <meta name="description" content="Free online time zone converter. Convert times between any time zones worldwide. See current time in multiple zones at once. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/timezone-converter/">
+    <meta property="og:title" content="Time Zone Converter — UtilShed">
+    <meta property="og:description" content="Free online time zone converter. Convert times between any time zones worldwide. See current time in multiple zones at once. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/timezone-converter/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Time Zone Converter","description":"Free online time zone converter. Convert times between any time zones worldwide. See current time in multiple zones at once. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/timezone-converter/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Time Zone Converter","item":"https://utilshed.com/tools/timezone-converter/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Time Zone Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Time Zone Converter</h1>
+            <p>Convert times between any time zones worldwide. See current time in multiple zones at once.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+<div class="tool-form"><div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px"><div style="flex:1;min-width:200px"><label>Date & Time</label><input type="datetime-local" id="dt" oninput="convertTZ()"></div></div><div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px"><div style="flex:1;min-width:200px"><label>From Time Zone</label><select id="fromTZ" onchange="convertTZ()" style="max-width:100%"></select></div><div style="flex:1;min-width:200px"><label>To Time Zone</label><select id="toTZ" onchange="convertTZ()" style="max-width:100%"></select></div></div><div id="result" style="padding:20px;background:#1a1a2e;border-radius:8px;font-size:1.2em;margin-bottom:16px"></div><h3 style="margin-top:24px">World Clock</h3><div id="worldClock" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px"></div></div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Time Zone Converter</h2>
+            <p>This free online time zone converter lets you convert times between any time zones worldwide. see current time in multiple zones at once — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+const ZONES=['UTC','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Anchorage','Pacific/Honolulu','Europe/London','Europe/Paris','Europe/Berlin','Europe/Moscow','Asia/Dubai','Asia/Kolkata','Asia/Bangkok','Asia/Shanghai','Asia/Tokyo','Asia/Seoul','Australia/Sydney','Pacific/Auckland','America/Sao_Paulo','America/Mexico_City','Africa/Cairo','Africa/Lagos','Asia/Singapore','Asia/Hong_Kong'];
+function init(){const now=new Date();document.getElementById('dt').value=now.toISOString().slice(0,16);const local=Intl.DateTimeFormat().resolvedOptions().timeZone;['fromTZ','toTZ'].forEach((id,i)=>{const s=document.getElementById(id);ZONES.forEach(z=>{const o=document.createElement('option');o.value=z;o.textContent=z.replace(/_/g,' ');if(i===0&&z===local)o.selected=true;if(i===1&&z==='UTC')o.selected=true;s.appendChild(o)})});convertTZ();updateWorldClock();setInterval(updateWorldClock,1000)}
+function convertTZ(){const dt=document.getElementById('dt').value;if(!dt)return;const from=document.getElementById('fromTZ').value;const to=document.getElementById('toTZ').value;const d=new Date(dt);const fromOff=getOffset(d,from);const toOff=getOffset(d,to);const utc=new Date(d.getTime()-fromOff*60000);const result=new Date(utc.getTime()+toOff*60000);const fmt=new Intl.DateTimeFormat('en-US',{timeZone:to,dateStyle:'full',timeStyle:'long'});document.getElementById('result').innerHTML=`<div style="color:#64ffda">${fmt.format(utc)}</div><div style="margin-top:8px;font-size:0.8em;opacity:0.7">UTC offset: ${formatOffset(toOff)}</div>`}
+function getOffset(date,tz){const utc=new Date(date.toLocaleString('en-US',{timeZone:'UTC'}));const local=new Date(date.toLocaleString('en-US',{timeZone:tz}));return(local-utc)/60000}
+function formatOffset(m){const h=Math.floor(Math.abs(m)/60);const min=Math.abs(m)%60;return(m>=0?'+':'-')+String(h).padStart(2,'0')+':'+String(min).padStart(2,'0')}
+function updateWorldClock(){const el=document.getElementById('worldClock');const now=new Date();el.innerHTML=ZONES.map(z=>{const fmt=new Intl.DateTimeFormat('en-US',{timeZone:z,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});const dfmt=new Intl.DateTimeFormat('en-US',{timeZone:z,month:'short',day:'numeric'});return`<div style="padding:12px;background:#16213e;border-radius:6px"><div style="font-size:0.8em;opacity:0.7">${z.replace(/_/g,' ')}</div><div style="font-size:1.3em;color:#64ffda">${fmt.format(now)}</div><div style="font-size:0.75em;opacity:0.5">${dfmt.format(now)}</div></div>`}).join('')}
+function calculate(){convertTZ()}
+window.addEventListener('load',init);
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  document.querySelectorAll('input, textarea, select').forEach(el => { if (el.type !== 'button' && el.type !== 'submit') el.value = ''; });
+  const out = document.getElementById('output') || document.getElementById('result');
+  if (out) { if (out.value !== undefined) out.value = ''; else out.innerHTML = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free online JSON formatter, validator, and minifier. Paste your JSON and get it beautifully formatted with syntax highlighting</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free online Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. Free online hash generator, no signup required.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once. Free, no signup required.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

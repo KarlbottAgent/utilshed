@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Cost Calculator — UtilShed</title>
+    <meta name="description" content="Free online fuel cost calculator. Calculate fuel cost for a trip. Convert between MPG, L/100km, and km/L. Compare fuel efficiency. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/fuel-cost-calculator/">
+    <meta property="og:title" content="Fuel Cost Calculator — UtilShed">
+    <meta property="og:description" content="Free online fuel cost calculator. Calculate fuel cost for a trip. Convert between MPG, L/100km, and km/L. Compare fuel efficiency. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/fuel-cost-calculator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Fuel Cost Calculator","description":"Free online fuel cost calculator. Calculate fuel cost for a trip. Convert between MPG, L/100km, and km/L. Compare fuel efficiency. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/fuel-cost-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Fuel Cost Calculator","item":"https://utilshed.com/tools/fuel-cost-calculator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Fuel Cost Calculator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Fuel Cost Calculator</h1>
+            <p>Calculate fuel cost for a trip. Convert between MPG, L/100km, and km/L. Compare fuel efficiency.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+<div class="tool-form"><h3>Trip Fuel Cost</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px"><div><label>Distance</label><div style="display:flex;gap:6px"><input type="number" id="dist" value="300" oninput="calcFuel()"><select id="distUnit" onchange="calcFuel()"><option value="miles">miles</option><option value="km">km</option></select></div></div><div><label>Fuel Efficiency</label><div style="display:flex;gap:6px"><input type="number" id="eff" value="30" oninput="calcFuel()"><select id="effUnit" onchange="calcFuel()"><option value="mpg">MPG (US)</option><option value="mpg_uk">MPG (UK)</option><option value="l100">L/100km</option><option value="kml">km/L</option></select></div></div><div><label>Fuel Price</label><div style="display:flex;gap:6px"><input type="number" id="price" value="3.50" step="0.01" oninput="calcFuel()"><select id="priceUnit" onchange="calcFuel()"><option value="gal">$/gallon</option><option value="liter">$/liter</option></select></div></div></div><div id="fuelResult" style="padding:16px;background:#1a1a2e;border-radius:8px;margin-bottom:24px"></div><h3>Fuel Efficiency Converter</h3><div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"><div style="flex:1;min-width:120px"><label>Value</label><input type="number" id="convVal" value="30" oninput="convertEff()"></div><div style="flex:1;min-width:120px"><label>Unit</label><select id="convUnit" onchange="convertEff()"><option value="mpg">MPG (US)</option><option value="mpg_uk">MPG (UK)</option><option value="l100">L/100km</option><option value="kml">km/L</option></select></div></div><div id="convResult" style="padding:16px;background:#1a1a2e;border-radius:8px"></div><div id="result" style="display:none"></div></div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Fuel Cost Calculator</h2>
+            <p>This free online fuel cost calculator lets you calculate fuel cost for a trip. convert between mpg, l/100km, and km/l. compare fuel efficiency — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function calcFuel(){const dist=parseFloat(document.getElementById('dist').value)||0;const eff=parseFloat(document.getElementById('eff').value)||0;const price=parseFloat(document.getElementById('price').value)||0;const du=document.getElementById('distUnit').value;const eu=document.getElementById('effUnit').value;const pu=document.getElementById('priceUnit').value;if(!dist||!eff)return;let distMiles=du==='km'?dist*0.621371:dist;let distKm=du==='miles'?dist*1.60934:dist;let mpg;if(eu==='mpg')mpg=eff;else if(eu==='mpg_uk')mpg=eff*0.832674;else if(eu==='l100')mpg=235.215/eff;else mpg=eff*2.35215;const gallons=distMiles/mpg;const liters=gallons*3.78541;let cost;if(pu==='gal')cost=gallons*price;else cost=liters*price;const el=document.getElementById('fuelResult');el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center"><div><div style="opacity:0.7;font-size:0.85em">Fuel Needed</div><div style="font-size:1.3em;color:#64ffda">${gallons.toFixed(1)} gal</div><div style="opacity:0.7">${liters.toFixed(1)} liters</div></div><div><div style="opacity:0.7;font-size:0.85em">Total Cost</div><div style="font-size:1.5em;color:#bb86fc;font-weight:bold">$${cost.toFixed(2)}</div></div><div><div style="opacity:0.7;font-size:0.85em">Cost per Mile</div><div style="font-size:1.3em;color:#64ffda">$${(cost/distMiles).toFixed(3)}</div><div style="opacity:0.7">$${(cost/distKm).toFixed(3)}/km</div></div></div>`}
+function convertEff(){const v=parseFloat(document.getElementById('convVal').value)||0;const u=document.getElementById('convUnit').value;let mpg;if(u==='mpg')mpg=v;else if(u==='mpg_uk')mpg=v*0.832674;else if(u==='l100')mpg=235.215/v;else mpg=v*2.35215;const el=document.getElementById('convResult');el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;text-align:center"><div style="padding:8px;background:#16213e;border-radius:6px"><div style="opacity:0.7;font-size:0.8em">MPG (US)</div><div style="color:#64ffda">${mpg.toFixed(1)}</div></div><div style="padding:8px;background:#16213e;border-radius:6px"><div style="opacity:0.7;font-size:0.8em">MPG (UK)</div><div style="color:#64ffda">${(mpg/0.832674).toFixed(1)}</div></div><div style="padding:8px;background:#16213e;border-radius:6px"><div style="opacity:0.7;font-size:0.8em">L/100km</div><div style="color:#64ffda">${(235.215/mpg).toFixed(1)}</div></div><div style="padding:8px;background:#16213e;border-radius:6px"><div style="opacity:0.7;font-size:0.8em">km/L</div><div style="color:#64ffda">${(mpg/2.35215).toFixed(1)}</div></div></div>`}
+function calculate(){calcFuel();convertEff()}
+window.addEventListener('load',()=>{calcFuel();convertEff()});
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  document.querySelectorAll('input, textarea, select').forEach(el => { if (el.type !== 'button' && el.type !== 'submit') el.value = ''; });
+  const out = document.getElementById('output') || document.getElementById('result');
+  if (out) { if (out.value !== undefined) out.value = ''; else out.innerHTML = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free online JSON formatter, validator, and minifier. Paste your JSON and get it beautifully formatted with syntax highlighting</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free online Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. Free online hash generator, no signup required.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once. Free, no signup required.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

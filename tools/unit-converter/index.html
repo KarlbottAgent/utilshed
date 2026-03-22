@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter — UtilShed</title>
+    <meta name="description" content="Free online unit converter. Convert between hundreds of units — length, weight, volume, area, speed, temperature, and more. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/unit-converter/">
+    <meta property="og:title" content="Unit Converter — UtilShed">
+    <meta property="og:description" content="Free online unit converter. Convert between hundreds of units — length, weight, volume, area, speed, temperature, and more. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/unit-converter/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Unit Converter","description":"Free online unit converter. Convert between hundreds of units — length, weight, volume, area, speed, temperature, and more. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/unit-converter/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Unit Converter","item":"https://utilshed.com/tools/unit-converter/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Unit Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Unit Converter</h1>
+            <p>Convert between hundreds of units — length, weight, volume, area, speed, temperature, and more.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+<div class="tool-form"><div style="margin-bottom:16px"><label>Category</label><select id="cat" onchange="loadUnits()"><option value="length">Length</option><option value="weight">Weight</option><option value="volume">Volume</option><option value="area">Area</option><option value="speed">Speed</option><option value="temperature">Temperature</option><option value="time">Time</option><option value="digital">Digital Storage</option><option value="pressure">Pressure</option><option value="energy">Energy</option></select></div><div style="display:flex;gap:12px;align-items:end;flex-wrap:wrap"><div style="flex:1;min-width:140px"><label>From</label><input type="number" id="fromVal" value="1" oninput="doConvert()"><select id="fromUnit" onchange="doConvert()" style="margin-top:6px"></select></div><div style="padding:0 8px 24px;font-size:1.5em;cursor:pointer" onclick="swapUnits()" title="Swap">&#8644;</div><div style="flex:1;min-width:140px"><label>To</label><input type="number" id="toVal" readonly style="background:#1a1a2e"><select id="toUnit" onchange="doConvert()" style="margin-top:6px"></select></div></div><div id="result" style="margin-top:20px;padding:16px;background:#1a1a2e;border-radius:8px;font-size:1.1em;display:none"></div></div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Unit Converter</h2>
+            <p>This free online unit converter lets you convert between hundreds of units — length, weight, volume, area, speed, temperature, and more — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+const UNITS={length:{meter:1,kilometer:1000,centimeter:0.01,millimeter:0.001,mile:1609.344,yard:0.9144,foot:0.3048,inch:0.0254,nautical_mile:1852,micrometer:1e-6},weight:{kilogram:1,gram:0.001,milligram:1e-6,metric_ton:1000,pound:0.453592,ounce:0.0283495,stone:6.35029,us_ton:907.185,imperial_ton:1016.05},volume:{liter:1,milliliter:0.001,gallon_us:3.78541,gallon_uk:4.54609,quart:0.946353,pint:0.473176,cup:0.236588,fluid_oz:0.0295735,tablespoon:0.0147868,teaspoon:0.00492892,cubic_meter:1000,cubic_foot:28.3168},area:{sq_meter:1,sq_kilometer:1e6,sq_mile:2589988,sq_yard:0.836127,sq_foot:0.092903,sq_inch:0.000645,hectare:10000,acre:4046.86},speed:{m_per_s:1,km_per_h:0.277778,mph:0.44704,knot:0.514444,ft_per_s:0.3048},temperature:'special',time:{second:1,millisecond:0.001,minute:60,hour:3600,day:86400,week:604800,month:2629746,year:31557600},digital:{byte:1,kilobyte:1024,megabyte:1048576,gigabyte:1073741824,terabyte:1099511627776,petabyte:1125899906842624,bit:0.125,kilobit:128,megabit:131072},pressure:{pascal:1,kilopascal:1000,bar:100000,psi:6894.76,atm:101325,mmhg:133.322,torr:133.322},energy:{joule:1,kilojoule:1000,calorie:4.184,kilocalorie:4184,watt_hour:3600,kilowatt_hour:3600000,btu:1055.06,electronvolt:1.602e-19}};
+function loadUnits(){const c=document.getElementById('cat').value;const u=UNITS[c];const keys=c==='temperature'?['celsius','fahrenheit','kelvin','rankine']:Object.keys(u);['fromUnit','toUnit'].forEach((id,i)=>{const s=document.getElementById(id);s.innerHTML='';keys.forEach((k,j)=>{const o=document.createElement('option');o.value=k;o.textContent=k.replace(/_/g,' ');if(i===0&&j===0)o.selected=true;if(i===1&&j===1)o.selected=true;s.appendChild(o)});});doConvert()}
+function doConvert(){const c=document.getElementById('cat').value;const v=parseFloat(document.getElementById('fromVal').value);const f=document.getElementById('fromUnit').value;const t=document.getElementById('toUnit').value;if(isNaN(v))return;let r;if(c==='temperature'){r=convertTemp(v,f,t)}else{const units=UNITS[c];r=v*units[f]/units[t]}document.getElementById('toVal').value=r;const el=document.getElementById('result');el.style.display='block';el.innerHTML=`<strong>${v} ${f.replace(/_/g,' ')}</strong> = <strong>${r} ${t.replace(/_/g,' ')}</strong>`}
+function convertTemp(v,f,t){let c;if(f==='celsius')c=v;else if(f==='fahrenheit')c=(v-32)*5/9;else if(f==='kelvin')c=v-273.15;else c=(v-491.67)*5/9;if(t==='celsius')return Math.round(c*1e10)/1e10;if(t==='fahrenheit')return Math.round((c*9/5+32)*1e10)/1e10;if(t==='kelvin')return Math.round((c+273.15)*1e10)/1e10;return Math.round((c*9/5+491.67)*1e10)/1e10}
+function swapUnits(){const f=document.getElementById('fromUnit');const t=document.getElementById('toUnit');const tmp=f.value;f.value=t.value;t.value=tmp;doConvert()}
+function calculate(){doConvert()}
+window.addEventListener('load',loadUnits);
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  document.querySelectorAll('input, textarea, select').forEach(el => { if (el.type !== 'button' && el.type !== 'submit') el.value = ''; });
+  const out = document.getElementById('output') || document.getElementById('result');
+  if (out) { if (out.value !== undefined) out.value = ''; else out.innerHTML = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free online JSON formatter, validator, and minifier. Paste your JSON and get it beautifully formatted with syntax highlighting</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free online Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. Free online hash generator, no signup required.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once. Free, no signup required.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
