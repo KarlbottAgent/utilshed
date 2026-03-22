@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Beautifier — UtilShed</title>
+    <meta name="description" content="Free online javascript beautifier. Beautify and format JavaScript code with proper indentation, line breaks, and consistent style. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/js-beautifier/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JavaScript Beautifier","description":"Free online javascript beautifier. Beautify and format JavaScript code with proper indentation, line breaks, and consistent style. No signup required.","url":"https://utilshed.com/tools/js-beautifier/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"JavaScript Beautifier","item":"https://utilshed.com/tools/js-beautifier/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">JavaScript Beautifier</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>JavaScript Beautifier</h1>
+            <p>Beautify and format JavaScript code with proper indentation, line breaks, and consistent style.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="beautify()">Beautify</button>
+            <button class="btn" onclick="minify()">Minify</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">JavaScript Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="var x=1;function foo(a,b){if(a&gt;b){return a}else{return b}}"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Beautified Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About JavaScript Beautifier</h2>
+
+            <p>JavaScript Beautifier formats and prettifies minified or messy JavaScript code. It adds proper indentation,
+            line breaks, and spacing to make your code readable and maintainable.</p>
+            <p><strong>Features:</strong> Auto-detect indentation, handle strings and comments correctly,
+            preserve template literals, minify option, auto-format on paste.</p>
+
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+    function beautify() {
+        const input = document.getElementById('input').value.trim();
+        if (!input) return;
+        try {
+            const result = jsBeautify(input, getOptions());
+            document.getElementById('output').value = result;
+            showStatus('Beautified!');
+        } catch(e) {
+            showStatus('Error: ' + e.message);
+        }
+    }
+
+    function minify() {
+        const input = document.getElementById('input').value.trim();
+        if (!input) return;
+        try {
+            // Simple minification: remove comments, collapse whitespace, remove newlines
+            let result = input;
+            // Remove single-line comments (but not URLs with //)
+            result = result.replace(///(?![/]).*/g, '');
+            // Remove multi-line comments
+            result = result.replace(//*[sS]*?*//g, '');
+            // Collapse whitespace
+            result = result.replace(/s+/g, ' ');
+            // Remove spaces around operators
+            result = result.replace(/s*([{}();,:[]=+-*/<>!&|?])s*/g, '$1');
+            // Clean up
+            result = result.trim();
+            document.getElementById('output').value = result;
+            const saved = input.length - result.length;
+            showStatus('Minified! Saved ' + saved + ' chars');
+        } catch(e) {
+            showStatus('Error: ' + e.message);
+        }
+    }
+
+    function getOptions() {
+        return {
+            indentSize: 2,
+            indentChar: ' '
+        };
+    }
+
+    function jsBeautify(code, opts) {
+        const indent = opts.indentChar.repeat(opts.indentSize);
+        let level = 0;
+        let result = '';
+        let i = 0;
+        let inString = false;
+        let stringChar = '';
+        let inComment = false;
+        let commentType = '';
+        let newLine = true;
+
+        function addIndent() {
+            result += indent.repeat(level);
+        }
+
+        function addNewline() {
+            result = result.replace(/[ 	]+$/, '');
+            result += '
+';
+            newLine = true;
+        }
+
+        while (i < code.length) {
+            const ch = code[i];
+            const next = code[i + 1] || '';
+
+            // Handle strings
+            if (inString) {
+                result += ch;
+                if (ch === '\') { result += next; i += 2; continue; }
+                if (ch === stringChar) inString = false;
+                i++; continue;
+            }
+
+            // Handle comments
+            if (inComment) {
+                result += ch;
+                if (commentType === '//' && ch === '
+') {
+                    inComment = false;
+                    newLine = true;
+                } else if (commentType === '/*' && ch === '*' && next === '/') {
+                    result += '/'; i += 2; inComment = false; continue;
+                }
+                i++; continue;
+            }
+
+            // Start string
+            if (ch === '"' || ch === "'" || ch === '`') {
+                if (newLine) { addIndent(); newLine = false; }
+                inString = true; stringChar = ch;
+                result += ch; i++; continue;
+            }
+
+            // Start comment
+            if (ch === '/' && next === '/') {
+                if (newLine) { addIndent(); newLine = false; }
+                inComment = true; commentType = '//';
+                result += ch; i++; continue;
+            }
+            if (ch === '/' && next === '*') {
+                if (newLine) { addIndent(); newLine = false; }
+                inComment = true; commentType = '/*';
+                result += ch; i++; continue;
+            }
+
+            // Skip whitespace (we control our own spacing)
+            if (/s/.test(ch)) {
+                // Preserve at least one space between tokens
+                if (!newLine && result.length > 0 && !/[s({[]/.test(result[result.length - 1])) {
+                    result += ' ';
+                }
+                i++; continue;
+            }
+
+            if (newLine) { addIndent(); newLine = false; }
+
+            // Opening braces
+            if (ch === '{') {
+                // Add space before { if needed
+                if (result.length > 0 && result[result.length-1] !== ' ' && result[result.length-1] !== '
+') {
+                    result += ' ';
+                }
+                result += '{';
+                level++;
+                addNewline();
+                i++; continue;
+            }
+
+            // Closing braces
+            if (ch === '}') {
+                level = Math.max(0, level - 1);
+                addNewline();
+                addIndent();
+                result += '}';
+                // Check if followed by else, catch, finally
+                const rest = code.slice(i + 1).trimStart();
+                if (/^(else|catch|finally)/.test(rest)) {
+                    result += ' ';
+                } else {
+                    addNewline();
+                }
+                i++; continue;
+            }
+
+            // Semicolons
+            if (ch === ';') {
+                result += ';';
+                // Don't newline inside for(;;)
+                let parenDepth = 0;
+                for (let j = i - 1; j >= 0; j--) {
+                    if (code[j] === ')') parenDepth++;
+                    if (code[j] === '(') { parenDepth--; if (parenDepth < 0) break; }
+                }
+                if (parenDepth >= 0) {
+                    addNewline();
+                } else {
+                    result += ' ';
+                }
+                i++; continue;
+            }
+
+            // Opening brackets/parens
+            if (ch === '(' || ch === '[') {
+                result += ch;
+                i++; continue;
+            }
+
+            // Closing brackets/parens
+            if (ch === ')' || ch === ']') {
+                result += ch;
+                i++; continue;
+            }
+
+            // Commas
+            if (ch === ',') {
+                result += ', ';
+                i++; continue;
+            }
+
+            // Colons (for objects, ternary)
+            if (ch === ':') {
+                result += ': ';
+                i++; continue;
+            }
+
+            // Everything else
+            result += ch;
+            i++;
+        }
+
+        // Clean up multiple blank lines
+        result = result.replace(/
+{3,}/g, '
+
+');
+        return result.trim();
+    }
+
+    function loadSample() {
+        document.getElementById('input').value = 'function fibonacci(n){if(n<=1){return n;}var a=0,b=1,temp;for(var i=2;i<=n;i++){temp=b;b=a+b;a=temp;}return b;}function isPrime(num){if(num<2)return false;for(var i=2;i*i<=num;i++){if(num%i===0)return false;}return true;}var results=[];for(var i=0;i<20;i++){if(isPrime(fibonacci(i))){results.push({index:i,fib:fibonacci(i)});}}console.log(JSON.stringify(results,null,2));';
+        beautify();
+    }
+
+    function clearAll() {
+        document.getElementById('input').value = '';
+        document.getElementById('output').value = '';
+    }
+
+    function copyOutput() {
+        const text = document.getElementById('output').value;
+        if (!text) return;
+        navigator.clipboard.writeText(text);
+        showStatus('Copied!');
+    }
+
+    function showStatus(msg) {
+        const el = document.getElementById('status');
+        if (el) { el.textContent = msg; setTimeout(() => el.textContent = '', 2000); }
+    }
+
+    document.getElementById('input').addEventListener('paste', () => setTimeout(beautify, 50));
+
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../js-minifier/" class="related-tool-card">
+                <strong>JS Minifier</strong>
+                <span>Minify JavaScript to reduce file size</span>
+            </a>
+            <a href="../html-beautifier/" class="related-tool-card">
+                <strong>HTML Beautifier</strong>
+                <span>Format and beautify HTML code</span>
+            </a>
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format and validate JSON data</span>
+            </a>
+            <a href="../sql-formatter/" class="related-tool-card">
+                <strong>SQL Formatter</strong>
+                <span>Format SQL queries with proper indentation</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

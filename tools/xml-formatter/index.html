@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML Formatter — UtilShed</title>
+    <meta name="description" content="Free online xml formatter. Format and beautify XML documents with proper indentation. Minify or prettify XML with one click. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/xml-formatter/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"XML Formatter","description":"Free online xml formatter. Format and beautify XML documents with proper indentation. Minify or prettify XML with one click. No signup required.","url":"https://utilshed.com/tools/xml-formatter/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"XML Formatter","item":"https://utilshed.com/tools/xml-formatter/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">XML Formatter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>XML Formatter</h1>
+            <p>Format and beautify XML documents with proper indentation. Minify or prettify XML with one click.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="formatXml()">Format</button>
+            <button class="btn" onclick="minifyXml()">Minify</button>
+            <button class="btn" onclick="validateXml()">Validate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">XML Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="&lt;root&gt;&lt;item id=&quot;1&quot;&gt;&lt;name&gt;Test&lt;/name&gt;&lt;value&gt;123&lt;/value&gt;&lt;/item&gt;&lt;/root&gt;"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Formatted Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About XML Formatter</h2>
+
+            <p>XML Formatter beautifies and indents XML documents for better readability. It can also minify XML
+            by removing unnecessary whitespace, and validate XML syntax using the browser's built-in DOM parser.</p>
+            <p><strong>Features:</strong> Pretty-print with proper indentation, minify/compress XML, validate XML syntax,
+            handle comments/CDATA/processing instructions, auto-format on paste, text-only element optimization.</p>
+
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+    function formatXml() {
+        const input = document.getElementById('input').value.trim();
+        if (!input) return;
+        try {
+            const result = prettyXml(input, getIndent());
+            document.getElementById('output').value = result;
+            showStatus('Formatted!');
+        } catch(e) {
+            showStatus('Error: ' + e.message);
+        }
+    }
+
+    function minifyXml() {
+        const input = document.getElementById('input').value.trim();
+        if (!input) return;
+        // Remove whitespace between tags
+        let result = input.replace(/>s+</g, '><').trim();
+        document.getElementById('output').value = result;
+        const saved = input.length - result.length;
+        showStatus('Minified! Saved ' + saved + ' chars');
+    }
+
+    function validateXml() {
+        const input = document.getElementById('input').value.trim();
+        if (!input) return;
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(input, 'application/xml');
+        const errors = doc.getElementsByTagName('parsererror');
+
+        if (errors.length > 0) {
+            const errorText = errors[0].textContent;
+            document.getElementById('output').value = 'XML Validation FAILED:
+
+' + errorText;
+            showStatus('Invalid XML!');
+        } else {
+            // Count elements
+            const allElements = doc.getElementsByTagName('*');
+            let info = 'XML is VALID!
+
+';
+            info += 'Root element: <' + doc.documentElement.tagName + '>
+';
+            info += 'Total elements: ' + allElements.length + '
+';
+            info += 'Encoding: ' + (doc.xmlEncoding || 'not specified') + '
+';
+
+            // Count unique tag names
+            const tags = new Set();
+            for (let i = 0; i < allElements.length; i++) {
+                tags.add(allElements[i].tagName);
+            }
+            info += 'Unique tags: ' + tags.size + ' (' + Array.from(tags).join(', ') + ')';
+
+            document.getElementById('output').value = info;
+            showStatus('Valid XML!');
+        }
+    }
+
+    function getIndent() {
+        return '  '; // 2 spaces
+    }
+
+    function prettyXml(xml, indentStr) {
+        // Remove existing whitespace between tags
+        xml = xml.replace(/>s+</g, '><').trim();
+
+        let result = '';
+        let indent = 0;
+        let i = 0;
+
+        while (i < xml.length) {
+            // XML declaration or processing instruction
+            if (xml.startsWith('<?', i)) {
+                const end = xml.indexOf('?>', i);
+                if (end === -1) break;
+                result += indentStr.repeat(indent) + xml.slice(i, end + 2) + '
+';
+                i = end + 2;
+                continue;
+            }
+
+            // Comment
+            if (xml.startsWith('<!--', i)) {
+                const end = xml.indexOf('-->', i);
+                if (end === -1) break;
+                result += indentStr.repeat(indent) + xml.slice(i, end + 3) + '
+';
+                i = end + 3;
+                continue;
+            }
+
+            // CDATA
+            if (xml.startsWith('<![CDATA[', i)) {
+                const end = xml.indexOf(']]>', i);
+                if (end === -1) break;
+                result += indentStr.repeat(indent) + xml.slice(i, end + 3) + '
+';
+                i = end + 3;
+                continue;
+            }
+
+            // Closing tag
+            if (xml.startsWith('</', i)) {
+                const end = xml.indexOf('>', i);
+                if (end === -1) break;
+                indent = Math.max(0, indent - 1);
+                result += indentStr.repeat(indent) + xml.slice(i, end + 1) + '
+';
+                i = end + 1;
+                continue;
+            }
+
+            // Opening tag
+            if (xml[i] === '<') {
+                const end = xml.indexOf('>', i);
+                if (end === -1) break;
+                const tag = xml.slice(i, end + 1);
+                const isSelfClosing = tag.endsWith('/>');
+
+                // Check if this is an element with only text content (no child elements)
+                if (!isSelfClosing) {
+                    const tagName = tag.match(/^<([^s/?>]+)/);
+                    if (tagName) {
+                        const closeTag = '</' + tagName[1] + '>';
+                        const closeIdx = xml.indexOf(closeTag, end + 1);
+                        const nextOpenIdx = xml.indexOf('<', end + 1);
+                        // If the next < is the closing tag, it's a text-only element
+                        if (closeIdx !== -1 && nextOpenIdx === closeIdx) {
+                            const textContent = xml.slice(end + 1, closeIdx);
+                            result += indentStr.repeat(indent) + tag + textContent + closeTag + '
+';
+                            i = closeIdx + closeTag.length;
+                            continue;
+                        }
+                    }
+                }
+
+                result += indentStr.repeat(indent) + tag + '
+';
+                if (!isSelfClosing) indent++;
+                i = end + 1;
+                continue;
+            }
+
+            // Text content
+            const nextTag = xml.indexOf('<', i);
+            if (nextTag === -1) {
+                const text = xml.slice(i).trim();
+                if (text) result += indentStr.repeat(indent) + text + '
+';
+                break;
+            }
+            const text = xml.slice(i, nextTag).trim();
+            if (text) result += indentStr.repeat(indent) + text + '
+';
+            i = nextTag;
+        }
+
+        return result.trimEnd();
+    }
+
+    function loadSample() {
+        document.getElementById('input').value = '<?xml version="1.0" encoding="UTF-8"?><catalog><book id="bk101"><author>Gambardella, Matthew</author><title>XML Developer's Guide</title><genre>Computer</genre><price>44.95</price><publish_date>2000-10-01</publish_date><description>An in-depth look at creating applications with XML.</description></book><book id="bk102"><author>Ralls, Kim</author><title>Midnight Rain</title><genre>Fantasy</genre><price>5.95</price><publish_date>2000-12-16</publish_date><description>A former architect battles corporate zombies, an evil sorceress, and her own childhood.</description></book></catalog>';
+        formatXml();
+    }
+
+    function clearAll() {
+        document.getElementById('input').value = '';
+        document.getElementById('output').value = '';
+    }
+
+    function copyOutput() {
+        const text = document.getElementById('output').value;
+        if (!text) return;
+        navigator.clipboard.writeText(text);
+        showStatus('Copied!');
+    }
+
+    function showStatus(msg) {
+        const el = document.getElementById('status');
+        if (el) { el.textContent = msg; setTimeout(() => el.textContent = '', 2000); }
+    }
+
+    document.getElementById('input').addEventListener('paste', () => setTimeout(formatXml, 50));
+
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../html-beautifier/" class="related-tool-card">
+                <strong>HTML Beautifier</strong>
+                <span>Format and beautify HTML code</span>
+            </a>
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format and prettify JSON data</span>
+            </a>
+            <a href="../json-validator/" class="related-tool-card">
+                <strong>JSON Validator</strong>
+                <span>Validate JSON with error details</span>
+            </a>
+            <a href="../sql-formatter/" class="related-tool-card">
+                <strong>SQL Formatter</strong>
+                <span>Format SQL queries with proper indentation</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

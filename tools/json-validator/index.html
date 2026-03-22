@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Validator — UtilShed</title>
+    <meta name="description" content="Free online json validator. Validate JSON data with detailed error messages, line numbers, and syntax highlighting. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/json-validator/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JSON Validator","description":"Free online json validator. Validate JSON data with detailed error messages, line numbers, and syntax highlighting. No signup required.","url":"https://utilshed.com/tools/json-validator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"JSON Validator","item":"https://utilshed.com/tools/json-validator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">JSON Validator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>JSON Validator</h1>
+            <p>Validate JSON data with detailed error messages, line numbers, and syntax highlighting.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="validate()">Validate</button>
+            <button class="btn" onclick="formatJson()">Format</button>
+            <button class="btn" onclick="loadSampleValid()">Sample Valid</button>
+            <button class="btn" onclick="loadSampleInvalid()">Sample Invalid</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+
+        <div id="result-banner" style="padding:12px 16px;border-radius:6px;margin-bottom:1rem;display:none;font-weight:600;font-size:1.1rem"></div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">JSON Input <span class="label">Paste JSON here</span></div>
+                <textarea class="tool-input" id="input" placeholder='{"name": "John", "age": 30, "active": true}'></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Validation Result <span class="label" id="size-label"></span></div>
+                <div id="output-container" style="background:#0d1117;border:1px solid #333;border-radius:6px;padding:1rem;min-height:200px;color:#e0e0e0;font-family:monospace;font-size:0.9rem;overflow:auto;white-space:pre-wrap;flex:1"></div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About JSON Validator</h2>
+
+            <p>JSON Validator checks whether your JSON data is syntactically correct. It provides detailed error messages
+            with line numbers, column positions, and context highlighting to help you quickly find and fix issues.</p>
+            <p><strong>Features:</strong> Real-time validation, detailed error location, structure analysis (depth, node count, keys),
+            auto-format option, syntax error context display.</p>
+
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+    function validate() {
+        const input = document.getElementById('input').value.trim();
+        const banner = document.getElementById('result-banner');
+        const output = document.getElementById('output-container');
+
+        if (!input) {
+            banner.style.display = 'none';
+            output.textContent = '';
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(input);
+            // Valid JSON
+            banner.style.display = 'block';
+            banner.style.background = '#1a3a2a';
+            banner.style.border = '1px solid #2ea043';
+            banner.style.color = '#3fb950';
+            banner.textContent = '✓ Valid JSON';
+
+            // Show structure info
+            const info = analyzeJson(parsed);
+            output.innerHTML = '<span style="color:#3fb950;font-weight:600">JSON is valid!</span>
+
+' +
+                '<span style="color:#aaa">Type:</span> ' + info.type + '
+' +
+                '<span style="color:#aaa">Size:</span> ' + input.length + ' characters
+' +
+                (info.type === 'Object' ? '<span style="color:#aaa">Keys:</span> ' + info.keys + '
+' : '') +
+                (info.type === 'Array' ? '<span style="color:#aaa">Items:</span> ' + info.items + '
+' : '') +
+                '<span style="color:#aaa">Depth:</span> ' + info.depth + ' levels
+' +
+                '<span style="color:#aaa">Total nodes:</span> ' + info.nodes;
+
+            showStatus('Valid JSON!');
+        } catch (e) {
+            // Invalid JSON
+            banner.style.display = 'block';
+            banner.style.background = '#3a1a1a';
+            banner.style.border = '1px solid #da3633';
+            banner.style.color = '#f85149';
+            banner.textContent = '✗ Invalid JSON';
+
+            // Parse error details
+            const errorInfo = parseError(e.message, input);
+            let html = '<span style="color:#f85149;font-weight:600">JSON Parse Error</span>
+
+';
+            html += '<span style="color:#f0883e">Error:</span> ' + escapeHtml(e.message) + '
+';
+
+            if (errorInfo.line > 0) {
+                html += '<span style="color:#f0883e">Line:</span> ' + errorInfo.line + '
+';
+                html += '<span style="color:#f0883e">Column:</span> ' + errorInfo.column + '
+
+';
+                html += errorInfo.context;
+            }
+
+            output.innerHTML = html;
+            showStatus('Invalid JSON');
+        }
+    }
+
+    function analyzeJson(obj, depth) {
+        depth = depth || 0;
+        let nodes = 1;
+        let maxDepth = depth;
+
+        if (Array.isArray(obj)) {
+            for (const item of obj) {
+                if (item !== null && typeof item === 'object') {
+                    const sub = analyzeJson(item, depth + 1);
+                    nodes += sub.nodes;
+                    maxDepth = Math.max(maxDepth, sub.depth);
+                } else {
+                    nodes++;
+                }
+            }
+            return { type: 'Array', items: obj.length, depth: maxDepth, nodes: nodes };
+        } else if (obj !== null && typeof obj === 'object') {
+            const keys = Object.keys(obj);
+            for (const key of keys) {
+                if (obj[key] !== null && typeof obj[key] === 'object') {
+                    const sub = analyzeJson(obj[key], depth + 1);
+                    nodes += sub.nodes;
+                    maxDepth = Math.max(maxDepth, sub.depth);
+                } else {
+                    nodes++;
+                }
+            }
+            return { type: 'Object', keys: keys.length, depth: maxDepth, nodes: nodes };
+        }
+        return { type: typeof obj, depth: depth, nodes: 1 };
+    }
+
+    function parseError(message, input) {
+        // Extract position from error message
+        const posMatch = message.match(/positions+(d+)/i) || message.match(/ats+.*?(d+)/);
+        let pos = posMatch ? parseInt(posMatch[1]) : -1;
+        let line = 0, column = 0;
+
+        if (pos >= 0) {
+            const before = input.slice(0, pos);
+            line = (before.match(/
+/g) || []).length + 1;
+            column = pos - before.lastIndexOf('
+');
+        }
+
+        // Build context with line numbers
+        let context = '';
+        if (line > 0) {
+            const lines = input.split('
+');
+            const start = Math.max(0, line - 3);
+            const end = Math.min(lines.length, line + 2);
+            for (let i = start; i < end; i++) {
+                const lineNum = String(i + 1).padStart(4);
+                const isError = i + 1 === line;
+                const prefix = isError ? '<span style="color:#f85149"> >> </span>' : '    ';
+                const style = isError ? 'color:#f85149' : 'color:#8b949e';
+                context += prefix + '<span style="color:#6e7681">' + lineNum + ' | </span><span style="' + style + '">' + escapeHtml(lines[i]) + '</span>
+';
+                if (isError && column > 0) {
+                    context += '    ' + ' '.repeat(lineNum.length + 3) + '<span style="color:#f85149">' + ' '.repeat(Math.max(0, column - 1)) + '^</span>
+';
+                }
+            }
+        }
+
+        return { line, column, context };
+    }
+
+    function formatJson() {
+        const input = document.getElementById('input').value.trim();
+        if (!input) return;
+        try {
+            const parsed = JSON.parse(input);
+            document.getElementById('input').value = JSON.stringify(parsed, null, 2);
+            validate();
+            showStatus('Formatted!');
+        } catch(e) {
+            validate();
+        }
+    }
+
+    function loadSampleValid() {
+        document.getElementById('input').value = JSON.stringify({
+            "name": "UtilShed",
+            "version": "1.0.0",
+            "tools": [
+                { "name": "JSON Formatter", "category": "developer" },
+                { "name": "Base64 Encoder", "category": "converter" },
+                { "name": "Hash Generator", "category": "security" }
+            ],
+            "settings": {
+                "theme": "dark",
+                "autoFormat": true,
+                "indentSize": 2
+            },
+            "active": true
+        }, null, 2);
+        validate();
+    }
+
+    function loadSampleInvalid() {
+        document.getElementById('input').value = '{
+  "name": "UtilShed",
+  "version": 1.0,
+  "tools": [
+    { "name": "JSON Formatter" }
+    { "name": "Base64 Encoder" }
+  ],
+  "active": true,
+}';
+        validate();
+    }
+
+    function clearAll() {
+        document.getElementById('input').value = '';
+        document.getElementById('output-container').innerHTML = '';
+        document.getElementById('result-banner').style.display = 'none';
+    }
+
+    function escapeHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function showStatus(msg) {
+        const el = document.getElementById('status');
+        if (el) { el.textContent = msg; setTimeout(() => el.textContent = '', 2000); }
+    }
+
+    document.getElementById('input').addEventListener('paste', () => setTimeout(validate, 50));
+    document.getElementById('input').addEventListener('input', () => {
+        clearTimeout(window._validateTimer);
+        window._validateTimer = setTimeout(validate, 300);
+    });
+
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format and prettify JSON data</span>
+            </a>
+            <a href="../json-diff/" class="related-tool-card">
+                <strong>JSON Diff</strong>
+                <span>Compare two JSON documents</span>
+            </a>
+            <a href="../json-to-yaml/" class="related-tool-card">
+                <strong>JSON to YAML</strong>
+                <span>Convert JSON to YAML format</span>
+            </a>
+            <a href="../json-to-csv/" class="related-tool-card">
+                <strong>JSON to CSV</strong>
+                <span>Convert JSON arrays to CSV</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
