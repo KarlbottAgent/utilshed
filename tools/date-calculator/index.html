@@ -17,6 +17,12 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@UtilShed">
     <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-form input, .tool-form select { box-sizing: border-box; max-width: 100%; min-width: 0; width: 100%; }
+        @media (max-width: 480px) {
+            main { padding: 1rem !important; }
+        }
+    </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Date Calculator","description":"Free online date calculator. Calculate the difference between two dates, or add/subtract days from a date. Find days until an event. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/date-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Date Calculator","item":"https://utilshed.com/tools/date-calculator/"}]}</script>
@@ -40,7 +46,7 @@
             <button class="btn" onclick="clearAll()">Clear</button>
             <span id="status" class="status"></span>
         </div>
-<div class="tool-form"><h3>Date Difference</h3><div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"><div style="flex:1;min-width:160px"><label>Start Date</label><input type="date" id="d1" oninput="calcDiff()"></div><div style="flex:1;min-width:160px"><label>End Date</label><input type="date" id="d2" oninput="calcDiff()"></div></div><div id="diffResult" style="padding:16px;background:#1a1a2e;border-radius:8px;margin-bottom:24px"></div><h3>Add/Subtract Days</h3><div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"><div style="flex:1;min-width:160px"><label>Start Date</label><input type="date" id="d3" oninput="calcAdd()"></div><div style="flex:1;min-width:100px"><label>Days to Add</label><input type="number" id="addDays" value="30" oninput="calcAdd()"></div></div><div id="addResult" style="padding:16px;background:#1a1a2e;border-radius:8px;margin-bottom:24px"></div><h3>Days Until Events</h3><div id="events" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div><div id="result" style="display:none"></div></div>
+<div class="tool-form"><h3>Date Difference</h3><div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"><div style="flex:1;min-width:140px"><label>Start Date</label><input type="date" id="d1" oninput="calcDiff()"></div><div style="flex:1;min-width:140px"><label>End Date</label><input type="date" id="d2" oninput="calcDiff()"></div></div><div id="diffResult" style="padding:16px;background:#1a1a2e;border-radius:8px;margin-bottom:24px"></div><h3>Add/Subtract Days</h3><div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"><div style="flex:1;min-width:140px"><label>Start Date</label><input type="date" id="d3" oninput="calcAdd()"></div><div style="flex:1;min-width:100px"><label>Days to Add</label><input type="number" id="addDays" value="30" oninput="calcAdd()"></div></div><div id="addResult" style="padding:16px;background:#1a1a2e;border-radius:8px;margin-bottom:24px"></div><h3>Days Until Events</h3><div id="events" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div><div id="result" style="display:none"></div></div>
         <div style="margin-top:2rem;color:#aaa;line-height:1.6">
             <h2 style="color:#e0e0e0;font-size:1.2rem">About Date Calculator</h2>
             <p>This free online date calculator lets you calculate the difference between two dates, or add/subtract days from a date. find days until an event — directly in your browser with no signup or installation required.</p>

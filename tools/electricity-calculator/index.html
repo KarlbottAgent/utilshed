@@ -17,6 +17,17 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@UtilShed">
     <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-form input, .tool-form select { box-sizing: border-box; max-width: 100%; }
+        .elec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .cost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        @media (max-width: 480px) {
+            main { padding: 1rem !important; }
+            .elec-grid, .cost-grid { grid-template-columns: 1fr !important; }
+            #elecResult > div { grid-template-columns: 1fr !important; }
+            #costResult > div { grid-template-columns: 1fr !important; }
+        }
+    </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Electricity Calculator","description":"Free online electricity calculator. Calculate watts, amps, volts, and ohms using Ohm's Law and the power equation. Includes energy cost calculator. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/electricity-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Electricity Calculator","item":"https://utilshed.com/tools/electricity-calculator/"}]}</script>
@@ -40,7 +51,7 @@
             <button class="btn" onclick="clearAll()">Clear</button>
             <span id="status" class="status"></span>
         </div>
-<div class="tool-form"><h3>Ohm's Law & Power Calculator</h3><p style="opacity:0.7;margin-bottom:16px">Enter any two values to calculate the rest</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px"><div><label>Voltage (V)</label><input type="number" id="volts" placeholder="Volts" oninput="calcElec()"></div><div><label>Current (A)</label><input type="number" id="amps" placeholder="Amps" oninput="calcElec()"></div><div><label>Resistance (Ω)</label><input type="number" id="ohms" placeholder="Ohms" oninput="calcElec()"></div><div><label>Power (W)</label><input type="number" id="watts" placeholder="Watts" oninput="calcElec()"></div></div><div id="elecResult" style="padding:16px;background:#1a1a2e;border-radius:8px;margin-bottom:24px"></div><h3>Energy Cost Calculator</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px"><div><label>Power (Watts)</label><input type="number" id="costWatts" value="100" oninput="calcCost()"></div><div><label>Hours per Day</label><input type="number" id="costHours" value="8" oninput="calcCost()"></div><div><label>Cost per kWh ($)</label><input type="number" id="costRate" value="0.12" step="0.01" oninput="calcCost()"></div></div><div id="costResult" style="padding:16px;background:#1a1a2e;border-radius:8px"></div><div id="result" style="display:none"></div></div>
+<div class="tool-form"><h3>Ohm's Law & Power Calculator</h3><p style="opacity:0.7;margin-bottom:16px">Enter any two values to calculate the rest</p><div class="elec-grid"><div><label>Voltage (V)</label><input type="number" id="volts" placeholder="Volts" oninput="calcElec()"></div><div><label>Current (A)</label><input type="number" id="amps" placeholder="Amps" oninput="calcElec()"></div><div><label>Resistance (Ω)</label><input type="number" id="ohms" placeholder="Ohms" oninput="calcElec()"></div><div><label>Power (W)</label><input type="number" id="watts" placeholder="Watts" oninput="calcElec()"></div></div><div id="elecResult" style="padding:16px;background:#1a1a2e;border-radius:8px;margin-bottom:24px"></div><h3>Energy Cost Calculator</h3><div class="cost-grid"><div><label>Power (Watts)</label><input type="number" id="costWatts" value="100" oninput="calcCost()"></div><div><label>Hours per Day</label><input type="number" id="costHours" value="8" oninput="calcCost()"></div><div><label>Cost per kWh ($)</label><input type="number" id="costRate" value="0.12" step="0.01" oninput="calcCost()"></div></div><div id="costResult" style="padding:16px;background:#1a1a2e;border-radius:8px"></div><div id="result" style="display:none"></div></div>
         <div style="margin-top:2rem;color:#aaa;line-height:1.6">
             <h2 style="color:#e0e0e0;font-size:1.2rem">About Electricity Calculator</h2>
             <p>This free online electricity calculator lets you calculate watts, amps, volts, and ohms using ohm's law and the power equation. includes energy cost calculator — directly in your browser with no signup or installation required.</p>

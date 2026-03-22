@@ -17,6 +17,13 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@UtilShed">
     <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-single input, .tool-single select { box-sizing: border-box; }
+        @media (max-width: 480px) {
+            .tool-single { padding: 1rem !important; }
+            #result { grid-template-columns: 1fr !important; }
+        }
+    </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Pace Calculator","description":"Free online pace calculator. Calculate running pace, speed, distance, or time for any workout. No signup required.","url":"https://utilshed.com/tools/pace-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Pace Calculator","item":"https://utilshed.com/tools/pace-calculator/"}]}</script>
@@ -36,8 +43,8 @@
 
         <div class="tool-single" style="max-width:550px;margin:0 auto">
             <div style="display:grid;gap:1rem;margin-bottom:1.5rem">
-                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:80px">Distance</label><input type="number" id="distance" placeholder="5" step="0.01" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><select id="distUnit" style="padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px"><option value="mi">miles</option><option value="km">km</option><option value="m">meters</option></select></div>
-                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:80px">Time</label><input type="number" id="hours" placeholder="0" min="0" style="width:55px;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">h</span><input type="number" id="minutes" placeholder="25" min="0" max="59" style="width:55px;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">m</span><input type="number" id="seconds" placeholder="0" min="0" max="59" style="width:55px;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">s</span></div>
+                <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap"><label style="color:#aaa;width:80px">Distance</label><input type="number" id="distance" placeholder="5" step="0.01" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><select id="distUnit" style="padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px"><option value="mi">miles</option><option value="km">km</option><option value="m">meters</option></select></div>
+                <div class="pace-time-row" style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap"><label style="color:#aaa;width:80px">Time</label><input type="number" id="hours" placeholder="0" min="0" style="width:55px;min-width:0;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">h</span><input type="number" id="minutes" placeholder="25" min="0" max="59" style="width:55px;min-width:0;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">m</span><input type="number" id="seconds" placeholder="0" min="0" max="59" style="width:55px;min-width:0;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">s</span></div>
                 <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
                     <button class="btn" onclick="setRace(5,'km')">5K</button><button class="btn" onclick="setRace(10,'km')">10K</button><button class="btn" onclick="setRace(21.0975,'km')">Half Marathon</button><button class="btn" onclick="setRace(42.195,'km')">Marathon</button>
                 </div>
