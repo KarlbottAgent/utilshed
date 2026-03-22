@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML Minifier — UtilShed</title>
+    <meta name="description" content="Free online xml minifier. Minify XML by removing whitespace, comments, and unnecessary formatting. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/xml-minifier/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"XML Minifier","description":"Free online xml minifier. Minify XML by removing whitespace, comments, and unnecessary formatting. No signup required.","url":"https://utilshed.com/tools/xml-minifier/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"XML Minifier","item":"https://utilshed.com/tools/xml-minifier/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">XML Minifier</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>XML Minifier</h1>
+            <p>Minify XML by removing whitespace, comments, and unnecessary formatting.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="minifyXml()">Minify</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">XML Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;catalog&gt;
+    &lt;book id=&quot;1&quot;&gt;
+        &lt;title&gt;XML Developer Guide&lt;/title&gt;
+        &lt;price&gt;44.95&lt;/price&gt;
+    &lt;/book&gt;
+&lt;/catalog&gt;"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Minified XML <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About XML Minifier</h2>
+            <p>Compress XML by removing whitespace between tags, stripping comments, and eliminating unnecessary formatting. Reduces file size for faster transfers and storage.</p>
+            <p>Preserves the XML structure and content while removing everything non-essential. Runs entirely in your browser.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+function minifyXml() {
+  const input = document.getElementById('input').value.trim();
+  if (!input) return;
+
+  try {
+    let result = input;
+    // Remove XML comments
+    result = result.replace(/<!--[\s\S]*?-->/g, '');
+    // Remove whitespace between tags
+    result = result.replace(/>\s+</g, '><');
+    // Remove leading/trailing whitespace from lines
+    result = result.replace(/^\s+|\s+$/gm, '');
+    // Collapse multiple spaces to single space within text nodes
+    result = result.replace(/\s{2,}/g, ' ');
+    // Remove empty lines
+    result = result.replace(/\n+/g, '');
+
+    const originalSize = new Blob([input]).size;
+    const minifiedSize = new Blob([result]).size;
+    const savings = ((1 - minifiedSize / originalSize) * 100).toFixed(1);
+
+    document.getElementById('output').value = result;
+    document.getElementById('size-label').textContent = `${originalSize}B → ${minifiedSize}B (-${savings}%)`;
+    showStatus('Minified!');
+  } catch (e) {
+    showStatus('Error: ' + e.message);
+  }
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('output').value);
+  showStatus('Copied!');
+}
+
+function clearAll() {
+  document.getElementById('input').value = '';
+  document.getElementById('output').value = '';
+  document.getElementById('size-label').textContent = '';
+}
+
+function showStatus(msg) {
+  const s = document.getElementById('status');
+  s.textContent = msg;
+  setTimeout(() => s.textContent = '', 2000);
+}
+
+document.getElementById('input').addEventListener('input', minifyXml);
+
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../xml-formatter/" class="related-tool-card">
+                <strong>XML Formatter</strong>
+                <span>Format and beautify XML</span>
+            </a>
+            <a href="../html-minifier/" class="related-tool-card">
+                <strong>HTML Minifier</strong>
+                <span>Minify HTML code</span>
+            </a>
+            <a href="../json-minifier/" class="related-tool-card">
+                <strong>JSON Minifier</strong>
+                <span>Minify JSON data</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

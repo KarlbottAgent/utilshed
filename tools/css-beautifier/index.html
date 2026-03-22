@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Beautifier — UtilShed</title>
+    <meta name="description" content="Free online css beautifier. Format and beautify CSS code with proper indentation and spacing. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/css-beautifier/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"CSS Beautifier","description":"Free online css beautifier. Format and beautify CSS code with proper indentation and spacing. No signup required.","url":"https://utilshed.com/tools/css-beautifier/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"CSS Beautifier","item":"https://utilshed.com/tools/css-beautifier/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">CSS Beautifier</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>CSS Beautifier</h1>
+            <p>Format and beautify CSS code with proper indentation and spacing.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="beautifyCss()">Beautify</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">CSS Code <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder=".container{display:flex;justify-content:center;align-items:center;}.header{background:#333;color:#fff;padding:1rem 2rem;}.header h1{font-size:2rem;margin:0;}"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Beautified CSS <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About CSS Beautifier</h2>
+            <p>Transform minified or messy CSS into clean, readable code. Adds proper indentation, line breaks between properties, and consistent spacing.</p>
+            <p>Works with CSS selectors, media queries, keyframes, and nested rules. Processes entirely in your browser — no data sent to servers.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+function beautifyCss() {
+  const input = document.getElementById('input').value.trim();
+  if (!input) return;
+
+  let result = input;
+  const tab = '    ';
+
+  // Remove existing whitespace for fresh formatting
+  result = result.replace(/\s*\{\s*/g, ' {\n');
+  result = result.replace(/\s*\}\s*/g, '\n}\n');
+  result = result.replace(/;\s*/g, ';\n');
+  result = result.replace(/,\s*/g, ', ');
+
+  // Re-indent
+  let indent = 0;
+  const lines = result.split('\n');
+  const formatted = [];
+
+  for (let line of lines) {
+    line = line.trim();
+    if (!line) continue;
+
+    if (line === '}') {
+      indent = Math.max(0, indent - 1);
+    }
+
+    formatted.push(tab.repeat(indent) + line);
+
+    if (line.endsWith('{')) {
+      indent++;
+    }
+  }
+
+  // Add blank line between rule blocks
+  const final = [];
+  for (let i = 0; i < formatted.length; i++) {
+    final.push(formatted[i]);
+    if (formatted[i].trim() === '}' && i < formatted.length - 1 && formatted[i + 1].trim() !== '}') {
+      final.push('');
+    }
+  }
+
+  document.getElementById('output').value = final.join('\n');
+  showStatus('Beautified!');
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('output').value);
+  showStatus('Copied!');
+}
+
+function clearAll() {
+  document.getElementById('input').value = '';
+  document.getElementById('output').value = '';
+}
+
+function showStatus(msg) {
+  const s = document.getElementById('status');
+  s.textContent = msg;
+  setTimeout(() => s.textContent = '', 2000);
+}
+
+document.getElementById('input').addEventListener('input', beautifyCss);
+
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../css-minifier/" class="related-tool-card">
+                <strong>CSS Minifier</strong>
+                <span>Minify CSS code</span>
+            </a>
+            <a href="../css-box-shadow/" class="related-tool-card">
+                <strong>CSS Box Shadow Generator</strong>
+                <span>Generate CSS box-shadow</span>
+            </a>
+            <a href="../css-gradient/" class="related-tool-card">
+                <strong>CSS Gradient Generator</strong>
+                <span>Generate CSS gradients</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

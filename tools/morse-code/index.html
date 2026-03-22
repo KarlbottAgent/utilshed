@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morse Code Translator — UtilShed</title>
+    <meta name="description" content="Free online morse code translator. Translate text to Morse code and Morse code back to text. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/morse-code/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Morse Code Translator","description":"Free online morse code translator. Translate text to Morse code and Morse code back to text. No signup required.","url":"https://utilshed.com/tools/morse-code/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Morse Code Translator","item":"https://utilshed.com/tools/morse-code/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Morse Code Translator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Morse Code Translator</h1>
+            <p>Translate text to Morse code and Morse code back to text.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="textToMorse()">Text → Morse</button>
+            <button class="btn" onclick="morseToText()">Morse → Text</button>
+            <button class="btn" onclick="playMorse()">Play Sound</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Text <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="Hello World"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Morse Code <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Morse Code Translator</h2>
+            <p>Translate between plain text and International Morse Code. Supports letters A-Z, numbers 0-9, and common punctuation.</p>
+            <p>Features audio playback of Morse code using your browser's audio API. Use dots (.) and dashes (-), separate letters with spaces, and words with forward slashes (/).</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+const MORSE = {
+  'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---',
+  'K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-',
+  'U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..',
+  '0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....',
+  '6':'-....','7':'--...','8':'---..','9':'----.',
+  '.':'.-.-.-',',':'--..--','?':'..--..','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-',
+  '&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-',
+  '_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.', "'": ".----."
+};
+const REVERSE = {};
+for (const [k, v] of Object.entries(MORSE)) REVERSE[v] = k;
+
+function textToMorse() {
+  const input = document.getElementById('input').value.toUpperCase();
+  const result = input.split('').map(ch => {
+    if (ch === ' ') return '/';
+    return MORSE[ch] || '';
+  }).filter(Boolean).join(' ');
+  document.getElementById('output').value = result;
+}
+
+function morseToText() {
+  const input = document.getElementById('input').value.trim();
+  const words = input.split(/\s*\/\s*/);
+  const result = words.map(word => {
+    return word.split(/\s+/).map(code => REVERSE[code] || '?').join('');
+  }).join(' ');
+  document.getElementById('output').value = result;
+}
+
+let audioCtx;
+function playMorse() {
+  const morse = document.getElementById('output').value;
+  if (!morse) return;
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  const dotLen = 0.08;
+  let time = audioCtx.currentTime;
+
+  for (const ch of morse) {
+    if (ch === '.') {
+      playTone(time, dotLen);
+      time += dotLen + dotLen;
+    } else if (ch === '-') {
+      playTone(time, dotLen * 3);
+      time += dotLen * 3 + dotLen;
+    } else if (ch === ' ') {
+      time += dotLen * 3;
+    } else if (ch === '/') {
+      time += dotLen * 7;
+    }
+  }
+}
+
+function playTone(startTime, duration) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.frequency.value = 600;
+  gain.gain.value = 0.3;
+  osc.start(startTime);
+  osc.stop(startTime + duration);
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('output').value);
+  const s = document.getElementById('status');
+  s.textContent = 'Copied!';
+  setTimeout(() => s.textContent = '', 2000);
+}
+
+document.getElementById('input').addEventListener('input', textToMorse);
+
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encoder</strong>
+                <span>Encode/decode Base64</span>
+            </a>
+            <a href="../text-case-converter/" class="related-tool-card">
+                <strong>Text Case Converter</strong>
+                <span>Convert text between cases</span>
+            </a>
+            <a href="../reverse-string/" class="related-tool-card">
+                <strong>Reverse String</strong>
+                <span>Reverse text characters</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

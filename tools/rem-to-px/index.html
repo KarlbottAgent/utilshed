@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REM to PX Converter — UtilShed</title>
+    <meta name="description" content="Free online rem to px converter. Convert REM values to PX and vice versa with custom base font size. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/rem-to-px/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"REM to PX Converter","description":"Free online rem to px converter. Convert REM values to PX and vice versa with custom base font size. No signup required.","url":"https://utilshed.com/tools/rem-to-px/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"REM to PX Converter","item":"https://utilshed.com/tools/rem-to-px/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">REM to PX Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>REM to PX Converter</h1>
+            <p>Convert REM values to PX and vice versa with custom base font size.</p>
+        </div>
+
+        <div class="tool-single">
+            <div style="margin-bottom:1.5rem">
+                <label style="color:#aaa;display:block;margin-bottom:0.5rem">Base Font Size (px)</label>
+                <input type="number" id="base" value="16" min="1" max="100" oninput="convertAll()" style="width:100px;padding:0.5rem;background:#1e1e2e;color:#e0e0e0;border:1px solid #333;border-radius:6px;font-size:1rem;text-align:center">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+                <div>
+                    <label style="color:#aaa;display:block;margin-bottom:0.5rem">REM</label>
+                    <input type="text" id="remInput" placeholder="e.g. 1.5" oninput="remToPx()" style="width:100%;padding:0.75rem;background:#1e1e2e;color:#e0e0e0;border:1px solid #333;border-radius:6px;font-size:1.1rem;font-family:monospace">
+                </div>
+                <div>
+                    <label style="color:#aaa;display:block;margin-bottom:0.5rem">PX</label>
+                    <input type="text" id="pxInput" placeholder="e.g. 24" oninput="pxToRem()" style="width:100%;padding:0.75rem;background:#1e1e2e;color:#e0e0e0;border:1px solid #333;border-radius:6px;font-size:1.1rem;font-family:monospace">
+                </div>
+            </div>
+            <div style="margin-top:2rem">
+                <h3 style="color:#e0e0e0;margin-bottom:1rem">Quick Reference</h3>
+                <div id="refTable" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.5rem"></div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About REM to PX Converter</h2>
+            <p>Convert between REM and PX units for CSS. REM units are relative to the root element's font size (usually 16px by default).</p>
+            <p>Adjust the base font size to match your project's root font-size setting. The reference table shows common conversions at a glance.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+function remToPx() {
+  const base = parseFloat(document.getElementById('base').value) || 16;
+  const rem = parseFloat(document.getElementById('remInput').value);
+  if (isNaN(rem)) { document.getElementById('pxInput').value = ''; return; }
+  document.getElementById('pxInput').value = (rem * base).toFixed(2).replace(/\.?0+$/, '');
+}
+
+function pxToRem() {
+  const base = parseFloat(document.getElementById('base').value) || 16;
+  const px = parseFloat(document.getElementById('pxInput').value);
+  if (isNaN(px)) { document.getElementById('remInput').value = ''; return; }
+  document.getElementById('remInput').value = (px / base).toFixed(4).replace(/\.?0+$/, '');
+}
+
+function convertAll() {
+  if (document.getElementById('remInput').value) remToPx();
+  else if (document.getElementById('pxInput').value) pxToRem();
+  buildRefTable();
+}
+
+function buildRefTable() {
+  const base = parseFloat(document.getElementById('base').value) || 16;
+  const values = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+  const table = document.getElementById('refTable');
+  table.innerHTML = values.map(rem =>
+    '<div style="padding:0.5rem;background:#1e1e2e;border-radius:4px;text-align:center;font-family:monospace">' +
+    '<div style="color:#7ec8e3;font-size:0.9rem">' + rem + 'rem</div>' +
+    '<div style="color:#aaa;font-size:0.8rem">' + (rem * base) + 'px</div></div>'
+  ).join('');
+}
+
+buildRefTable();
+
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../px-to-rem/" class="related-tool-card">
+                <strong>PX to REM Converter</strong>
+                <span>Convert pixels to REM units</span>
+            </a>
+            <a href="../css-beautifier/" class="related-tool-card">
+                <strong>CSS Beautifier</strong>
+                <span>Format CSS code</span>
+            </a>
+            <a href="../color-converter/" class="related-tool-card">
+                <strong>Color Converter</strong>
+                <span>Convert between color formats</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to JSX Converter — UtilShed</title>
+    <meta name="description" content="Free online html to jsx converter. Convert HTML to JSX for React components — handles class, style, and attributes. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/html-to-jsx/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"HTML to JSX Converter","description":"Free online html to jsx converter. Convert HTML to JSX for React components — handles class, style, and attributes. No signup required.","url":"https://utilshed.com/tools/html-to-jsx/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"HTML to JSX Converter","item":"https://utilshed.com/tools/html-to-jsx/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">HTML to JSX Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>HTML to JSX Converter</h1>
+            <p>Convert HTML to JSX for React components — handles class, style, and attributes.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convertToJsx()">Convert</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">HTML <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="&lt;div class=&quot;container&quot;&gt;
+  &lt;label for=&quot;name&quot;&gt;Name:&lt;/label&gt;
+  &lt;input type=&quot;text&quot; tabindex=&quot;1&quot; autofocus&gt;
+  &lt;p style=&quot;color: red; font-size: 14px;&quot;&gt;Required&lt;/p&gt;
+  &lt;!-- comment --&gt;
+&lt;/div&gt;"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">JSX <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About HTML to JSX Converter</h2>
+            <p>Convert HTML to valid JSX for React. Automatically handles the most common conversions: class → className, for → htmlFor, inline styles to objects, self-closing tags, and more.</p>
+            <p>Saves time when migrating HTML templates to React components. Runs entirely in your browser.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+function convertToJsx() {
+  const input = document.getElementById('input').value;
+  if (!input.trim()) return;
+
+  let result = input;
+
+  // Convert class to className
+  result = result.replace(/\bclass="/g, 'className="');
+  result = result.replace(/\bclass='/g, "className='");
+
+  // Convert for to htmlFor
+  result = result.replace(/\bfor="/g, 'htmlFor="');
+  result = result.replace(/\bfor='/g, "htmlFor='");
+
+  // Convert tabindex to tabIndex
+  result = result.replace(/\btabindex=/g, 'tabIndex=');
+
+  // Convert autofocus to autoFocus
+  result = result.replace(/\bautofocus\b/g, 'autoFocus');
+
+  // Convert readonly to readOnly
+  result = result.replace(/\breadonly\b/g, 'readOnly');
+
+  // Convert maxlength to maxLength
+  result = result.replace(/\bmaxlength=/g, 'maxLength=');
+
+  // Convert colspan to colSpan
+  result = result.replace(/\bcolspan=/g, 'colSpan=');
+
+  // Convert rowspan to rowSpan
+  result = result.replace(/\browspan=/g, 'rowSpan=');
+
+  // Convert cellpadding to cellPadding
+  result = result.replace(/\bcellpadding=/g, 'cellPadding=');
+
+  // Convert cellspacing to cellSpacing
+  result = result.replace(/\bcellspacing=/g, 'cellSpacing=');
+
+  // Convert charset to charSet
+  result = result.replace(/\bcharset=/g, 'charSet=');
+
+  // Convert crossorigin to crossOrigin
+  result = result.replace(/\bcrossorigin=/g, 'crossOrigin=');
+
+  // Convert inline styles to objects
+  result = result.replace(/style="([^"]*)"/g, (match, styles) => {
+    const jsStyles = styles.split(';').filter(s => s.trim()).map(s => {
+      const [prop, ...vals] = s.split(':');
+      const value = vals.join(':').trim();
+      // Convert kebab-case to camelCase
+      const camelProp = prop.trim().replace(/-([a-z])/g, (m, c) => c.toUpperCase());
+      // Check if value is a number
+      const numVal = parseFloat(value);
+      if (!isNaN(numVal) && String(numVal) === value.replace(/px$/, '')) {
+        return `${camelProp}: ${numVal}`;
+      }
+      return `${camelProp}: "${value}"`;
+    });
+    return `style={{${jsStyles.join(', ')}}}`;
+  });
+
+  // Self-close void elements
+  const voidElements = ['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'];
+  for (const tag of voidElements) {
+    const regex = new RegExp(`<${tag}([^>]*?)(?<!/)>`, 'gi');
+    result = result.replace(regex, `<${tag}$1 />`);
+  }
+
+  // Convert HTML comments to JSX comments
+  result = result.replace(/<!--([\s\S]*?)-->/g, '{/* $1 */}');
+
+  document.getElementById('output').value = result;
+  showStatus('Converted!');
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('output').value);
+  showStatus('Copied!');
+}
+
+function clearAll() {
+  document.getElementById('input').value = '';
+  document.getElementById('output').value = '';
+}
+
+function showStatus(msg) {
+  const s = document.getElementById('status');
+  s.textContent = msg;
+  setTimeout(() => s.textContent = '', 2000);
+}
+
+document.getElementById('input').addEventListener('input', convertToJsx);
+
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../html-to-markdown/" class="related-tool-card">
+                <strong>HTML to Markdown</strong>
+                <span>Convert HTML to Markdown</span>
+            </a>
+            <a href="../html-beautifier/" class="related-tool-card">
+                <strong>HTML Beautifier</strong>
+                <span>Format HTML code</span>
+            </a>
+            <a href="../json-to-typescript/" class="related-tool-card">
+                <strong>JSON to TypeScript</strong>
+                <span>Convert JSON to TypeScript interfaces</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

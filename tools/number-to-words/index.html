@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number to Words Converter — UtilShed</title>
+    <meta name="description" content="Free online number to words converter. Convert numbers to their English word representation. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/number-to-words/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Number to Words Converter","description":"Free online number to words converter. Convert numbers to their English word representation. No signup required.","url":"https://utilshed.com/tools/number-to-words/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Number to Words Converter","item":"https://utilshed.com/tools/number-to-words/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Number to Words Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Number to Words Converter</h1>
+            <p>Convert numbers to their English word representation.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convert()">Convert</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-single">
+            <div style="margin-bottom:1rem">
+                <label style="color:#aaa;display:block;margin-bottom:0.5rem">Enter a Number</label>
+                <input type="text" id="numberInput" placeholder="e.g. 1234567" style="width:100%;padding:0.75rem;background:#1e1e2e;color:#e0e0e0;border:1px solid #333;border-radius:6px;font-size:1.1rem;font-family:monospace">
+            </div>
+            <div style="margin-top:1rem;padding:1.5rem;background:#1e1e2e;border:1px solid #333;border-radius:6px;min-height:60px">
+                <div style="color:#aaa;font-size:0.85rem;margin-bottom:0.5rem">In Words:</div>
+                <div id="result" style="color:#7ec8e3;font-size:1.3rem;line-height:1.6"></div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Number to Words Converter</h2>
+            <p>Convert any number to its English word representation. Supports integers up to the trillions, negative numbers, and decimals.</p>
+            <p>Useful for writing checks, legal documents, or any situation where numbers need to be spelled out. Works offline in your browser.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+
+const ones = ['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+const tens = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+const scales = ['','thousand','million','billion','trillion','quadrillion'];
+
+function numberToWords(n) {
+  if (n === 0) return 'zero';
+  if (n < 0) return 'negative ' + numberToWords(-n);
+
+  let words = '';
+  let scaleIdx = 0;
+
+  while (n > 0) {
+    const chunk = n % 1000;
+    if (chunk !== 0) {
+      let chunkWords = '';
+      const h = Math.floor(chunk / 100);
+      const remainder = chunk % 100;
+
+      if (h > 0) chunkWords += ones[h] + ' hundred';
+      if (remainder > 0) {
+        if (h > 0) chunkWords += ' ';
+        if (remainder < 20) {
+          chunkWords += ones[remainder];
+        } else {
+          chunkWords += tens[Math.floor(remainder / 10)];
+          if (remainder % 10 > 0) chunkWords += '-' + ones[remainder % 10];
+        }
+      }
+
+      if (scales[scaleIdx]) chunkWords += ' ' + scales[scaleIdx];
+      words = chunkWords + (words ? ' ' : '') + words;
+    }
+    n = Math.floor(n / 1000);
+    scaleIdx++;
+  }
+
+  return words.trim();
+}
+
+function convert() {
+  const input = document.getElementById('numberInput').value.trim();
+  if (!input) { document.getElementById('result').textContent = ''; return; }
+
+  const parts = input.split('.');
+  const intPart = parseInt(parts[0]);
+
+  if (isNaN(intPart)) {
+    document.getElementById('result').textContent = 'Please enter a valid number';
+    return;
+  }
+
+  let result = numberToWords(intPart);
+
+  if (parts.length > 1 && parts[1]) {
+    result += ' point';
+    for (const digit of parts[1]) {
+      const d = parseInt(digit);
+      if (!isNaN(d)) result += ' ' + (d === 0 ? 'zero' : ones[d]);
+    }
+  }
+
+  document.getElementById('result').textContent = result;
+}
+
+function clearAll() {
+  document.getElementById('numberInput').value = '';
+  document.getElementById('result').textContent = '';
+}
+
+document.getElementById('numberInput').addEventListener('input', convert);
+
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../number-base-converter/" class="related-tool-card">
+                <strong>Number Base Converter</strong>
+                <span>Convert between binary, decimal, hex, and octal</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator</strong>
+                <span>Generate MD5, SHA-1, SHA-256 hashes</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUIDs</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
