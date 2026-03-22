@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Minifier & Beautifier — UtilShed</title>
+    <meta name="description" content="Free online JavaScript minifier and beautifier. Compress JS code to reduce file size or beautify minified JavaScript for readability. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/js-minifier/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">🛠️ UtilShed</a>
+            <span class="tagline">JavaScript Minifier & Beautifier</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>JavaScript Minifier & Beautifier</h1>
+            <p>Minify JavaScript to reduce file size for production, or beautify compressed JS for debugging and readability.</p>
+        </div>
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="minifyJS()">Minify</button>
+            <button class="btn" onclick="beautifyJS()">Beautify</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="margin-bottom:1rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+            <label style="color:#aaa">Indent:
+                <select id="indentSize" style="background:#1e1e1e;color:#e0e0e0;border:1px solid #444;padding:4px 8px;border-radius:4px">
+                    <option value="2" selected>2 spaces</option>
+                    <option value="4">4 spaces</option>
+                    <option value="tab">Tab</option>
+                </select>
+            </label>
+            <label style="color:#aaa"><input type="checkbox" id="removeComments" checked> Remove comments</label>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Input <span class="label">Paste JavaScript here</span></div>
+                <textarea class="tool-input" id="input" placeholder="function greet(name) {
+  // Say hello
+  const message = 'Hello, ' + name + '!';
+  console.log(message);
+  return message;
+}"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About JavaScript Minifier</h2>
+            <p>This free online JavaScript minifier removes whitespace, comments, and unnecessary characters from your JS code to reduce file size for faster page loads. The beautifier reformats compressed JavaScript with proper indentation for easy reading and debugging.</p>
+            <h3 style="color:#e0e0e0;font-size:1rem">Features</h3>
+            <ul>
+                <li>Remove single-line and multi-line comments</li>
+                <li>Strip unnecessary whitespace while preserving strings</li>
+                <li>Beautify with configurable indentation (2/4 spaces or tabs)</li>
+                <li>Shows compression ratio and character counts</li>
+            </ul>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    function minifyJS() {
+        const input = document.getElementById('input').value;
+        if (!input.trim()) { setStatus('Enter some JavaScript first', 'err'); return; }
+        const removeComments = document.getElementById('removeComments').checked;
+        let js = input;
+
+        // Tokenize to preserve strings and regex
+        const tokens = [];
+        let i = 0;
+        while (i < js.length) {
+            // String literals
+            if (js[i] === '"' || js[i] === "'" || js[i] === '`') {
+                const q = js[i];
+                let j = i + 1;
+                while (j < js.length) {
+                    if (js[j] === '\\') { j += 2; continue; }
+                    if (js[j] === q) { j++; break; }
+                    j++;
+                }
+                tokens.push({ type: 'string', value: js.slice(i, j) });
+                i = j;
+                continue;
+            }
+            // Line comments
+            if (js[i] === '/' && js[i+1] === '/') {
+                let j = i + 2;
+                while (j < js.length && js[j] !== '\n') j++;
+                if (!removeComments) tokens.push({ type: 'comment', value: js.slice(i, j) });
+                i = j;
+                continue;
+            }
+            // Block comments
+            if (js[i] === '/' && js[i+1] === '*') {
+                let j = i + 2;
+                while (j < js.length - 1 && !(js[j] === '*' && js[j+1] === '/')) j++;
+                if (!removeComments) tokens.push({ type: 'comment', value: js.slice(i, j + 2) });
+                i = j + 2;
+                continue;
+            }
+            // Whitespace
+            if (/\s/.test(js[i])) {
+                let j = i;
+                while (j < js.length && /\s/.test(js[j])) j++;
+                tokens.push({ type: 'ws', value: js.slice(i, j) });
+                i = j;
+                continue;
+            }
+            // Other characters
+            let j = i;
+            while (j < js.length && !/[\s"'`]/.test(js[j]) && !(js[j] === '/' && (js[j+1] === '/' || js[j+1] === '*'))) j++;
+            tokens.push({ type: 'code', value: js.slice(i, j) });
+            i = j;
+        }
+
+        // Rebuild minified
+        let result = '';
+        for (let k = 0; k < tokens.length; k++) {
+            const t = tokens[k];
+            if (t.type === 'string') {
+                result += t.value;
+            } else if (t.type === 'comment') {
+                result += t.value;
+            } else if (t.type === 'ws') {
+                // Need space between identifiers/keywords
+                const prev = result.slice(-1);
+                const next = tokens[k+1];
+                if (next && next.type === 'code') {
+                    const nextChar = next.value[0];
+                    if (/[a-zA-Z0-9_$]/.test(prev) && /[a-zA-Z0-9_$]/.test(nextChar)) {
+                        result += ' ';
+                    } else if ((prev === '+' && nextChar === '+') || (prev === '-' && nextChar === '-')) {
+                        result += ' ';
+                    }
+                } else if (next && next.type === 'string') {
+                    if (/[a-zA-Z0-9_$]/.test(prev)) result += ' ';
+                }
+            } else {
+                result += t.value;
+            }
+        }
+        result = result.trim();
+
+        document.getElementById('output').value = result;
+        const saved = input.length - result.length;
+        const pct = input.length > 0 ? ((saved / input.length) * 100).toFixed(1) : 0;
+        setStatus('Minified ✓', 'ok');
+        document.getElementById('size-label').textContent = result.length + ' chars (saved ' + saved + ' / ' + pct + '%)';
+    }
+
+    function beautifyJS() {
+        const input = document.getElementById('input').value;
+        if (!input.trim()) { setStatus('Enter some JavaScript first', 'err'); return; }
+        const indentVal = document.getElementById('indentSize').value;
+        const indent = indentVal === 'tab' ? '\t' : ' '.repeat(Number(indentVal));
+
+        let js = input;
+        // Normalize whitespace
+        // Tokenize preserving strings
+        const tokens = [];
+        let i = 0;
+        while (i < js.length) {
+            if (js[i] === '"' || js[i] === "'" || js[i] === '`') {
+                const q = js[i];
+                let j = i + 1;
+                while (j < js.length) {
+                    if (js[j] === '\\') { j += 2; continue; }
+                    if (js[j] === q) { j++; break; }
+                    j++;
+                }
+                tokens.push(js.slice(i, j));
+                i = j;
+                continue;
+            }
+            if (js[i] === '/' && js[i+1] === '/') {
+                let j = i + 2;
+                while (j < js.length && js[j] !== '\n') j++;
+                tokens.push(js.slice(i, j));
+                i = j;
+                continue;
+            }
+            if (js[i] === '/' && js[i+1] === '*') {
+                let j = i + 2;
+                while (j < js.length - 1 && !(js[j] === '*' && js[j+1] === '/')) j++;
+                tokens.push(js.slice(i, j + 2));
+                i = j + 2;
+                continue;
+            }
+            tokens.push(js[i]);
+            i++;
+        }
+
+        // Rebuild with formatting
+        let result = '';
+        let depth = 0;
+        let inString = false;
+
+        for (let k = 0; k < tokens.length; k++) {
+            const t = tokens[k];
+            if (t.length > 1 && (t[0] === '"' || t[0] === "'" || t[0] === '`' || t.startsWith('//') || t.startsWith('/*'))) {
+                result += t;
+                if (t.startsWith('//')) result += '\n' + indent.repeat(depth);
+                continue;
+            }
+            const c = t;
+            if (c === '{' || c === '[') {
+                result += c;
+                depth++;
+                result += '\n' + indent.repeat(depth);
+            } else if (c === '}' || c === ']') {
+                depth = Math.max(0, depth - 1);
+                // Remove trailing whitespace
+                result = result.replace(/[ \t]+$/, '');
+                if (!result.endsWith('\n')) result += '\n';
+                result += indent.repeat(depth) + c;
+            } else if (c === ';') {
+                result += ';\n' + indent.repeat(depth);
+            } else if (c === ',') {
+                result += ',\n' + indent.repeat(depth);
+            } else if (c === '\n' || c === '\r') {
+                // Skip — we add our own
+            } else if (c === ' ' || c === '\t') {
+                // Collapse whitespace
+                if (result.length > 0 && !/[\s\n]/.test(result[result.length - 1])) {
+                    result += ' ';
+                }
+            } else {
+                result += c;
+            }
+        }
+
+        result = result.replace(/\n\s*\n\s*\n/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim();
+        document.getElementById('output').value = result;
+        setStatus('Beautified ✓', 'ok');
+        document.getElementById('size-label').textContent = result.length + ' chars';
+    }
+
+    function loadSample() {
+        document.getElementById('input').value = `// User authentication module
+function authenticate(username, password) {
+  const users = getUsers();
+  const user = users.find(u => u.name === username);
+  if (!user) {
+    throw new Error('User not found: ' + username);
+  }
+  /* Check password hash */
+  const isValid = bcrypt.compare(password, user.hash);
+  if (!isValid) {
+    logFailedAttempt(username);
+    return { success: false, error: 'Invalid credentials' };
+  }
+  const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: '24h' });
+  return { success: true, token, user: { id: user.id, name: user.name, role: user.role } };
+}`;
+        setStatus('Sample loaded', 'ok');
+    }
+
+    function copyOutput() {
+        navigator.clipboard.writeText(document.getElementById('output').value);
+        setStatus('Copied!', 'ok');
+    }
+
+    function clearAll() {
+        document.getElementById('input').value = '';
+        document.getElementById('output').value = '';
+        document.getElementById('status').textContent = '';
+        document.getElementById('size-label').textContent = '';
+    }
+
+    function setStatus(msg, type) {
+        const el = document.getElementById('status');
+        el.textContent = msg;
+        el.className = 'status status-' + type;
+    }
+    </script>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

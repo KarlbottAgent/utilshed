@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chmod Calculator — UtilShed</title>
+    <meta name="description" content="Free online chmod calculator. Convert between numeric (octal) and symbolic Linux file permissions. Visual permission editor with chmod command output.">
+    <link rel="canonical" href="https://utilshed.com/tools/chmod-calculator/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .perm-grid { display: grid; grid-template-columns: auto repeat(3, 1fr); gap: 0; border: 1px solid #444; border-radius: 8px; overflow: hidden; margin: 1rem 0; }
+        .perm-cell { padding: 10px 16px; text-align: center; border-bottom: 1px solid #333; border-right: 1px solid #333; }
+        .perm-cell:last-child { border-right: none; }
+        .perm-header { background: #2a2a2a; color: #8ab4f8; font-weight: 600; font-size: 0.9rem; }
+        .perm-label { background: #1e1e1e; color: #aaa; font-weight: 600; text-align: left; }
+        .perm-cell input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #8ab4f8; }
+        .perm-row:last-child .perm-cell { border-bottom: none; }
+        .octal-display { font-size: 3rem; font-weight: 700; color: #8ab4f8; text-align: center; margin: 1rem 0; font-family: monospace; letter-spacing: 8px; }
+        .symbolic-display { font-size: 1.4rem; color: #e0e0e0; text-align: center; margin: 0.5rem 0; font-family: monospace; }
+        .cmd-display { background: #1a1a2e; border: 1px solid #444; border-radius: 8px; padding: 16px; margin: 1rem 0; font-family: monospace; font-size: 1rem; color: #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
+        .cmd-display code { color: #8ab4f8; }
+        .convert-section { margin: 1.5rem 0; }
+        .convert-input { background: #1e1e1e; color: #e0e0e0; border: 1px solid #444; padding: 10px 14px; border-radius: 6px; font-size: 1rem; font-family: monospace; width: 200px; }
+        .common-perms { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin: 1rem 0; }
+        .common-perm { background: #1e1e1e; border: 1px solid #333; border-radius: 6px; padding: 10px 14px; cursor: pointer; transition: border-color 0.2s; }
+        .common-perm:hover { border-color: #8ab4f8; }
+        .common-perm .perm-val { color: #8ab4f8; font-family: monospace; font-weight: 600; }
+        .common-perm .perm-desc { color: #aaa; font-size: 0.85rem; margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">🛠️ UtilShed</a>
+            <span class="tagline">Chmod Calculator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Chmod Calculator</h1>
+            <p>Calculate Linux/Unix file permissions visually. Convert between numeric (octal) and symbolic notation.</p>
+        </div>
+
+        <div class="octal-display" id="octalDisplay">755</div>
+        <div class="symbolic-display" id="symbolicDisplay">rwxr-xr-x</div>
+
+        <div class="perm-grid">
+            <div class="perm-cell perm-header"></div>
+            <div class="perm-cell perm-header">Read (4)</div>
+            <div class="perm-cell perm-header">Write (2)</div>
+            <div class="perm-cell perm-header">Execute (1)</div>
+
+            <div class="perm-cell perm-label">Owner</div>
+            <div class="perm-cell"><input type="checkbox" id="or" checked onchange="update()"></div>
+            <div class="perm-cell"><input type="checkbox" id="ow" checked onchange="update()"></div>
+            <div class="perm-cell"><input type="checkbox" id="ox" checked onchange="update()"></div>
+
+            <div class="perm-cell perm-label">Group</div>
+            <div class="perm-cell"><input type="checkbox" id="gr" checked onchange="update()"></div>
+            <div class="perm-cell"><input type="checkbox" id="gw" onchange="update()"></div>
+            <div class="perm-cell"><input type="checkbox" id="gx" checked onchange="update()"></div>
+
+            <div class="perm-cell perm-label perm-row">Other</div>
+            <div class="perm-cell perm-row"><input type="checkbox" id="tr" checked onchange="update()"></div>
+            <div class="perm-cell perm-row"><input type="checkbox" id="tw" onchange="update()"></div>
+            <div class="perm-cell perm-row"><input type="checkbox" id="tx" checked onchange="update()"></div>
+        </div>
+
+        <div class="cmd-display">
+            <span>$ <code id="chmodCmd">chmod 755 filename</code></span>
+            <button class="btn" onclick="copyCmd()" style="padding:6px 12px;font-size:0.85rem">Copy</button>
+        </div>
+
+        <div class="convert-section">
+            <h2 style="color:#e0e0e0;font-size:1.1rem;margin-bottom:0.8rem">Convert</h2>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+                <div>
+                    <label style="color:#aaa;font-size:0.85rem;display:block;margin-bottom:4px">Octal (e.g. 755)</label>
+                    <input class="convert-input" id="octalInput" placeholder="755" maxlength="4" oninput="fromOctal()">
+                </div>
+                <div>
+                    <label style="color:#aaa;font-size:0.85rem;display:block;margin-bottom:4px">Symbolic (e.g. rwxr-xr-x)</label>
+                    <input class="convert-input" id="symbolicInput" placeholder="rwxr-xr-x" maxlength="10" oninput="fromSymbolic()" style="width:240px">
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:2rem">
+            <h2 style="color:#e0e0e0;font-size:1.1rem;margin-bottom:0.8rem">Common Permissions</h2>
+            <div class="common-perms">
+                <div class="common-perm" onclick="setOctal(777)">
+                    <div class="perm-val">777 (rwxrwxrwx)</div>
+                    <div class="perm-desc">Full access for everyone — use with caution</div>
+                </div>
+                <div class="common-perm" onclick="setOctal(755)">
+                    <div class="perm-val">755 (rwxr-xr-x)</div>
+                    <div class="perm-desc">Owner full, others read+execute — standard for directories & scripts</div>
+                </div>
+                <div class="common-perm" onclick="setOctal(644)">
+                    <div class="perm-val">644 (rw-r--r--)</div>
+                    <div class="perm-desc">Owner read+write, others read — standard for files</div>
+                </div>
+                <div class="common-perm" onclick="setOctal(700)">
+                    <div class="perm-val">700 (rwx------)</div>
+                    <div class="perm-desc">Owner only — private directories</div>
+                </div>
+                <div class="common-perm" onclick="setOctal(600)">
+                    <div class="perm-val">600 (rw-------)</div>
+                    <div class="perm-desc">Owner only — private files, SSH keys</div>
+                </div>
+                <div class="common-perm" onclick="setOctal(444)">
+                    <div class="perm-val">444 (r--r--r--)</div>
+                    <div class="perm-desc">Read-only for everyone</div>
+                </div>
+                <div class="common-perm" onclick="setOctal(666)">
+                    <div class="perm-val">666 (rw-rw-rw-)</div>
+                    <div class="perm-desc">Read+write for everyone, no execute</div>
+                </div>
+                <div class="common-perm" onclick="setOctal(750)">
+                    <div class="perm-val">750 (rwxr-x---)</div>
+                    <div class="perm-desc">Owner full, group read+execute — shared project directories</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Chmod Calculator</h2>
+            <p>The <code>chmod</code> command changes file permissions on Linux and Unix systems. Permissions are expressed in octal notation (three digits, 0-7) or symbolic notation (rwx for read/write/execute). Each digit represents permissions for owner, group, and others respectively.</p>
+            <h3 style="color:#e0e0e0;font-size:1rem">Permission Values</h3>
+            <ul>
+                <li><strong>4</strong> — Read (r): view file contents or list directory</li>
+                <li><strong>2</strong> — Write (w): modify file or create/delete files in directory</li>
+                <li><strong>1</strong> — Execute (x): run file as program or access directory</li>
+            </ul>
+            <p>Add the values together: <code>rwx = 4+2+1 = 7</code>, <code>r-x = 4+0+1 = 5</code>, <code>r-- = 4+0+0 = 4</code></p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    function getPerms() {
+        return {
+            or: document.getElementById('or').checked,
+            ow: document.getElementById('ow').checked,
+            ox: document.getElementById('ox').checked,
+            gr: document.getElementById('gr').checked,
+            gw: document.getElementById('gw').checked,
+            gx: document.getElementById('gx').checked,
+            tr: document.getElementById('tr').checked,
+            tw: document.getElementById('tw').checked,
+            tx: document.getElementById('tx').checked
+        };
+    }
+
+    function setPermsFromOctal(oct) {
+        const s = String(oct).padStart(3, '0');
+        const o = parseInt(s[0]), g = parseInt(s[1]), t = parseInt(s[2]);
+        document.getElementById('or').checked = !!(o & 4);
+        document.getElementById('ow').checked = !!(o & 2);
+        document.getElementById('ox').checked = !!(o & 1);
+        document.getElementById('gr').checked = !!(g & 4);
+        document.getElementById('gw').checked = !!(g & 2);
+        document.getElementById('gx').checked = !!(g & 1);
+        document.getElementById('tr').checked = !!(t & 4);
+        document.getElementById('tw').checked = !!(t & 2);
+        document.getElementById('tx').checked = !!(t & 1);
+    }
+
+    function toOctal(p) {
+        const o = (p.or ? 4 : 0) + (p.ow ? 2 : 0) + (p.ox ? 1 : 0);
+        const g = (p.gr ? 4 : 0) + (p.gw ? 2 : 0) + (p.gx ? 1 : 0);
+        const t = (p.tr ? 4 : 0) + (p.tw ? 2 : 0) + (p.tx ? 1 : 0);
+        return '' + o + g + t;
+    }
+
+    function toSymbolic(p) {
+        return (p.or ? 'r' : '-') + (p.ow ? 'w' : '-') + (p.ox ? 'x' : '-')
+             + (p.gr ? 'r' : '-') + (p.gw ? 'w' : '-') + (p.gx ? 'x' : '-')
+             + (p.tr ? 'r' : '-') + (p.tw ? 'w' : '-') + (p.tx ? 'x' : '-');
+    }
+
+    function update() {
+        const p = getPerms();
+        const oct = toOctal(p);
+        const sym = toSymbolic(p);
+        document.getElementById('octalDisplay').textContent = oct;
+        document.getElementById('symbolicDisplay').textContent = sym;
+        document.getElementById('chmodCmd').textContent = 'chmod ' + oct + ' filename';
+        document.getElementById('octalInput').value = oct;
+        document.getElementById('symbolicInput').value = sym;
+    }
+
+    function fromOctal() {
+        const v = document.getElementById('octalInput').value.trim();
+        if (!/^[0-7]{3,4}$/.test(v)) return;
+        const oct = v.length === 4 ? v.slice(1) : v;
+        setPermsFromOctal(oct);
+        update();
+    }
+
+    function fromSymbolic() {
+        const v = document.getElementById('symbolicInput').value.trim();
+        if (v.length !== 9 && v.length !== 10) return;
+        const s = v.length === 10 ? v.slice(1) : v;
+        if (!/^[rwx-]{9}$/.test(s)) return;
+        document.getElementById('or').checked = s[0] === 'r';
+        document.getElementById('ow').checked = s[1] === 'w';
+        document.getElementById('ox').checked = s[2] === 'x';
+        document.getElementById('gr').checked = s[3] === 'r';
+        document.getElementById('gw').checked = s[4] === 'w';
+        document.getElementById('gx').checked = s[5] === 'x';
+        document.getElementById('tr').checked = s[6] === 'r';
+        document.getElementById('tw').checked = s[7] === 'w';
+        document.getElementById('tx').checked = s[8] === 'x';
+        update();
+    }
+
+    function setOctal(val) {
+        setPermsFromOctal(val);
+        update();
+    }
+
+    function copyCmd() {
+        navigator.clipboard.writeText(document.getElementById('chmodCmd').textContent);
+    }
+
+    // Init
+    update();
+    </script>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

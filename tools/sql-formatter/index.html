@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Formatter & Beautifier — UtilShed</title>
+    <meta name="description" content="Free online SQL formatter and beautifier. Format messy SQL queries with proper indentation, uppercase keywords, and syntax highlighting. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/sql-formatter/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">🛠️ UtilShed</a>
+            <span class="tagline">SQL Formatter & Beautifier</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>SQL Formatter & Beautifier</h1>
+            <p>Format and beautify SQL queries with proper indentation and uppercase keywords. Supports SELECT, INSERT, UPDATE, DELETE, CREATE, and more.</p>
+        </div>
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="formatSQL()">Format SQL</button>
+            <button class="btn" onclick="minifySQL()">Minify</button>
+            <button class="btn" onclick="uppercaseKeywords()">Uppercase Keywords</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="margin-bottom:1rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+            <label style="color:#aaa">Indent:
+                <select id="indentSize" style="background:#1e1e1e;color:#e0e0e0;border:1px solid #444;padding:4px 8px;border-radius:4px">
+                    <option value="2" selected>2 spaces</option>
+                    <option value="4">4 spaces</option>
+                    <option value="tab">Tab</option>
+                </select>
+            </label>
+            <label style="color:#aaa"><input type="checkbox" id="uppercaseKw" checked> Uppercase keywords</label>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Input <span class="label">Paste SQL here</span></div>
+                <textarea class="tool-input" id="input" placeholder="select u.id, u.name, o.total from users u join orders o on u.id = o.user_id where o.total > 100 and u.active = 1 order by o.total desc limit 10;"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Formatted Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About SQL Formatter</h2>
+            <p>This free online SQL formatter transforms messy, single-line SQL queries into clean, readable code with proper indentation. It handles common SQL dialects including MySQL, PostgreSQL, SQLite, and SQL Server syntax.</p>
+            <h3 style="color:#e0e0e0;font-size:1rem">Features</h3>
+            <ul>
+                <li>Automatic keyword uppercasing (SELECT, FROM, WHERE, JOIN, etc.)</li>
+                <li>Configurable indentation (2 spaces, 4 spaces, or tabs)</li>
+                <li>Handles subqueries, CTEs, CASE expressions, and nested logic</li>
+                <li>One-click minification to compress SQL into a single line</li>
+            </ul>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    const SQL_KEYWORDS = [
+        'SELECT','DISTINCT','FROM','WHERE','AND','OR','NOT','IN','EXISTS','BETWEEN',
+        'LIKE','IS','NULL','AS','ON','JOIN','INNER','LEFT','RIGHT','FULL','OUTER',
+        'CROSS','NATURAL','USING','GROUP','BY','HAVING','ORDER','ASC','DESC',
+        'LIMIT','OFFSET','FETCH','FIRST','NEXT','ROWS','ONLY','UNION','ALL',
+        'INTERSECT','EXCEPT','INSERT','INTO','VALUES','UPDATE','SET','DELETE',
+        'CREATE','TABLE','ALTER','DROP','INDEX','VIEW','TRIGGER','PROCEDURE',
+        'FUNCTION','IF','ELSE','THEN','END','CASE','WHEN','WITH','RECURSIVE',
+        'CASCADE','CONSTRAINT','PRIMARY','KEY','FOREIGN','REFERENCES','UNIQUE',
+        'CHECK','DEFAULT','AUTO_INCREMENT','SERIAL','RETURNING','TRUNCATE',
+        'BEGIN','COMMIT','ROLLBACK','TRANSACTION','GRANT','REVOKE','EXPLAIN',
+        'ANALYZE','VACUUM','COUNT','SUM','AVG','MIN','MAX','COALESCE','NULLIF',
+        'CAST','CONVERT','TOP','OVER','PARTITION','ROW_NUMBER','RANK','DENSE_RANK',
+        'LAG','LEAD','WINDOW','REPLACE','MERGE','UPSERT','CONFLICT','DO','NOTHING',
+        'TEMPORARY','TEMP','MATERIALIZED','LATERAL','ILIKE','SIMILAR','TO',
+        'BOOLEAN','INTEGER','VARCHAR','TEXT','DATE','TIMESTAMP','FLOAT','DECIMAL',
+        'BIGINT','SMALLINT','CHAR','BLOB','JSON','JSONB','ARRAY','ENUM','TYPE',
+        'SCHEMA','DATABASE','USE','SHOW','DESCRIBE','COLUMNS','TABLES','DATABASES'
+    ];
+
+    const MAJOR_CLAUSES = new Set([
+        'SELECT','FROM','WHERE','GROUP BY','ORDER BY','HAVING','LIMIT','OFFSET',
+        'INSERT INTO','VALUES','UPDATE','SET','DELETE FROM','CREATE TABLE',
+        'ALTER TABLE','DROP TABLE','WITH','UNION','UNION ALL','INTERSECT','EXCEPT',
+        'RETURNING','FETCH','INNER JOIN','LEFT JOIN','RIGHT JOIN','FULL JOIN',
+        'CROSS JOIN','NATURAL JOIN','LEFT OUTER JOIN','RIGHT OUTER JOIN',
+        'FULL OUTER JOIN','JOIN','ON','EXPLAIN','ANALYZE'
+    ]);
+
+    const SUB_CLAUSES = new Set(['AND','OR','ON']);
+
+    function getIndent() {
+        const v = document.getElementById('indentSize').value;
+        return v === 'tab' ? '\t' : ' '.repeat(Number(v));
+    }
+
+    function tokenize(sql) {
+        const tokens = [];
+        let i = 0;
+        while (i < sql.length) {
+            // Skip whitespace
+            if (/\s/.test(sql[i])) { i++; continue; }
+            // String literals
+            if (sql[i] === "'" || sql[i] === '"') {
+                const q = sql[i];
+                let j = i + 1;
+                while (j < sql.length && sql[j] !== q) { if (sql[j] === '\\') j++; j++; }
+                tokens.push(sql.slice(i, j + 1));
+                i = j + 1;
+                continue;
+            }
+            // Line comments
+            if (sql[i] === '-' && sql[i+1] === '-') {
+                let j = i + 2;
+                while (j < sql.length && sql[j] !== '\n') j++;
+                tokens.push(sql.slice(i, j));
+                i = j;
+                continue;
+            }
+            // Block comments
+            if (sql[i] === '/' && sql[i+1] === '*') {
+                let j = i + 2;
+                while (j < sql.length - 1 && !(sql[j] === '*' && sql[j+1] === '/')) j++;
+                tokens.push(sql.slice(i, j + 2));
+                i = j + 2;
+                continue;
+            }
+            // Punctuation
+            if ('(),;'.includes(sql[i])) {
+                tokens.push(sql[i]);
+                i++;
+                continue;
+            }
+            // Words / operators
+            let j = i;
+            while (j < sql.length && !/[\s(),;]/.test(sql[j])) j++;
+            tokens.push(sql.slice(i, j));
+            i = j;
+        }
+        return tokens;
+    }
+
+    function formatSQL() {
+        const input = document.getElementById('input').value;
+        if (!input.trim()) { setStatus('Enter some SQL first', 'err'); return; }
+        const doUpper = document.getElementById('uppercaseKw').checked;
+        const indent = getIndent();
+        const tokens = tokenize(input);
+        const lines = [];
+        let currentLine = '';
+        let depth = 0;
+        let i = 0;
+
+        function pushLine(extra) {
+            if (currentLine.trim()) lines.push(indent.repeat(depth) + currentLine.trim());
+            currentLine = extra || '';
+        }
+
+        function isKeyword(t) { return SQL_KEYWORDS.includes(t.toUpperCase()); }
+        function kw(t) { return doUpper ? t.toUpperCase() : t; }
+
+        function peekCompound(idx) {
+            const t1 = (tokens[idx] || '').toUpperCase();
+            const t2 = (tokens[idx + 1] || '').toUpperCase();
+            const t3 = (tokens[idx + 2] || '').toUpperCase();
+            // 3-word compounds
+            const three = t1 + ' ' + t2 + ' ' + t3;
+            if (MAJOR_CLAUSES.has(three)) return 3;
+            // 2-word compounds
+            const two = t1 + ' ' + t2;
+            if (MAJOR_CLAUSES.has(two)) return 2;
+            if (MAJOR_CLAUSES.has(t1)) return 1;
+            return 0;
+        }
+
+        while (i < tokens.length) {
+            const t = tokens[i];
+            const upper = t.toUpperCase();
+
+            // Handle compound clauses
+            const compound = peekCompound(i);
+            if (compound > 0) {
+                const clause = tokens.slice(i, i + compound).map(x => kw(x)).join(' ');
+                const clauseUpper = tokens.slice(i, i + compound).map(x => x.toUpperCase()).join(' ');
+
+                if (SUB_CLAUSES.has(clauseUpper)) {
+                    pushLine();
+                    currentLine = indent + clause + ' ';
+                    i += compound;
+                    continue;
+                }
+
+                pushLine();
+                currentLine = clause + ' ';
+                i += compound;
+                continue;
+            }
+
+            if (t === '(') {
+                currentLine += '(';
+                // Check if this is a simple list or subquery
+                let parenDepth = 1;
+                let j = i + 1;
+                let hasSelect = false;
+                while (j < tokens.length && parenDepth > 0) {
+                    if (tokens[j] === '(') parenDepth++;
+                    if (tokens[j] === ')') parenDepth--;
+                    if (tokens[j].toUpperCase() === 'SELECT' && parenDepth >= 1) hasSelect = true;
+                    j++;
+                }
+                if (hasSelect) {
+                    pushLine();
+                    depth++;
+                }
+                i++;
+                continue;
+            }
+
+            if (t === ')') {
+                if (depth > 0) {
+                    pushLine();
+                    depth--;
+                }
+                currentLine += ')';
+                i++;
+                continue;
+            }
+
+            if (t === ',') {
+                currentLine += ',';
+                pushLine();
+                currentLine = indent;
+                i++;
+                continue;
+            }
+
+            if (t === ';') {
+                currentLine += ';';
+                pushLine();
+                lines.push('');
+                i++;
+                continue;
+            }
+
+            // Regular token
+            if (isKeyword(upper)) {
+                currentLine += kw(t) + ' ';
+            } else {
+                currentLine += t + ' ';
+            }
+            i++;
+        }
+        pushLine();
+
+        const result = lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+        document.getElementById('output').value = result;
+        setStatus('Formatted ✓', 'ok');
+        document.getElementById('size-label').textContent = result.length + ' chars';
+    }
+
+    function minifySQL() {
+        const input = document.getElementById('input').value;
+        if (!input.trim()) { setStatus('Enter some SQL first', 'err'); return; }
+        let sql = input;
+        sql = sql.replace(/--.*$/gm, '');
+        sql = sql.replace(/\/\*[\s\S]*?\*\//g, '');
+        sql = sql.replace(/\s+/g, ' ').trim();
+        document.getElementById('output').value = sql;
+        const saved = input.length - sql.length;
+        const pct = input.length > 0 ? ((saved / input.length) * 100).toFixed(1) : 0;
+        setStatus('Minified ✓', 'ok');
+        document.getElementById('size-label').textContent = sql.length + ' chars (saved ' + saved + ' / ' + pct + '%)';
+    }
+
+    function uppercaseKeywords() {
+        const input = document.getElementById('input').value;
+        if (!input.trim()) { setStatus('Enter some SQL first', 'err'); return; }
+        const tokens = tokenize(input);
+        // Rebuild preserving original whitespace
+        let result = input;
+        for (const kw of SQL_KEYWORDS) {
+            const re = new RegExp('\\b' + kw + '\\b', 'gi');
+            result = result.replace(re, kw);
+        }
+        document.getElementById('output').value = result;
+        setStatus('Keywords uppercased ✓', 'ok');
+        document.getElementById('size-label').textContent = result.length + ' chars';
+    }
+
+    function loadSample() {
+        document.getElementById('input').value = `select u.id, u.name, u.email, count(o.id) as order_count, sum(o.total) as total_spent from users u left join orders o on u.id = o.user_id where u.active = 1 and u.created_at >= '2024-01-01' and o.status in ('completed', 'shipped') group by u.id, u.name, u.email having sum(o.total) > 100 order by total_spent desc limit 20;`;
+        setStatus('Sample loaded', 'ok');
+    }
+
+    function copyOutput() {
+        navigator.clipboard.writeText(document.getElementById('output').value);
+        setStatus('Copied!', 'ok');
+    }
+
+    function clearAll() {
+        document.getElementById('input').value = '';
+        document.getElementById('output').value = '';
+        document.getElementById('status').textContent = '';
+        document.getElementById('size-label').textContent = '';
+    }
+
+    function setStatus(msg, type) {
+        const el = document.getElementById('status');
+        el.textContent = msg;
+        el.className = 'status status-' + type;
+    }
+    </script>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
