@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — UtilShed</title>
+    <meta name="description" content="Developer guides and how-to articles. Learn how to decode JWT tokens, convert JSON to YAML, format SQL queries, and more.">
+    <link rel="canonical" href="https://utilshed.com/blog/">
+    <meta property="og:title" content="Blog — UtilShed">
+    <meta property="og:description" content="Developer guides and how-to articles on everyday dev tasks.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Blog","name":"UtilShed Blog","url":"https://utilshed.com/blog/","description":"Developer guides and how-to articles on everyday dev tasks.","publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"}}</script>
+    <style>
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; padding: 1rem 0 3rem; }
+        .blog-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; text-decoration: none; color: var(--text); transition: all 0.2s; }
+        .blog-card:hover { background: var(--surface-hover); border-color: var(--accent); transform: translateY(-2px); }
+        .blog-card h2 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .blog-card p { color: var(--text-muted); font-size: 0.875rem; line-height: 1.5; }
+        .blog-card .blog-meta { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="tool-header">
+            <h1>Developer Guides</h1>
+            <p>Practical how-to articles for everyday dev tasks.</p>
+        </div>
+
+        <div class="blog-grid">
+            <a href="how-to-decode-jwt-tokens/" class="blog-card">
+                <div class="blog-meta">March 22, 2026</div>
+                <h2>How to Decode JWT Tokens</h2>
+                <p>Learn what JWTs are, how they work, and how to decode and inspect them — with examples and a free online tool.</p>
+            </a>
+
+            <a href="how-to-convert-json-to-yaml/" class="blog-card">
+                <div class="blog-meta">March 22, 2026</div>
+                <h2>How to Convert JSON to YAML</h2>
+                <p>A quick guide to converting between JSON and YAML formats — when to use each, syntax differences, and a free converter tool.</p>
+            </a>
+
+            <a href="how-to-format-sql-queries/" class="blog-card">
+                <div class="blog-meta">March 22, 2026</div>
+                <h2>How to Format SQL Queries</h2>
+                <p>Write cleaner, more readable SQL with proper formatting. Covers indentation, keyword casing, and a free online formatter.</p>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

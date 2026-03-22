@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Format SQL Queries — UtilShed</title>
+    <meta name="description" content="Learn how to format SQL queries for readability. Covers indentation, keyword casing, line breaks, and a free online SQL formatter tool.">
+    <meta name="keywords" content="format SQL, SQL formatter, SQL beautifier, format SQL query, SQL indentation, SQL style guide, pretty print SQL, SQL formatting tool">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-format-sql-queries/">
+    <meta property="og:title" content="How to Format SQL Queries — UtilShed">
+    <meta property="og:description" content="Learn how to format SQL queries for readability. Covers indentation, keyword casing, and a free formatter.">
+    <meta property="og:type" content="article">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Format SQL Queries","description":"Learn how to format SQL queries for readability. Covers indentation, keyword casing, and a free formatter.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-format-sql-queries/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Format SQL Queries</div>
+            <div class="tool-header">
+                <h1>How to Format SQL Queries</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 4 min read</p>
+            </div>
+
+            <p>Unformatted SQL is hard to read, hard to debug, and hard to maintain. Whether you're pulling a query from a log file, inheriting someone else's code, or building a complex join, proper formatting makes a huge difference.</p>
+
+            <p>This guide covers the key principles of SQL formatting and shows you how to clean up any query — manually or with a <a href="../../tools/sql-formatter/">free SQL formatter</a>.</p>
+
+            <h2>Why Format SQL?</h2>
+
+            <p>Consider this query:</p>
+
+            <div class="code-block">SELECT u.id, u.name, u.email, o.id as order_id, o.total, o.created_at FROM users u INNER JOIN orders o ON u.id = o.user_id WHERE o.total > 100 AND u.created_at > '2025-01-01' ORDER BY o.total DESC LIMIT 50;</div>
+
+            <p>It works, but good luck finding a bug in it. Now compare the formatted version:</p>
+
+            <div class="code-block">SELECT
+    u.id,
+    u.name,
+    u.email,
+    o.id AS order_id,
+    o.total,
+    o.created_at
+FROM users u
+INNER JOIN orders o
+    ON u.id = o.user_id
+WHERE o.total > 100
+    AND u.created_at > '2025-01-01'
+ORDER BY o.total DESC
+LIMIT 50;</div>
+
+            <p>Same query, but now you can instantly see which columns are selected, which tables are joined, and what the conditions are.</p>
+
+            <h2>SQL Formatting Rules</h2>
+
+            <h3>1. Major Keywords on New Lines</h3>
+            <p>Each major SQL clause should start on a new line:</p>
+            <ul>
+                <li><span class="code-inline">SELECT</span></li>
+                <li><span class="code-inline">FROM</span></li>
+                <li><span class="code-inline">WHERE</span></li>
+                <li><span class="code-inline">JOIN</span> / <span class="code-inline">INNER JOIN</span> / <span class="code-inline">LEFT JOIN</span></li>
+                <li><span class="code-inline">GROUP BY</span></li>
+                <li><span class="code-inline">HAVING</span></li>
+                <li><span class="code-inline">ORDER BY</span></li>
+                <li><span class="code-inline">LIMIT</span></li>
+            </ul>
+
+            <h3>2. Indent Column Lists and Conditions</h3>
+            <p>Columns in <span class="code-inline">SELECT</span>, conditions in <span class="code-inline">WHERE</span>, and join conditions should be indented under their keyword:</p>
+            <div class="code-block">SELECT
+    first_name,
+    last_name,
+    email
+FROM users
+WHERE active = true
+    AND role = 'admin'</div>
+
+            <h3>3. Uppercase Keywords</h3>
+            <p>A common convention is to write SQL keywords in UPPERCASE and table/column names in lowercase:</p>
+            <div class="code-block">SELECT name FROM users WHERE id = 1;  -- preferred
+select name from users where id = 1;  -- works but harder to scan</div>
+
+            <h3>4. One Column Per Line in SELECT</h3>
+            <p>When selecting multiple columns, put each on its own line. This makes diffs cleaner and makes it easy to comment out individual columns during debugging.</p>
+
+            <h3>5. Align JOINs Consistently</h3>
+            <div class="code-block">FROM orders o
+INNER JOIN users u
+    ON o.user_id = u.id
+LEFT JOIN products p
+    ON o.product_id = p.id</div>
+
+            <h3>6. Use Subquery Indentation</h3>
+            <div class="code-block">SELECT *
+FROM users
+WHERE id IN (
+    SELECT user_id
+    FROM orders
+    WHERE total > 1000
+)</div>
+
+            <h2>Format SQL Instantly</h2>
+
+            <p>Don't want to format by hand? Paste your SQL into the <a href="../../tools/sql-formatter/">UtilShed SQL Formatter</a> and get clean, readable output in one click.</p>
+
+            <div class="cta-box">
+                <strong>Format your SQL query</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Paste messy SQL, get properly indented and formatted output.</p>
+                <a href="../../tools/sql-formatter/">Open SQL Formatter</a>
+            </div>
+
+            <h2>SQL Formatting in Your Editor</h2>
+
+            <h3>VS Code</h3>
+            <p>Install the <strong>SQL Formatter</strong> extension (by adpyke). Right-click any SQL file and select "Format Document" or use <span class="code-inline">Shift+Alt+F</span>.</p>
+
+            <h3>JetBrains (IntelliJ, DataGrip)</h3>
+            <p>Built-in: <span class="code-inline">Ctrl+Alt+L</span> (or <span class="code-inline">Cmd+Alt+L</span> on Mac) formats SQL in any .sql file or SQL console.</p>
+
+            <h3>Command Line</h3>
+            <div class="code-block"># Using sql-formatter (Node.js)
+npm install -g sql-formatter
+sql-formatter &lt; messy.sql &gt; clean.sql
+
+# Using sqlformat (Python)
+pip install sqlparse
+sqlformat --reindent --keywords upper messy.sql &gt; clean.sql</div>
+
+            <h2>SQL Style Guides</h2>
+
+            <p>If your team doesn't have a SQL style guide, consider adopting one of these:</p>
+            <ul>
+                <li><strong>Simon Holywell's SQL Style Guide</strong> — widely referenced, covers naming, indentation, and alignment</li>
+                <li><strong>GitLab SQL Style Guide</strong> — practical, battle-tested at scale</li>
+                <li><strong>Kickstarter SQL Style Guide</strong> — concise and opinionated</li>
+            </ul>
+
+            <p>The most important rule: pick a style and be consistent. Formatted SQL is easier to read, review, and debug.</p>
+
+            <h2>Related Tools</h2>
+            <ul>
+                <li><a href="../../tools/sql-formatter/">SQL Formatter</a> — format and beautify SQL queries online</li>
+                <li><a href="../../tools/json-formatter/">JSON Formatter</a> — format JSON data with syntax highlighting</li>
+                <li><a href="../../tools/css-minifier/">CSS Minifier</a> — minify CSS for production</li>
+                <li><a href="../../tools/js-beautifier/">JavaScript Beautifier</a> — format and indent JavaScript code</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

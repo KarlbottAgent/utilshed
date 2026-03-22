@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Convert JSON to YAML (and Back) — UtilShed</title>
+    <meta name="description" content="Learn how to convert JSON to YAML and YAML to JSON. Understand the syntax differences, when to use each format, and convert instantly with a free online tool.">
+    <meta name="keywords" content="JSON to YAML, convert JSON to YAML, YAML to JSON, JSON vs YAML, YAML converter, JSON converter, config file format">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-convert-json-to-yaml/">
+    <meta property="og:title" content="How to Convert JSON to YAML (and Back) — UtilShed">
+    <meta property="og:description" content="Learn how to convert JSON to YAML and YAML to JSON. Syntax differences, when to use each, and a free converter.">
+    <meta property="og:type" content="article">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Convert JSON to YAML (and Back)","description":"Learn how to convert JSON to YAML and YAML to JSON. Syntax differences, when to use each, and a free converter.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-convert-json-to-yaml/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+        .comparison-table th, .comparison-table td { padding: 0.75rem 1rem; border: 1px solid var(--border); text-align: left; font-size: 0.875rem; }
+        .comparison-table th { background: var(--surface); color: var(--text); font-weight: 600; }
+        .comparison-table td { color: var(--text-muted); }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Convert JSON to YAML</div>
+            <div class="tool-header">
+                <h1>How to Convert JSON to YAML (and Back)</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 5 min read</p>
+            </div>
+
+            <p>JSON and YAML are two of the most popular data serialization formats. If you work with configuration files, APIs, or DevOps tools, you'll inevitably need to convert between them.</p>
+
+            <p>In this guide, you'll learn the key differences between JSON and YAML, when to use each, and how to convert between them — with examples and a <a href="../../tools/json-to-yaml/">free online converter</a>.</p>
+
+            <h2>JSON vs YAML: Key Differences</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr><th>Feature</th><th>JSON</th><th>YAML</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Syntax</td><td>Braces and brackets</td><td>Indentation-based</td></tr>
+                    <tr><td>Comments</td><td>Not supported</td><td>Supported (#)</td></tr>
+                    <tr><td>Readability</td><td>Good for machines</td><td>Great for humans</td></tr>
+                    <tr><td>Data types</td><td>Strings, numbers, booleans, null, arrays, objects</td><td>Same + dates, timestamps, multi-line strings</td></tr>
+                    <tr><td>Common use</td><td>APIs, package.json, tsconfig</td><td>Docker Compose, Kubernetes, Ansible, CI/CD</td></tr>
+                    <tr><td>Strictness</td><td>Very strict (quotes required)</td><td>More flexible (quotes optional)</td></tr>
+                </tbody>
+            </table>
+
+            <h2>The Same Data in JSON and YAML</h2>
+
+            <h3>JSON</h3>
+            <div class="code-block">{
+  "name": "my-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.18.0",
+    "lodash": "^4.17.21"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "production": true,
+  "ports": [3000, 8080]
+}</div>
+
+            <h3>YAML</h3>
+            <div class="code-block">name: my-app
+version: 1.0.0
+dependencies:
+  express: ^4.18.0
+  lodash: ^4.17.21
+scripts:
+  start: node index.js
+  test: jest
+production: true
+ports:
+  - 3000
+  - 8080</div>
+
+            <p>The YAML version is shorter and arguably easier to scan. This is why YAML is the go-to format for configuration files like <span class="code-inline">docker-compose.yml</span>, <span class="code-inline">.github/workflows/*.yml</span>, and Kubernetes manifests.</p>
+
+            <h2>How to Convert JSON to YAML</h2>
+
+            <h3>Method 1: Online Converter (Instant)</h3>
+            <p>The fastest way — paste your JSON and get YAML instantly:</p>
+
+            <div class="cta-box">
+                <strong>Convert JSON to YAML</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Paste JSON, get clean YAML. Runs in your browser — nothing leaves your device.</p>
+                <a href="../../tools/json-to-yaml/">Open JSON to YAML Converter</a>
+            </div>
+
+            <h3>Method 2: Command Line with Python</h3>
+            <div class="code-block"># Install PyYAML if needed
+pip install pyyaml
+
+# Convert a file
+python -c "import json, yaml, sys; print(yaml.dump(json.load(sys.stdin), default_flow_style=False))" &lt; config.json &gt; config.yaml</div>
+
+            <h3>Method 3: Command Line with yq</h3>
+            <div class="code-block"># Install yq (https://github.com/mikefarah/yq)
+# macOS: brew install yq
+# Linux: snap install yq
+
+# Convert JSON to YAML
+yq -P config.json &gt; config.yaml
+
+# Convert YAML to JSON
+yq -o=json config.yaml &gt; config.json</div>
+
+            <h3>Method 4: In Node.js</h3>
+            <div class="code-block">const fs = require('fs');
+const yaml = require('js-yaml');  // npm install js-yaml
+
+// JSON to YAML
+const jsonData = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+const yamlStr = yaml.dump(jsonData);
+fs.writeFileSync('config.yaml', yamlStr);
+
+// YAML to JSON
+const yamlData = yaml.load(fs.readFileSync('config.yaml', 'utf8'));
+const jsonStr = JSON.stringify(yamlData, null, 2);
+fs.writeFileSync('config.json', jsonStr);</div>
+
+            <h2>How to Convert YAML to JSON</h2>
+
+            <p>Going the other direction? Use the <a href="../../tools/yaml-to-json/">YAML to JSON converter</a> or the command-line methods above in reverse.</p>
+
+            <div class="cta-box">
+                <strong>Convert YAML to JSON</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Paste YAML, get formatted JSON.</p>
+                <a href="../../tools/yaml-to-json/">Open YAML to JSON Converter</a>
+            </div>
+
+            <h2>Common Gotchas</h2>
+
+            <ul>
+                <li><strong>YAML indentation matters</strong> — use spaces, never tabs. Most tools use 2-space indentation.</li>
+                <li><strong>Unquoted strings can be tricky</strong> — <span class="code-inline">yes</span>, <span class="code-inline">no</span>, <span class="code-inline">true</span>, <span class="code-inline">false</span>, and <span class="code-inline">null</span> are interpreted as booleans/null in YAML, not strings. Quote them if you mean the literal string.</li>
+                <li><strong>Multi-line strings</strong> — YAML supports <span class="code-inline">|</span> (literal block) and <span class="code-inline">&gt;</span> (folded) for multi-line strings. JSON requires <span class="code-inline">\n</span> escapes.</li>
+                <li><strong>Comments are lost</strong> — when converting YAML to JSON, all comments (<span class="code-inline">#</span>) are stripped since JSON doesn't support them.</li>
+            </ul>
+
+            <h2>When to Use Which</h2>
+
+            <ul>
+                <li><strong>Use JSON</strong> for APIs, data interchange, and any context where strict parsing is important (package.json, tsconfig.json)</li>
+                <li><strong>Use YAML</strong> for configuration files that humans read and edit frequently (Docker Compose, Kubernetes, GitHub Actions, Ansible)</li>
+            </ul>
+
+            <h2>Related Tools</h2>
+            <ul>
+                <li><a href="../../tools/json-to-yaml/">JSON to YAML Converter</a></li>
+                <li><a href="../../tools/yaml-to-json/">YAML to JSON Converter</a></li>
+                <li><a href="../../tools/json-formatter/">JSON Formatter</a> — pretty-print and validate JSON</li>
+                <li><a href="../../tools/json-validator/">JSON Validator</a> — check if your JSON is valid before converting</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

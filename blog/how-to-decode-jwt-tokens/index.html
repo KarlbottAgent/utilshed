@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Decode JWT Tokens — UtilShed</title>
+    <meta name="description" content="Learn how to decode JWT tokens step by step. Understand JWT structure (header, payload, signature), decode them online, and inspect claims like exp and iat.">
+    <meta name="keywords" content="decode JWT, JWT decoder, how to decode JWT token, JWT token decoder, JSON Web Token, JWT claims, JWT header payload signature">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-decode-jwt-tokens/">
+    <meta property="og:title" content="How to Decode JWT Tokens — UtilShed">
+    <meta property="og:description" content="Learn how to decode JWT tokens step by step. Understand JWT structure, decode them online, and inspect claims.">
+    <meta property="og:type" content="article">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Decode JWT Tokens","description":"Learn how to decode JWT tokens step by step. Understand JWT structure, decode them online, and inspect claims.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-decode-jwt-tokens/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Decode JWT Tokens</div>
+            <div class="tool-header">
+                <h1>How to Decode JWT Tokens</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 5 min read</p>
+            </div>
+
+            <p>JSON Web Tokens (JWTs) are everywhere in modern web development. If you've ever worked with authentication APIs, OAuth, or single sign-on, you've dealt with JWTs. But what's actually inside one? And how do you decode it?</p>
+
+            <p>In this guide, you'll learn what JWTs are, how they're structured, and how to decode them — both manually and with a <a href="../../tools/jwt-decoder/">free online JWT decoder</a>.</p>
+
+            <h2>What Is a JWT?</h2>
+
+            <p>A JWT (pronounced "jot") is a compact, URL-safe token used to transmit claims between two parties. It's defined in <a href="https://datatracker.ietf.org/doc/html/rfc7519">RFC 7519</a> and commonly used for:</p>
+
+            <ul>
+                <li><strong>Authentication</strong> — After a user logs in, the server issues a JWT that the client includes in subsequent requests.</li>
+                <li><strong>Authorization</strong> — The token carries the user's permissions and roles.</li>
+                <li><strong>Information exchange</strong> — JWTs can securely transmit data between services.</li>
+            </ul>
+
+            <h2>JWT Structure: The Three Parts</h2>
+
+            <p>Every JWT consists of three Base64URL-encoded parts separated by dots:</p>
+
+            <div class="code-block">header.payload.signature
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</div>
+
+            <h3>1. Header</h3>
+            <p>The header typically contains the signing algorithm and token type:</p>
+            <div class="code-block">{
+  "alg": "HS256",
+  "typ": "JWT"
+}</div>
+
+            <h3>2. Payload</h3>
+            <p>The payload contains the claims — statements about the user and additional metadata:</p>
+            <div class="code-block">{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022
+}</div>
+
+            <p>Common standard claims include:</p>
+            <ul>
+                <li><span class="code-inline">sub</span> — Subject (usually the user ID)</li>
+                <li><span class="code-inline">iat</span> — Issued At (Unix timestamp)</li>
+                <li><span class="code-inline">exp</span> — Expiration Time</li>
+                <li><span class="code-inline">iss</span> — Issuer</li>
+                <li><span class="code-inline">aud</span> — Audience</li>
+            </ul>
+
+            <h3>3. Signature</h3>
+            <p>The signature verifies the token hasn't been tampered with. It's created by signing the encoded header and payload with a secret key:</p>
+            <div class="code-block">HMACSHA256(
+  base64UrlEncode(header) + "." + base64UrlEncode(payload),
+  secret
+)</div>
+
+            <p><strong>Important:</strong> Decoding a JWT does not verify it. Anyone can decode a JWT — the signature verification is what proves it's authentic. Never trust a JWT's claims without verifying the signature on your server.</p>
+
+            <h2>How to Decode a JWT</h2>
+
+            <h3>Method 1: Use an Online Decoder</h3>
+            <p>The quickest way is to paste your token into a <a href="../../tools/jwt-decoder/">JWT decoder tool</a>. It will instantly show you the header, payload, and expiration status.</p>
+
+            <div class="cta-box">
+                <strong>Decode a JWT right now</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Paste any JWT to see its header, payload, and expiration status.</p>
+                <a href="../../tools/jwt-decoder/">Open JWT Decoder</a>
+            </div>
+
+            <h3>Method 2: Command Line</h3>
+            <p>You can decode a JWT with <a href="../../tools/base64/">Base64 decoding</a>. Split the token on the dots and decode each part:</p>
+            <div class="code-block"># Decode the payload (second part)
+echo "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ" | base64 -d
+
+# Output: {"sub":"1234567890","name":"John Doe","iat":1516239022}</div>
+
+            <p>Note: You may need to add padding (<span class="code-inline">=</span>) to the Base64 string for some decoders. The <a href="../../tools/jwt-decoder/">UtilShed JWT decoder</a> handles this automatically.</p>
+
+            <h3>Method 3: In JavaScript</h3>
+            <div class="code-block">function decodeJWT(token) {
+  const parts = token.split('.');
+  const header = JSON.parse(atob(parts[0]));
+  const payload = JSON.parse(atob(parts[1]));
+  return { header, payload };
+}
+
+const decoded = decodeJWT('eyJhbGciOiJIUzI1...');
+console.log(decoded.payload.sub); // "1234567890"</div>
+
+            <h3>Method 4: In Python</h3>
+            <div class="code-block">import base64, json
+
+def decode_jwt(token):
+    parts = token.split('.')
+    # Add padding
+    payload = parts[1] + '=' * (4 - len(parts[1]) % 4)
+    return json.loads(base64.urlsafe_b64decode(payload))
+
+claims = decode_jwt('eyJhbGciOiJIUzI1...')
+print(claims['sub'])  # "1234567890"</div>
+
+            <h2>Common JWT Pitfalls</h2>
+
+            <ul>
+                <li><strong>Don't store secrets in JWTs</strong> — the payload is only encoded, not encrypted. Anyone can decode it.</li>
+                <li><strong>Always check expiration</strong> — look at the <span class="code-inline">exp</span> claim before trusting a token.</li>
+                <li><strong>Verify the signature server-side</strong> — decoding is not the same as verifying.</li>
+                <li><strong>Don't store JWTs in localStorage</strong> — use httpOnly cookies to prevent XSS attacks.</li>
+            </ul>
+
+            <h2>When to Use JWTs</h2>
+
+            <p>JWTs are great for stateless authentication — the server doesn't need to store session data. They work well for:</p>
+            <ul>
+                <li>API authentication (REST, GraphQL)</li>
+                <li>Single sign-on (SSO) across services</li>
+                <li>Short-lived authorization tokens</li>
+            </ul>
+
+            <p>They're less ideal for long-lived sessions or when you need server-side session revocation.</p>
+
+            <h2>Try It Now</h2>
+            <p>Ready to decode a JWT? Use the <a href="../../tools/jwt-decoder/">free JWT decoder</a> on UtilShed — paste any token to instantly see its contents, expiration status, and claims.</p>
+
+            <p>You might also find these tools useful:</p>
+            <ul>
+                <li><a href="../../tools/base64/">Base64 Encoder/Decoder</a> — since JWTs use Base64URL encoding</li>
+                <li><a href="../../tools/json-formatter/">JSON Formatter</a> — to pretty-print the decoded payload</li>
+                <li><a href="../../tools/timestamp/">Timestamp Converter</a> — to convert <span class="code-inline">iat</span> and <span class="code-inline">exp</span> Unix timestamps to human-readable dates</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
