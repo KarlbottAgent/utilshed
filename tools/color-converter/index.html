@@ -96,6 +96,28 @@
     ['hex','rgb','hsl'].forEach(id => document.getElementById(id).addEventListener('click', function(){ navigator.clipboard.writeText(this.value); }));
     update('hex');
     </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../css-minifier/" class="related-tool-card">
+                <strong>CSS Minifier & Beautifier</strong>
+                <span>Minify or beautify CSS code</span>
+            </a>
+            <a href="../html-entity/" class="related-tool-card">
+                <strong>HTML Entity Encoder & Decoder</strong>
+                <span>Encode and decode HTML entities</span>
+            </a>
+            <a href="../regex-tester/" class="related-tool-card">
+                <strong>Regex Tester</strong>
+                <span>Test regular expressions with live matching</span>
+            </a>
+            <a href="../markdown-preview/" class="related-tool-card">
+                <strong>Markdown Preview</strong>
+                <span>Preview Markdown with live rendering</span>
+            </a>
+        </div>
+    </section>
     <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
