@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Formatter — UtilShed</title>
+    <meta name="description" content="Free online python formatter. Format and beautify Python code with proper indentation. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/python-formatter/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Python Formatter","description":"Free online python formatter. Format and beautify Python code with proper indentation. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/python-formatter/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Python Formatter","item":"https://utilshed.com/tools/python-formatter/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Python Formatter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Python Formatter</h1>
+            <p>Format and beautify Python code with proper indentation.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convert()">Format</button>
+            <button class="btn" onclick="minify()">Minify</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Python Code <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder=""></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Formatted Python <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Python Formatter</h2>
+            <p>This free online python formatter lets you format and beautify python code with proper indentation — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+function convert() {
+  const code = document.getElementById('input').value;
+  if (!code.trim()) { setStatus('Enter Python code to format', 'err'); return; }
+  try {
+    const lines = code.split('\n');
+    const result = [];
+    let indent = 0;
+    const indentStr = '    ';
+    const increaseKeywords = /^\s*(def |class |if |elif |else:|for |while |try:|except |finally:|with |async def |async for |async with ).*:\s*(#.*)?$/;
+    const decreaseKeywords = /^\s*(elif |else:|except |finally:)/;
+    const blankLinesBefore = /^\s*(def |class |@)/;
+    let prevWasBlank = false;
+    let prevWasCode = false;
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
+      let trimmed = line.trim();
+      if (trimmed === '') { if (!prevWasBlank) result.push(''); prevWasBlank = true; continue; }
+      prevWasBlank = false;
+      // Decrease indent for elif, else, except, finally
+      if (decreaseKeywords.test(line) && indent > 0) indent--;
+      // Add blank line before def/class at same or lower indent
+      if (blankLinesBefore.test(line) && prevWasCode && result.length > 0 && result[result.length - 1].trim() !== '') {
+        result.push('');
+      }
+      // Detect current line's actual indent to preserve relative structure
+      const currentIndent = line.match(/^(\s*)/)[1].length;
+      const normalizedLine = indentStr.repeat(indent) + trimmed;
+      result.push(normalizedLine);
+      prevWasCode = true;
+      // Increase indent after colons
+      if (increaseKeywords.test(line)) indent++;
+      // Handle dedent hints (return, break, continue, pass, raise)
+      if (/^\s*(return|break|continue|pass|raise)\b/.test(trimmed) && indent > 0) {
+        // Only dedent if next non-empty line isn't at same indent
+        indent--;
+      }
+    }
+    // Remove trailing blank lines
+    while (result.length > 0 && result[result.length - 1].trim() === '') result.pop();
+    document.getElementById('output').value = result.join('\n') + '\n';
+    setStatus('Formatted ' + result.length + ' lines', 'ok');
+  } catch (e) { setStatus('Format error: ' + e.message, 'err'); }
+}
+function minify() {
+  const code = document.getElementById('input').value;
+  if (!code.trim()) { setStatus('Enter Python code to minify', 'err'); return; }
+  // Remove comments and blank lines, compress whitespace
+  const lines = code.split('\n')
+    .map(l => l.replace(/#.*$/, '').trimEnd())
+    .filter(l => l.trim() !== '');
+  document.getElementById('output').value = lines.join('\n');
+  setStatus('Minified: ' + lines.length + ' lines', 'ok');
+}
+function loadSample() {
+  document.getElementById('input').value = 'import os\nimport sys\n\ndef hello(name):\n    if name:\n        print(f"Hello, {name}!")\n    else:\n        print("Hello, World!")\n\nclass MyClass:\n    def __init__(self, value):\n        self.value = value\n    def get_value(self):\n        return self.value\n\nif __name__ == "__main__":\n    hello("Python")\n    obj = MyClass(42)\n    print(obj.get_value())';
+  convert();
+}
+
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+function clearAll() { document.getElementById('input').value = ''; document.getElementById('output').value = ''; document.getElementById('status').textContent = ''; if (document.getElementById('size-label')) document.getElementById('size-label').textContent = ''; }
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+document.getElementById('input').addEventListener('input', convert);
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free online JSON formatter, validator, and minifier. Paste your JSON and get it beautifully formatted with syntax highlighting</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free online Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. Free online hash generator, no signup required.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once. Free, no signup required.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
