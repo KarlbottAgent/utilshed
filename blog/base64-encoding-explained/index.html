@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encoding Explained — How It Works and When to Use It — UtilShed</title>
+    <meta name="description" content="Learn what Base64 encoding is, how it works under the hood, and when to use it. Covers btoa/atob, data URIs, email attachments, and common pitfalls.">
+    <meta name="keywords" content="base64 encoding, base64 explained, what is base64, how base64 works, btoa atob, base64 encode decode, data URI base64, base64 online">
+    <link rel="canonical" href="https://utilshed.com/blog/base64-encoding-explained/">
+    <meta property="og:title" content="Base64 Encoding Explained — How It Works and When to Use It — UtilShed">
+    <meta property="og:description" content="Learn what Base64 encoding is, how it works under the hood, and when to use it.">
+    <meta property="og:url" content="https://utilshed.com/blog/base64-encoding-explained/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Base64 Encoding Explained — How It Works and When to Use It","description":"Learn what Base64 encoding is, how it works under the hood, and when to use it.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/base64-encoding-explained/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; Base64 Encoding Explained</div>
+            <div class="tool-header">
+                <h1>Base64 Encoding Explained — How It Works and When to Use It</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 8 min read</p>
+            </div>
+
+            <p>Base64 is everywhere — data URIs in CSS, email attachments, API authentication headers, JWTs. But what is it actually doing? Why does <span class="code-inline">SGVsbG8gV29ybGQ=</span> mean "Hello World"? This guide explains Base64 from the ground up, with practical examples in every language you'd use it in.</p>
+
+            <div class="cta-box">
+                <strong>Encode &amp; Decode Base64 Online</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Paste text or upload a file — get Base64 output instantly.</p>
+                <a href="../../tools/base64/">Open Base64 Encoder/Decoder</a>
+            </div>
+
+            <h2>What Is Base64?</h2>
+
+            <p>Base64 is a binary-to-text encoding scheme. It takes any binary data (text, images, files) and represents it using only 64 printable ASCII characters: <span class="code-inline">A-Z</span>, <span class="code-inline">a-z</span>, <span class="code-inline">0-9</span>, <span class="code-inline">+</span>, and <span class="code-inline">/</span>, plus <span class="code-inline">=</span> for padding.</p>
+
+            <p>The key insight: many systems (email protocols, JSON, URLs, HTML attributes) can only handle text, not raw binary. Base64 lets you safely embed binary data inside text-only channels.</p>
+
+            <p><strong>Base64 is not encryption.</strong> It's encoding — anyone can decode it. It provides zero security. Don't use it to hide secrets.</p>
+
+            <h2>How Base64 Works — Step by Step</h2>
+
+            <p>Let's encode the string <span class="code-inline">Hi!</span> to Base64:</p>
+
+            <h3>Step 1: Get the ASCII byte values</h3>
+            <div class="code-block">H  = 72  = 01001000
+i  = 105 = 01101001
+!  = 33  = 00100001</div>
+
+            <h3>Step 2: Concatenate the bits</h3>
+            <div class="code-block">010010000110100100100001  (24 bits total)</div>
+
+            <h3>Step 3: Split into 6-bit groups</h3>
+            <p>Base64 uses 6 bits per character (2^6 = 64 possible values):</p>
+            <div class="code-block">010010 | 000110 | 100100 | 100001
+  18       6       36       33</div>
+
+            <h3>Step 4: Map to the Base64 alphabet</h3>
+            <div class="code-block">18 = S
+ 6 = G
+36 = k
+33 = h
+
+Result: SGkh</div>
+
+            <p>That's it. <span class="code-inline">Hi!</span> in Base64 is <span class="code-inline">SGkh</span>.</p>
+
+            <h3>What About Padding?</h3>
+
+            <p>Base64 works on 3-byte (24-bit) chunks. If the input isn't a multiple of 3 bytes, the output is padded with <span class="code-inline">=</span>:</p>
+
+            <ul>
+                <li>1 byte input &rarr; 2 Base64 chars + <span class="code-inline">==</span></li>
+                <li>2 bytes input &rarr; 3 Base64 chars + <span class="code-inline">=</span></li>
+                <li>3 bytes input &rarr; 4 Base64 chars (no padding)</li>
+            </ul>
+
+            <div class="code-block">// Examples
+"A"    → "QQ=="   (1 byte → 2 chars + ==)
+"AB"   → "QUI="   (2 bytes → 3 chars + =)
+"ABC"  → "QUJD"   (3 bytes → 4 chars, no padding)
+"ABCD" → "QUJDRA==" (4 bytes → wraps to next group)</div>
+
+            <h2>Base64 Size Overhead</h2>
+
+            <p>Every 3 bytes of input become 4 bytes of output. That's a <strong>33% size increase</strong>. A 1 MB image becomes ~1.33 MB in Base64. This matters when you're embedding images in CSS or sending large payloads.</p>
+
+            <h2>Base64 in JavaScript</h2>
+
+            <h3>Browser: btoa() and atob()</h3>
+            <div class="code-block">// Encode
+const encoded = btoa("Hello World");
+// "SGVsbG8gV29ybGQ="
+
+// Decode
+const decoded = atob("SGVsbG8gV29ybGQ=");
+// "Hello World"</div>
+
+            <p><strong>Warning:</strong> <span class="code-inline">btoa()</span> only works with ASCII. For Unicode text, you need to encode to UTF-8 first:</p>
+
+            <div class="code-block">// Unicode-safe Base64 encode
+function toBase64(str) {
+  return btoa(
+    new TextEncoder().encode(str)
+      .reduce((data, byte) =&gt; data + String.fromCharCode(byte), '')
+  );
+}
+
+// Unicode-safe Base64 decode
+function fromBase64(b64) {
+  return new TextDecoder().decode(
+    Uint8Array.from(atob(b64), c =&gt; c.charCodeAt(0))
+  );
+}
+
+toBase64("Hello 🌍");   // "SGVsbG8g8J+MjQ=="
+fromBase64("SGVsbG8g8J+MjQ=="); // "Hello 🌍"</div>
+
+            <h3>Node.js: Buffer</h3>
+            <div class="code-block">// Encode
+Buffer.from("Hello World").toString("base64");
+// "SGVsbG8gV29ybGQ="
+
+// Decode
+Buffer.from("SGVsbG8gV29ybGQ=", "base64").toString("utf-8");
+// "Hello World"
+
+// Encode a file
+const fs = require("fs");
+const b64 = fs.readFileSync("image.png").toString("base64");</div>
+
+            <h2>Base64 in Python</h2>
+            <div class="code-block">import base64
+
+# Encode
+encoded = base64.b64encode(b"Hello World").decode("ascii")
+# "SGVsbG8gV29ybGQ="
+
+# Decode
+decoded = base64.b64decode("SGVsbG8gV29ybGQ=").decode("utf-8")
+# "Hello World"
+
+# Encode a file
+with open("image.png", "rb") as f:
+    b64 = base64.b64encode(f.read()).decode("ascii")</div>
+
+            <h2>Base64 in the Command Line</h2>
+            <div class="code-block"># Encode a string
+echo -n "Hello World" | base64
+# SGVsbG8gV29ybGQ=
+
+# Decode a string
+echo "SGVsbG8gV29ybGQ=" | base64 --decode
+# Hello World
+
+# Encode a file
+base64 image.png &gt; image.b64
+
+# Decode a file
+base64 --decode image.b64 &gt; image.png</div>
+
+            <h2>Common Uses of Base64</h2>
+
+            <h3>1. Data URIs in HTML/CSS</h3>
+            <p>Embed small images directly in your HTML or CSS, avoiding an extra HTTP request:</p>
+            <div class="code-block">&lt;img src="data:image/png;base64,iVBORw0KGgo..." /&gt;
+
+/* In CSS */
+.icon {
+  background-image: url(data:image/svg+xml;base64,PHN2Zy...);
+}</div>
+            <p>Best for images under 5-10 KB. Larger images are better served as separate files (the 33% size increase outweighs the saved HTTP request).</p>
+
+            <h3>2. HTTP Basic Authentication</h3>
+            <div class="code-block">// Authorization: Basic base64(username:password)
+const credentials = btoa("admin:secret123");
+fetch("/api/data", {
+  headers: { Authorization: `Basic ${credentials}` }
+});</div>
+            <p>Remember: this is encoding, not encryption. Always use HTTPS with Basic Auth.</p>
+
+            <h3>3. Email Attachments (MIME)</h3>
+            <p>Email protocols (SMTP) only handle 7-bit ASCII text. Binary attachments are Base64-encoded in MIME format. Your email client handles this automatically.</p>
+
+            <h3>4. JSON Payloads</h3>
+            <p>JSON has no binary type. When APIs need to transfer binary data (file uploads, images, certificates), Base64-encoding it into a JSON string is the standard approach:</p>
+            <div class="code-block">{
+  "filename": "report.pdf",
+  "content": "JVBERi0xLjQK...",
+  "contentType": "application/pdf"
+}</div>
+
+            <h3>5. JWTs (JSON Web Tokens)</h3>
+            <p>JWTs use Base64URL encoding (a variant of Base64 that's URL-safe — uses <span class="code-inline">-</span> and <span class="code-inline">_</span> instead of <span class="code-inline">+</span> and <span class="code-inline">/</span>):</p>
+            <div class="code-block">eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWxpY2UifQ.abc123
+|-- header (base64) --|.|----- payload (base64) -----|.signature</div>
+
+            <h2>Base64 Variants</h2>
+
+            <ul>
+                <li><strong>Standard Base64</strong> — Uses <span class="code-inline">A-Za-z0-9+/</span> with <span class="code-inline">=</span> padding. Defined in RFC 4648.</li>
+                <li><strong>Base64URL</strong> — Replaces <span class="code-inline">+</span> with <span class="code-inline">-</span> and <span class="code-inline">/</span> with <span class="code-inline">_</span>. Safe for URLs and filenames. Used in JWTs.</li>
+                <li><strong>MIME Base64</strong> — Same alphabet as standard, but inserts line breaks every 76 characters. Used in email.</li>
+            </ul>
+
+            <h2>Common Mistakes</h2>
+
+            <ul>
+                <li><strong>Using Base64 for "security"</strong> — It's trivially reversible. Use encryption (AES, RSA) for security.</li>
+                <li><strong>Base64-encoding large files inline</strong> — The 33% overhead adds up. A 5 MB image becomes 6.67 MB. Use file references instead.</li>
+                <li><strong>Forgetting UTF-8</strong> — <span class="code-inline">btoa("café")</span> throws in the browser. Encode to UTF-8 bytes first.</li>
+                <li><strong>Double-encoding</strong> — Base64-encoding something that's already Base64 gives garbled results. Check if your data is already encoded before encoding it.</li>
+            </ul>
+
+            <h2>Try It Now</h2>
+
+            <p>Need to encode or decode Base64 quickly? Use the <a href="../../tools/base64/">free Base64 encoder/decoder</a> on UtilShed — supports text, files, and images.</p>
+
+            <p>Related tools:</p>
+            <ul>
+                <li><a href="../../tools/base64-image-decoder/">Base64 Image Decoder</a> — decode Base64-encoded images visually</li>
+                <li><a href="../../tools/image-to-base64/">Image to Base64 Converter</a> — convert images to data URIs</li>
+                <li><a href="../../tools/jwt-decoder/">JWT Decoder</a> — decode and inspect JWT tokens (which use Base64URL)</li>
+                <li><a href="../../tools/url-encode/">URL Encoder/Decoder</a> — for URL-safe encoding (different from Base64)</li>
+                <li><a href="../../tools/hash/">Hash Generator</a> — for one-way hashing (SHA-256, MD5, etc.)</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

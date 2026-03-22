@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Convert Between Binary, Decimal, Hex, and Octal — UtilShed</title>
+    <meta name="description" content="Learn how to convert between binary, decimal, hexadecimal, and octal number systems. Covers the math, JavaScript/Python code examples, and common use cases.">
+    <meta name="keywords" content="binary to decimal, hex to decimal, decimal to binary, number system conversion, binary converter, hexadecimal converter, octal converter, base conversion">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-convert-between-number-systems/">
+    <meta property="og:title" content="How to Convert Between Binary, Decimal, Hex, and Octal — UtilShed">
+    <meta property="og:description" content="Convert between binary, decimal, hex, and octal — the math, the code, and when you need each system.">
+    <meta property="og:url" content="https://utilshed.com/blog/how-to-convert-between-number-systems/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Convert Between Binary, Decimal, Hex, and Octal","description":"Convert between binary, decimal, hex, and octal — the math, the code, and when you need each system.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-convert-between-number-systems/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; Number System Conversion</div>
+            <div class="tool-header">
+                <h1>How to Convert Between Binary, Decimal, Hex, and Octal</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 9 min read</p>
+            </div>
+
+            <p>If you've ever stared at a memory address like <span class="code-inline">0x7FFE</span>, a Unix permission like <span class="code-inline">0755</span>, or a color code like <span class="code-inline">#FF5733</span> and needed to convert it to something you can reason about — this guide is for you. We'll cover how to convert between binary (base 2), octal (base 8), decimal (base 10), and hexadecimal (base 16), both by hand and in code.</p>
+
+            <div class="cta-box">
+                <strong>Convert Numbers Instantly</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Enter a number in any base — get binary, decimal, hex, and octal output.</p>
+                <a href="../../tools/binary-decimal-hex/">Open Number System Converter</a>
+            </div>
+
+            <h2>The Four Number Systems</h2>
+
+            <p>Every number system works the same way — each digit represents a power of the base:</p>
+
+            <div class="code-block">System       Base   Digits            Prefix    Used For
+─────────────────────────────────────────────────────────────
+Binary        2     0-1               0b        Bitwise ops, flags, networking
+Octal         8     0-7               0o        Unix permissions (chmod)
+Decimal      10     0-9               (none)    Human math, everyday use
+Hexadecimal  16     0-9, A-F          0x        Colors, memory, MAC addresses</div>
+
+            <h2>Quick Reference Table</h2>
+
+            <div class="code-block">Decimal  Binary    Octal  Hex
+───────────────────────────
+0        0000      0      0
+1        0001      1      1
+2        0010      2      2
+3        0011      3      3
+4        0100      4      4
+5        0101      5      5
+6        0110      6      6
+7        0111      7      7
+8        1000      10     8
+9        1001      11     9
+10       1010      12     A
+11       1011      13     B
+12       1100      14     C
+13       1101      15     D
+14       1110      16     E
+15       1111      17     F
+16       10000     20     10
+255      11111111  377    FF</div>
+
+            <h2>Decimal to Binary (by Hand)</h2>
+
+            <p>Divide by 2 repeatedly and collect the remainders (read bottom to top):</p>
+
+            <div class="code-block">Convert 42 to binary:
+
+42 ÷ 2 = 21 remainder 0
+21 ÷ 2 = 10 remainder 1
+10 ÷ 2 = 5  remainder 0
+ 5 ÷ 2 = 2  remainder 1
+ 2 ÷ 2 = 1  remainder 0
+ 1 ÷ 2 = 0  remainder 1
+
+Read bottom → top: 101010
+
+42 in decimal = 101010 in binary</div>
+
+            <h2>Binary to Decimal (by Hand)</h2>
+
+            <p>Multiply each digit by its power of 2 and sum:</p>
+
+            <div class="code-block">Convert 101010 to decimal:
+
+1×2⁵ + 0×2⁴ + 1×2³ + 0×2² + 1×2¹ + 0×2⁰
+= 32  + 0    + 8    + 0    + 2    + 0
+= 42</div>
+
+            <h2>Decimal to Hex (by Hand)</h2>
+
+            <p>Same method — divide by 16, collect remainders:</p>
+
+            <div class="code-block">Convert 255 to hex:
+
+255 ÷ 16 = 15 remainder 15 (F)
+ 15 ÷ 16 = 0  remainder 15 (F)
+
+Read bottom → top: FF
+
+255 in decimal = FF in hex</div>
+
+            <h2>Hex to Decimal (by Hand)</h2>
+
+            <div class="code-block">Convert 0x1A3F to decimal:
+
+1×16³ + A×16² + 3×16¹ + F×16⁰
+= 1×4096 + 10×256 + 3×16 + 15×1
+= 4096   + 2560   + 48   + 15
+= 6719</div>
+
+            <h2>The Hex-Binary Shortcut</h2>
+
+            <p>Each hex digit maps to exactly 4 binary digits. This makes hex-to-binary conversion trivial — just expand each hex digit individually:</p>
+
+            <div class="code-block">Hex:    A    3    F    7
+Binary: 1010 0011 1111 0111
+
+0xA3F7 = 1010001111110111
+
+// Reverse: group binary into 4-bit chunks
+Binary: 1101 0010 1110
+Hex:      D    2    E = 0xD2E</div>
+
+            <p>This is why hex is the preferred notation for binary data — it's compact but trivially convertible to binary.</p>
+
+            <h2>The Octal-Binary Shortcut</h2>
+
+            <p>Same idea, but each octal digit maps to 3 binary digits:</p>
+
+            <div class="code-block">Octal:  7    5    5
+Binary: 111  101  101
+
+chmod 755 = rwxr-xr-x (owner: rwx, group: r-x, other: r-x)</div>
+
+            <p>This is exactly why Unix permissions use octal — each digit cleanly maps to one rwx triplet.</p>
+
+            <h2>Conversions in JavaScript</h2>
+
+            <div class="code-block">// ── Decimal to other bases ──
+(42).toString(2)    // "101010" (binary)
+(42).toString(8)    // "52" (octal)
+(42).toString(16)   // "2a" (hex)
+(42).toString(36)   // "16" (base 36)
+
+// ── Other bases to decimal ──
+parseInt("101010", 2)   // 42 (binary → decimal)
+parseInt("52", 8)       // 42 (octal → decimal)
+parseInt("2a", 16)      // 42 (hex → decimal)
+
+// ── Hex to binary (via decimal) ──
+parseInt("FF", 16).toString(2)  // "11111111"
+
+// ── Binary literals ──
+const flags = 0b10110;    // 22 in decimal
+const perms = 0o755;      // 493 in decimal
+const addr  = 0xFF00;     // 65280 in decimal
+
+// ── Padding with leading zeros ──
+(5).toString(2).padStart(8, '0')   // "00000101"
+(10).toString(16).padStart(2, '0') // "0a"</div>
+
+            <h2>Conversions in Python</h2>
+
+            <div class="code-block"># ── Decimal to other bases ──
+bin(42)    # '0b101010'
+oct(42)    # '0o52'
+hex(42)    # '0x2a'
+
+# ── Without prefix ──
+format(42, 'b')    # '101010'
+format(42, 'o')    # '52'
+format(42, 'x')    # '2a'
+format(42, 'X')    # '2A' (uppercase)
+
+# ── Other bases to decimal ──
+int('101010', 2)   # 42
+int('52', 8)       # 42
+int('2a', 16)      # 42
+
+# ── Binary literals ──
+flags = 0b10110    # 22
+perms = 0o755      # 493
+addr  = 0xFF00     # 65280
+
+# ── Formatted output ──
+f"{255:08b}"       # '11111111' (8-digit binary)
+f"{255:02x}"       # 'ff' (2-digit hex)
+f"{255:#010x}"     # '0x000000ff' (with prefix, padded)</div>
+
+            <h2>Conversions in the Command Line</h2>
+
+            <div class="code-block"># Using printf
+printf "%d\n" 0xFF         # 255 (hex → decimal)
+printf "%x\n" 255          # ff (decimal → hex)
+printf "%o\n" 255          # 377 (decimal → octal)
+
+# Using bc (arbitrary base)
+echo "obase=2; 42" | bc    # 101010 (decimal → binary)
+echo "ibase=16; FF" | bc   # 255 (hex → decimal)
+echo "ibase=2; 101010" | bc # 42 (binary → decimal)
+
+# Using Python one-liner
+python3 -c "print(int('FF', 16))"   # 255
+python3 -c "print(bin(42))"         # 0b101010</div>
+
+            <h2>Real-World Use Cases</h2>
+
+            <h3>CSS Colors (Hex)</h3>
+            <div class="code-block">#FF5733 = RGB(255, 87, 51)
+
+FF → 255 (red channel, fully on)
+57 → 87  (green channel, low)
+33 → 51  (blue channel, very low)
+
+Result: bright red-orange</div>
+
+            <h3>Unix File Permissions (Octal)</h3>
+            <div class="code-block">chmod 644 file.txt
+
+6 = 110 → rw-  (owner: read + write)
+4 = 100 → r--  (group: read only)
+4 = 100 → r--  (other: read only)</div>
+
+            <h3>IP Addresses &amp; Subnet Masks (Binary)</h3>
+            <div class="code-block">192.168.1.0/24
+
+192     .168     .1       .0
+11000000.10101000.00000001.00000000
+
+Subnet mask /24:
+11111111.11111111.11111111.00000000
+= 255.255.255.0</div>
+
+            <h3>Bitwise Flags (Binary)</h3>
+            <div class="code-block">// Feature flags packed into a single integer
+const READ    = 0b0001;  // 1
+const WRITE   = 0b0010;  // 2
+const EXECUTE = 0b0100;  // 4
+const ADMIN   = 0b1000;  // 8
+
+const userPerms = READ | WRITE;  // 0b0011 = 3
+
+// Check permission
+if (userPerms &amp; EXECUTE) { /* can execute */ }
+
+// Add permission
+const upgraded = userPerms | ADMIN;  // 0b1011 = 11</div>
+
+            <h3>MAC Addresses &amp; Memory (Hex)</h3>
+            <div class="code-block">MAC: AA:BB:CC:DD:EE:FF
+Memory address: 0x7FFEE3B8C940
+IPv6: fe80::1%lo0</div>
+
+            <h2>Two's Complement — Negative Numbers in Binary</h2>
+
+            <p>Computers represent negative integers using two's complement. For an 8-bit signed integer:</p>
+
+            <div class="code-block">  42 = 00101010
+ -42 = ?
+
+Step 1: Invert all bits:  11010101
+Step 2: Add 1:            11010110
+
+-42 in 8-bit two's complement = 11010110 = 0xD6
+
+// Verify: 11010110
+// Leading 1 = negative
+// Invert: 00101001 = 41
+// Add 1: 42 → it's -42 ✓</div>
+
+            <p>This is why <span class="code-inline">0xFF</span> can be either 255 (unsigned) or -1 (signed 8-bit) — it depends on interpretation.</p>
+
+            <h2>Try It Now</h2>
+
+            <p>Need to convert a number? Use the <a href="../../tools/binary-decimal-hex/">free Binary/Decimal/Hex converter</a> on UtilShed — enter a number in any base and get all four representations instantly.</p>
+
+            <p>Related tools:</p>
+            <ul>
+                <li><a href="../../tools/number-base-converter/">Number Base Converter</a> — convert between any base (2-36)</li>
+                <li><a href="../../tools/text-to-binary/">Text to Binary Converter</a> — convert ASCII text to binary</li>
+                <li><a href="../../tools/hex-to-rgb/">Hex to RGB Converter</a> — for CSS color conversions</li>
+                <li><a href="../../tools/chmod-calculator/">Chmod Calculator</a> — visual Unix permission calculator (uses octal)</li>
+                <li><a href="../../tools/subnet-calculator/">Subnet Calculator</a> — IP networking calculations (uses binary masks)</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
