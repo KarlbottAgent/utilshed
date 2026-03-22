@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cron Expression Parser & Generator — UtilShed</title>
+    <meta name="description" content="Free online cron expression parser. Understand cron schedules in plain English, see next run times, and build cron expressions with an interactive generator. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/cron-parser/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">🛠️ UtilShed</a>
+            <span class="tagline">Cron Expression Parser</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Cron Expression Parser & Generator</h1>
+            <p>Parse cron expressions into plain English and see upcoming run times.</p>
+        </div>
+        <div class="tool-single">
+            <div style="margin-bottom:1rem">
+                <label style="font-size:0.875rem;font-weight:600;display:block;margin-bottom:0.5rem">Cron Expression</label>
+                <input type="text" id="cron-input" value="*/15 * * * *" placeholder="* * * * *" style="font-size:1.125rem;padding:0.75rem 1rem">
+            </div>
+            <div class="btn-row" style="margin-bottom:1rem">
+                <button class="btn btn-primary" onclick="parseCron()">Parse</button>
+                <button class="btn" onclick="setCron('* * * * *')">Every minute</button>
+                <button class="btn" onclick="setCron('0 * * * *')">Every hour</button>
+                <button class="btn" onclick="setCron('0 0 * * *')">Daily</button>
+                <button class="btn" onclick="setCron('0 0 * * 0')">Weekly</button>
+                <button class="btn" onclick="setCron('0 0 1 * *')">Monthly</button>
+                <button class="btn" onclick="setCron('0 9 * * 1-5')">Weekdays 9am</button>
+            </div>
+            <div id="result" style="display:none">
+                <div class="result-box" id="human-readable" style="cursor:default;font-size:1rem;color:var(--green);margin-bottom:1rem"></div>
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.5rem;margin-bottom:1rem" id="field-grid"></div>
+                <h3 style="font-size:0.9375rem;margin-bottom:0.5rem">Next 5 Run Times</h3>
+                <div id="next-runs" style="font-family:var(--mono);font-size:0.875rem;color:var(--text-muted)"></div>
+            </div>
+            <div id="error" class="result-box" style="display:none;color:var(--red)"></div>
+        </div>
+        <div class="tool-single" style="margin-top:1rem">
+            <h3 style="margin-bottom:0.75rem;font-size:0.9375rem">Cron Syntax Reference</h3>
+            <div style="font-family:var(--mono);font-size:0.8125rem;color:var(--text-muted);line-height:2">
+                <div style="margin-bottom:0.5rem"><code style="color:var(--text)">┌───────── minute (0-59)</code></div>
+                <div style="margin-bottom:0.5rem"><code style="color:var(--text)">│ ┌─────── hour (0-23)</code></div>
+                <div style="margin-bottom:0.5rem"><code style="color:var(--text)">│ │ ┌───── day of month (1-31)</code></div>
+                <div style="margin-bottom:0.5rem"><code style="color:var(--text)">│ │ │ ┌─── month (1-12)</code></div>
+                <div style="margin-bottom:0.5rem"><code style="color:var(--text)">│ │ │ │ ┌─ day of week (0-6, Sun=0)</code></div>
+                <div><code style="color:var(--text)">* * * * *</code></div>
+            </div>
+            <div style="margin-top:1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.375rem;font-size:0.8125rem;color:var(--text-muted)">
+                <span><code style="color:var(--text)">*</code> — any value</span>
+                <span><code style="color:var(--text)">,</code> — list (1,3,5)</span>
+                <span><code style="color:var(--text)">-</code> — range (1-5)</span>
+                <span><code style="color:var(--text)">/</code> — step (*/15)</span>
+            </div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    const FIELDS = ['Minute','Hour','Day of Month','Month','Day of Week'];
+    const RANGES = [[0,59],[0,23],[1,31],[1,12],[0,6]];
+    const MONTH_NAMES = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+    function setCron(expr) {
+        document.getElementById('cron-input').value = expr;
+        parseCron();
+    }
+
+    function parseCron() {
+        const input = document.getElementById('cron-input').value.trim();
+        const parts = input.split(/\s+/);
+        const errorEl = document.getElementById('error');
+        const resultEl = document.getElementById('result');
+
+        if (parts.length !== 5) {
+            errorEl.style.display = 'block';
+            resultEl.style.display = 'none';
+            errorEl.textContent = 'Invalid cron expression. Expected 5 fields: minute hour day-of-month month day-of-week';
+            return;
+        }
+
+        try {
+            const expanded = parts.map((p, i) => expandField(p, RANGES[i][0], RANGES[i][1]));
+            const human = toHumanReadable(parts, expanded);
+            const nextRuns = getNextRuns(expanded, 5);
+
+            errorEl.style.display = 'none';
+            resultEl.style.display = 'block';
+            document.getElementById('human-readable').textContent = human;
+
+            // Field grid
+            const grid = document.getElementById('field-grid');
+            grid.innerHTML = parts.map((p, i) =>
+                `<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.75rem;text-align:center">
+                    <div style="font-family:var(--mono);font-size:1.125rem;color:var(--accent);margin-bottom:0.25rem">${p}</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">${FIELDS[i]}</div>
+                </div>`
+            ).join('');
+
+            // Next runs
+            document.getElementById('next-runs').innerHTML = nextRuns.map(d =>
+                `<div style="padding:0.25rem 0">${d.toLocaleString()}</div>`
+            ).join('');
+        } catch (e) {
+            errorEl.style.display = 'block';
+            resultEl.style.display = 'none';
+            errorEl.textContent = e.message;
+        }
+    }
+
+    function expandField(field, min, max) {
+        const values = new Set();
+        for (const part of field.split(',')) {
+            if (part === '*') {
+                for (let i = min; i <= max; i++) values.add(i);
+            } else if (part.includes('/')) {
+                const [range, step] = part.split('/');
+                const s = parseInt(step);
+                if (isNaN(s) || s <= 0) throw new Error(`Invalid step: ${part}`);
+                let start = min;
+                let end = max;
+                if (range !== '*') {
+                    if (range.includes('-')) {
+                        [start, end] = range.split('-').map(Number);
+                    } else {
+                        start = parseInt(range);
+                    }
+                }
+                for (let i = start; i <= end; i += s) values.add(i);
+            } else if (part.includes('-')) {
+                const [a, b] = part.split('-').map(Number);
+                if (isNaN(a) || isNaN(b)) throw new Error(`Invalid range: ${part}`);
+                for (let i = a; i <= b; i++) values.add(i);
+            } else {
+                const n = parseInt(part);
+                if (isNaN(n)) throw new Error(`Invalid value: ${part}`);
+                values.add(n);
+            }
+        }
+        return [...values].sort((a, b) => a - b);
+    }
+
+    function toHumanReadable(parts, expanded) {
+        const [min, hour, dom, mon, dow] = parts;
+        const pieces = [];
+
+        // Handle common patterns
+        if (parts.join(' ') === '* * * * *') return 'Every minute';
+        if (parts.join(' ') === '0 * * * *') return 'Every hour';
+        if (parts.join(' ') === '0 0 * * *') return 'Every day at midnight';
+        if (parts.join(' ') === '0 0 1 * *') return 'First day of every month at midnight';
+        if (parts.join(' ') === '0 0 * * 0') return 'Every Sunday at midnight';
+
+        // Minute
+        if (min === '*') pieces.push('Every minute');
+        else if (min.startsWith('*/')) pieces.push(`Every ${min.slice(2)} minutes`);
+        else pieces.push(`At minute ${min}`);
+
+        // Hour
+        if (hour !== '*') {
+            if (hour.startsWith('*/')) pieces.push(`every ${hour.slice(2)} hours`);
+            else pieces.push(`past hour ${hour}`);
+        }
+
+        // Day of month
+        if (dom !== '*') {
+            if (dom.startsWith('*/')) pieces.push(`every ${dom.slice(2)} days`);
+            else pieces.push(`on day ${dom}`);
+        }
+
+        // Month
+        if (mon !== '*') {
+            const months = expanded[3].map(m => MONTH_NAMES[m] || m).join(', ');
+            pieces.push(`in ${months}`);
+        }
+
+        // Day of week
+        if (dow !== '*') {
+            const days = expanded[4].map(d => DAY_NAMES[d] || d).join(', ');
+            pieces.push(`on ${days}`);
+        }
+
+        return pieces.join(', ');
+    }
+
+    function getNextRuns(expanded, count) {
+        const [minutes, hours, doms, months, dows] = expanded;
+        const results = [];
+        const now = new Date();
+        const d = new Date(now);
+        d.setSeconds(0);
+        d.setMilliseconds(0);
+        d.setMinutes(d.getMinutes() + 1);
+
+        let safety = 0;
+        while (results.length < count && safety < 525960) {
+            safety++;
+            if (months.includes(d.getMonth() + 1) &&
+                doms.includes(d.getDate()) &&
+                dows.includes(d.getDay()) &&
+                hours.includes(d.getHours()) &&
+                minutes.includes(d.getMinutes())) {
+                results.push(new Date(d));
+            }
+            d.setMinutes(d.getMinutes() + 1);
+        }
+        return results;
+    }
+
+    // Parse on load and on input
+    document.getElementById('cron-input').addEventListener('input', parseCron);
+    parseCron();
+    </script>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

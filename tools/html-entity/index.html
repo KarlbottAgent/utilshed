@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Entity Encoder & Decoder — UtilShed</title>
+    <meta name="description" content="Free online HTML entity encoder and decoder. Convert special characters to HTML entities and back. Supports named entities, decimal, and hex codes. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/html-entity/">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">🛠️ UtilShed</a>
+            <span class="tagline">HTML Entity Encoder & Decoder</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>HTML Entity Encoder & Decoder</h1>
+            <p>Encode special characters to HTML entities or decode entities back to text.</p>
+        </div>
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="encodeHTML()">Encode</button>
+            <button class="btn" onclick="decodeHTML()">Decode</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Input <span class="label">Paste text or HTML entities</span></div>
+                <textarea class="tool-input" id="input" placeholder='<div class="test">Hello & "World"</div>'></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div class="tool-single" style="margin-top:1rem">
+            <h3 style="margin-bottom:0.75rem;font-size:0.9375rem">Common HTML Entities Reference</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.5rem;font-family:var(--mono);font-size:0.8125rem;color:var(--text-muted)">
+                <span>&amp;lt; → &lt;</span>
+                <span>&amp;gt; → &gt;</span>
+                <span>&amp;amp; → &amp;</span>
+                <span>&amp;quot; → "</span>
+                <span>&amp;apos; → '</span>
+                <span>&amp;nbsp; → (space)</span>
+                <span>&amp;copy; → ©</span>
+                <span>&amp;reg; → ®</span>
+                <span>&amp;trade; → ™</span>
+                <span>&amp;mdash; → —</span>
+                <span>&amp;ndash; → –</span>
+                <span>&amp;laquo; → «</span>
+                <span>&amp;raquo; → »</span>
+                <span>&amp;euro; → €</span>
+                <span>&amp;pound; → £</span>
+                <span>&amp;yen; → ¥</span>
+            </div>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    function encodeHTML() {
+        const input = document.getElementById('input').value;
+        if (!input) { setStatus('Enter some text first', 'err'); return; }
+        const map = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+        const encoded = input.replace(/[&<>"']/g, c => map[c]);
+        document.getElementById('output').value = encoded;
+        setStatus('Encoded ✓', 'ok');
+        document.getElementById('size-label').textContent = encoded.length + ' chars';
+    }
+
+    function decodeHTML() {
+        const input = document.getElementById('input').value;
+        if (!input) { setStatus('Enter some HTML entities first', 'err'); return; }
+        const el = document.createElement('textarea');
+        el.innerHTML = input;
+        const decoded = el.value;
+        document.getElementById('output').value = decoded;
+        setStatus('Decoded ✓', 'ok');
+        document.getElementById('size-label').textContent = decoded.length + ' chars';
+    }
+
+    function copyOutput() {
+        navigator.clipboard.writeText(document.getElementById('output').value);
+        setStatus('Copied!', 'ok');
+    }
+
+    function clearAll() {
+        document.getElementById('input').value = '';
+        document.getElementById('output').value = '';
+        document.getElementById('status').textContent = '';
+        document.getElementById('size-label').textContent = '';
+    }
+
+    function setStatus(msg, type) {
+        const el = document.getElementById('status');
+        el.textContent = msg;
+        el.className = 'status status-' + type;
+    }
+    </script>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
