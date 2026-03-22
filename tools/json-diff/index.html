@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Diff — Compare JSON Objects Online | UtilShed</title>
+    <meta name="description" content="Free online JSON diff tool. Compare two JSON objects and see structural differences highlighted — added, removed, and changed keys. No signup required.">
+    <meta name="keywords" content="JSON diff, compare JSON, JSON compare online, JSON difference, diff JSON objects, JSON comparison tool">
+    <link rel="canonical" href="https://utilshed.com/tools/json-diff/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .diff-tree { font-family: var(--mono); font-size: 0.8125rem; line-height: 1.6; padding: 1rem; min-height: 200px; overflow-x: auto; }
+        .diff-key { color: var(--accent); }
+        .diff-val { color: var(--text); }
+        .diff-added { background: rgba(34,197,94,0.12); }
+        .diff-added .diff-val, .diff-added .diff-key { color: var(--green); }
+        .diff-removed { background: rgba(239,68,68,0.12); }
+        .diff-removed .diff-val, .diff-removed .diff-key { color: var(--red); }
+        .diff-changed { background: rgba(234,179,8,0.12); }
+        .diff-changed .diff-val { color: var(--yellow); }
+        .diff-line { padding: 1px 8px; white-space: pre; }
+        .diff-indent { display: inline-block; }
+        .diff-marker { display: inline-block; width: 1.5ch; color: var(--text-muted); font-weight: 700; }
+        .diff-stats { display: flex; gap: 1.5rem; margin-top: 0.75rem; font-size: 0.8125rem; }
+        .diff-stats span { display: flex; align-items: center; gap: 0.375rem; }
+        .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+        .dot-add { background: var(--green); }
+        .dot-rem { background: var(--red); }
+        .dot-chg { background: var(--yellow); }
+        .dot-same { background: var(--text-muted); }
+        .format-toggle { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .format-toggle button { padding: 0.375rem 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); font-size: 0.75rem; cursor: pointer; }
+        .format-toggle button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">🛠️ UtilShed</a>
+            <span class="tagline">JSON Diff</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>JSON Diff &amp; Compare</h1>
+            <p>Paste two JSON objects to see structural differences — added, removed, and changed values.</p>
+        </div>
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="compare()">Compare</button>
+            <button class="btn" onclick="formatBoth()">Format Both</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="swapInputs()">Swap ⇄</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Original JSON</div>
+                <textarea class="tool-input" id="input1" placeholder='{"name": "Alice", "age": 30}'></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Modified JSON</div>
+                <textarea class="tool-input" id="input2" placeholder='{"name": "Alice", "age": 31}'></textarea>
+            </div>
+        </div>
+        <div class="tool-panel" style="margin-top:1rem">
+            <div class="panel-header">
+                <span>Diff Result</span>
+                <div class="format-toggle">
+                    <button id="btn-inline" class="active" onclick="setView('inline')">Inline</button>
+                    <button id="btn-side" onclick="setView('side')">Side by Side</button>
+                </div>
+            </div>
+            <div id="diff-output" class="diff-tree"></div>
+            <div id="diff-stats" class="diff-stats" style="padding:0 1rem 0.75rem;"></div>
+        </div>
+
+        <div class="tool-single" style="margin-top:2rem">
+            <h2 style="font-size:1.125rem;margin-bottom:0.75rem;">How to Use the JSON Diff Tool</h2>
+            <p style="color:var(--text-muted);font-size:0.875rem;line-height:1.7;">
+                Paste your original JSON in the left panel and the modified JSON in the right panel, then click <strong>Compare</strong>.
+                The tool performs a deep structural comparison — it recursively walks both objects and highlights:
+            </p>
+            <ul style="color:var(--text-muted);font-size:0.875rem;line-height:1.8;padding-left:1.5rem;margin-top:0.5rem;">
+                <li><span style="color:var(--green);">Green</span> — keys or values that were <strong>added</strong> in the modified JSON</li>
+                <li><span style="color:var(--red);">Red</span> — keys or values that were <strong>removed</strong> from the original</li>
+                <li><span style="color:var(--yellow);">Yellow</span> — values that <strong>changed</strong> between the two</li>
+            </ul>
+            <p style="color:var(--text-muted);font-size:0.875rem;line-height:1.7;margin-top:0.5rem;">
+                Works with nested objects, arrays, strings, numbers, booleans, and null. All processing runs entirely in your browser — nothing is sent to any server.
+            </p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+    let currentView = 'inline';
+
+    function setView(v) {
+        currentView = v;
+        document.getElementById('btn-inline').className = v === 'inline' ? 'active' : '';
+        document.getElementById('btn-side').className = v === 'side' ? 'active' : '';
+        compare();
+    }
+
+    function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    function typeOf(v) {
+        if (v === null) return 'null';
+        if (Array.isArray(v)) return 'array';
+        return typeof v;
+    }
+
+    function jsonStr(v) {
+        if (typeof v === 'string') return '"' + esc(v) + '"';
+        if (v === null) return 'null';
+        return esc(String(v));
+    }
+
+    // Deep diff — returns array of {path, type, oldVal, newVal}
+    function deepDiff(a, b, path) {
+        path = path || '';
+        const diffs = [];
+        const tA = typeOf(a), tB = typeOf(b);
+
+        if (tA !== tB) {
+            diffs.push({ path, type: 'changed', oldVal: a, newVal: b });
+            return diffs;
+        }
+
+        if (tA === 'object') {
+            const allKeys = new Set([...Object.keys(a), ...Object.keys(b)]);
+            for (const k of allKeys) {
+                const p = path ? path + '.' + k : k;
+                if (!(k in a)) {
+                    diffs.push({ path: p, type: 'added', newVal: b[k] });
+                } else if (!(k in b)) {
+                    diffs.push({ path: p, type: 'removed', oldVal: a[k] });
+                } else {
+                    diffs.push(...deepDiff(a[k], b[k], p));
+                }
+            }
+        } else if (tA === 'array') {
+            const maxLen = Math.max(a.length, b.length);
+            for (let i = 0; i < maxLen; i++) {
+                const p = path + '[' + i + ']';
+                if (i >= a.length) {
+                    diffs.push({ path: p, type: 'added', newVal: b[i] });
+                } else if (i >= b.length) {
+                    diffs.push({ path: p, type: 'removed', oldVal: a[i] });
+                } else {
+                    diffs.push(...deepDiff(a[i], b[i], p));
+                }
+            }
+        } else {
+            if (a !== b) {
+                diffs.push({ path, type: 'changed', oldVal: a, newVal: b });
+            }
+        }
+        return diffs;
+    }
+
+    // Render inline diff view as annotated JSON
+    function renderInline(a, b, diffs) {
+        const diffMap = {};
+        for (const d of diffs) diffMap[d.path] = d;
+
+        const lines = [];
+
+        function render(objA, objB, indent, path) {
+            const tA = typeOf(objA), tB = typeOf(objB);
+            const pad = '  '.repeat(indent);
+
+            if (tA === 'object' || tB === 'object') {
+                const allKeys = [];
+                const seen = new Set();
+                // Preserve key order from both objects
+                if (tA === 'object') for (const k of Object.keys(objA)) { allKeys.push(k); seen.add(k); }
+                if (tB === 'object') for (const k of Object.keys(objB)) { if (!seen.has(k)) allKeys.push(k); }
+
+                lines.push({ text: pad + '{', cls: '' });
+                allKeys.forEach((k, ki) => {
+                    const p = path ? path + '.' + k : k;
+                    const d = diffMap[p];
+                    const comma = ki < allKeys.length - 1 ? ',' : '';
+
+                    if (d && d.type === 'added') {
+                        renderValue(d.newVal, indent + 1, p, 'diff-added', '+ ', k, comma);
+                    } else if (d && d.type === 'removed') {
+                        renderValue(d.oldVal, indent + 1, p, 'diff-removed', '- ', k, comma);
+                    } else if (d && d.type === 'changed') {
+                        renderValue(d.oldVal, indent + 1, p, 'diff-removed', '- ', k, comma);
+                        renderValue(d.newVal, indent + 1, p, 'diff-added', '+ ', k, comma);
+                    } else {
+                        // Might have nested diffs
+                        const hasNested = diffs.some(dd => dd.path.startsWith(p + '.') || dd.path.startsWith(p + '['));
+                        if (hasNested) {
+                            const valA = tA === 'object' ? objA[k] : undefined;
+                            const valB = tB === 'object' ? objB[k] : undefined;
+                            const innerPad = '  '.repeat(indent + 1);
+                            lines.push({ text: innerPad + '"' + esc(k) + '": ', cls: '', nobreak: true });
+                            render(valA, valB, indent + 1, p);
+                            // Add comma to last line if needed
+                            if (comma && lines.length > 0) {
+                                lines[lines.length - 1].text += comma;
+                            }
+                        } else {
+                            const val = tB === 'object' && k in objB ? objB[k] : (tA === 'object' ? objA[k] : undefined);
+                            renderValue(val, indent + 1, p, '', '  ', k, comma);
+                        }
+                    }
+                });
+                lines.push({ text: pad + '}', cls: '' });
+            } else if (tA === 'array' || tB === 'array') {
+                const maxLen = Math.max(
+                    tA === 'array' ? objA.length : 0,
+                    tB === 'array' ? objB.length : 0
+                );
+                lines.push({ text: pad + '[', cls: '' });
+                for (let i = 0; i < maxLen; i++) {
+                    const p = path + '[' + i + ']';
+                    const d = diffMap[p];
+                    const comma = i < maxLen - 1 ? ',' : '';
+
+                    if (d && d.type === 'added') {
+                        renderValue(d.newVal, indent + 1, p, 'diff-added', '+ ', null, comma);
+                    } else if (d && d.type === 'removed') {
+                        renderValue(d.oldVal, indent + 1, p, 'diff-removed', '- ', null, comma);
+                    } else if (d && d.type === 'changed') {
+                        renderValue(d.oldVal, indent + 1, p, 'diff-removed', '- ', null, comma);
+                        renderValue(d.newVal, indent + 1, p, 'diff-added', '+ ', null, comma);
+                    } else {
+                        const hasNested = diffs.some(dd => dd.path.startsWith(p + '.') || dd.path.startsWith(p + '['));
+                        if (hasNested) {
+                            const valA = tA === 'array' && i < objA.length ? objA[i] : undefined;
+                            const valB = tB === 'array' && i < objB.length ? objB[i] : undefined;
+                            render(valA, valB, indent + 1, p);
+                            if (comma && lines.length > 0) {
+                                lines[lines.length - 1].text += comma;
+                            }
+                        } else {
+                            const val = tB === 'array' && i < objB.length ? objB[i] : (tA === 'array' ? objA[i] : undefined);
+                            renderValue(val, indent + 1, p, '', '  ', null, comma);
+                        }
+                    }
+                }
+                lines.push({ text: pad + ']', cls: '' });
+            }
+        }
+
+        function renderValue(val, indent, path, cls, marker, key, comma) {
+            const pad = '  '.repeat(indent);
+            const t = typeOf(val);
+            const keyStr = key !== null && key !== undefined ? '"' + esc(key) + '": ' : '';
+
+            if (t === 'object' || t === 'array') {
+                // For complex values, stringify compactly if small, otherwise expand
+                const str = JSON.stringify(val);
+                if (str.length < 60) {
+                    lines.push({ text: pad.slice(0, -2) + '<span class="diff-marker">' + marker + '</span>' + keyStr + esc(str) + comma, cls });
+                } else {
+                    lines.push({ text: pad.slice(0, -2) + '<span class="diff-marker">' + marker + '</span>' + keyStr + (t === 'object' ? '{' : '['), cls });
+                    const entries = t === 'object' ? Object.entries(val) : val.map((v, i) => [i, v]);
+                    entries.forEach(([k, v], ei) => {
+                        const c = ei < entries.length - 1 ? ',' : '';
+                        const kStr = t === 'object' ? '"' + esc(k) + '": ' : '';
+                        lines.push({ text: '  '.repeat(indent + 1).slice(0, -2) + '<span class="diff-marker">' + marker + '</span>' + kStr + jsonStr(v) + c, cls });
+                    });
+                    lines.push({ text: pad.slice(0, -2) + '<span class="diff-marker">' + marker + '</span>' + (t === 'object' ? '}' : ']') + comma, cls });
+                }
+            } else {
+                lines.push({ text: pad.slice(0, -2) + '<span class="diff-marker">' + marker + '</span>' + keyStr + jsonStr(val) + comma, cls });
+            }
+        }
+
+        render(a, b, 0, '');
+        return lines.map(l => '<div class="diff-line ' + l.cls + '">' + l.text + '</div>').join('');
+    }
+
+    function compare() {
+        const raw1 = document.getElementById('input1').value.trim();
+        const raw2 = document.getElementById('input2').value.trim();
+        const output = document.getElementById('diff-output');
+        const stats = document.getElementById('diff-stats');
+        const status = document.getElementById('status');
+
+        if (!raw1 && !raw2) {
+            output.innerHTML = '<span style="color:var(--text-muted)">Paste JSON in both panels and click Compare.</span>';
+            stats.innerHTML = '';
+            return;
+        }
+
+        let a, b;
+        try { a = JSON.parse(raw1); } catch (e) {
+            status.textContent = 'Invalid JSON in left panel: ' + e.message;
+            status.className = 'status status-err';
+            return;
+        }
+        try { b = JSON.parse(raw2); } catch (e) {
+            status.textContent = 'Invalid JSON in right panel: ' + e.message;
+            status.className = 'status status-err';
+            return;
+        }
+
+        status.textContent = '';
+        status.className = 'status';
+
+        const diffs = deepDiff(a, b, '');
+        const added = diffs.filter(d => d.type === 'added').length;
+        const removed = diffs.filter(d => d.type === 'removed').length;
+        const changed = diffs.filter(d => d.type === 'changed').length;
+
+        if (diffs.length === 0) {
+            output.innerHTML = '<span style="color:var(--green)">✓ Both JSON objects are identical.</span>';
+            stats.innerHTML = '';
+            status.textContent = 'No differences found';
+            status.className = 'status status-ok';
+            return;
+        }
+
+        if (currentView === 'inline') {
+            output.innerHTML = renderInline(a, b, diffs);
+        } else {
+            // Side-by-side: show flat diff list
+            let html = '<div style="display:grid;grid-template-columns:1fr;gap:4px;">';
+            for (const d of diffs) {
+                if (d.type === 'added') {
+                    html += '<div class="diff-line diff-added">+ <span class="diff-key">' + esc(d.path) + '</span>: ' + jsonStr(d.newVal) + '</div>';
+                } else if (d.type === 'removed') {
+                    html += '<div class="diff-line diff-removed">- <span class="diff-key">' + esc(d.path) + '</span>: ' + jsonStr(d.oldVal) + '</div>';
+                } else if (d.type === 'changed') {
+                    html += '<div class="diff-line diff-removed">- <span class="diff-key">' + esc(d.path) + '</span>: ' + jsonStr(d.oldVal) + '</div>';
+                    html += '<div class="diff-line diff-added">+ <span class="diff-key">' + esc(d.path) + '</span>: ' + jsonStr(d.newVal) + '</div>';
+                }
+            }
+            html += '</div>';
+            output.innerHTML = html;
+        }
+
+        stats.innerHTML =
+            '<span><span class="dot dot-add"></span> ' + added + ' added</span>' +
+            '<span><span class="dot dot-rem"></span> ' + removed + ' removed</span>' +
+            '<span><span class="dot dot-chg"></span> ' + changed + ' changed</span>';
+
+        status.textContent = diffs.length + ' difference' + (diffs.length !== 1 ? 's' : '') + ' found';
+        status.className = 'status status-ok';
+    }
+
+    function formatBoth() {
+        ['input1', 'input2'].forEach(id => {
+            const el = document.getElementById(id);
+            try {
+                el.value = JSON.stringify(JSON.parse(el.value), null, 2);
+            } catch (e) {}
+        });
+    }
+
+    function clearAll() {
+        document.getElementById('input1').value = '';
+        document.getElementById('input2').value = '';
+        document.getElementById('diff-output').innerHTML = '';
+        document.getElementById('diff-stats').innerHTML = '';
+        document.getElementById('status').textContent = '';
+    }
+
+    function swapInputs() {
+        const el1 = document.getElementById('input1');
+        const el2 = document.getElementById('input2');
+        const tmp = el1.value;
+        el1.value = el2.value;
+        el2.value = tmp;
+    }
+
+    function loadSample() {
+        document.getElementById('input1').value = JSON.stringify({
+            "name": "Alice",
+            "age": 30,
+            "email": "alice@example.com",
+            "roles": ["admin", "editor"],
+            "settings": {
+                "theme": "dark",
+                "notifications": true,
+                "language": "en"
+            }
+        }, null, 2);
+        document.getElementById('input2').value = JSON.stringify({
+            "name": "Alice",
+            "age": 31,
+            "phone": "+1-555-0100",
+            "roles": ["admin", "editor", "viewer"],
+            "settings": {
+                "theme": "light",
+                "notifications": true,
+                "timezone": "UTC"
+            }
+        }, null, 2);
+        compare();
+    }
+    </script>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
