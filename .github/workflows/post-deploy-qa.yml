@@ -1,0 +1,259 @@
+name: Post-Deploy Visual QA
+
+on:
+  # Run after GitHub Pages deployment completes
+  workflow_run:
+    workflows: ["pages-build-deployment"]
+    types: [completed]
+
+  # Also allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  visual-qa:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install playwright
+          npx playwright install chromium --with-deps
+
+      - name: Wait for site propagation
+        run: |
+          echo "Waiting 30s for GitHub Pages CDN propagation..."
+          sleep 30
+          # Verify site is up
+          for i in {1..6}; do
+            if curl -sf -o /dev/null https://utilshed.com; then
+              echo "Site is live!"
+              break
+            fi
+            echo "Attempt $i: site not ready, waiting 10s..."
+            sleep 10
+          done
+
+      - name: Run Visual QA
+        id: qa
+        run: |
+          cat > visual-qa-ci.mjs << 'SCRIPT'
+          import { chromium } from 'playwright';
+          import { readFileSync, mkdirSync, writeFileSync } from 'fs';
+
+          const BASE = 'https://utilshed.com';
+          const VIEWPORTS = [
+            { name: 'mobile',  width: 375,  height: 812 },
+            { name: 'tablet',  width: 768,  height: 1024 },
+            { name: 'desktop', width: 1280, height: 800 },
+          ];
+
+          // Parse pages from sitemap.xml
+          function getPages() {
+            try {
+              const sitemap = readFileSync('sitemap.xml', 'utf8');
+              const urls = [...sitemap.matchAll(/<loc>(https:\/\/utilshed\.com[^<]*)<\/loc>/g)]
+                .map(m => m[1].replace(BASE, ''));
+              if (urls.length > 0) return urls;
+            } catch {}
+            return ['/'];
+          }
+
+          async function checkPage(page, url, viewport) {
+            await page.setViewportSize({ width: viewport.width, height: viewport.height });
+            try {
+              await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+            } catch (err) {
+              return [{ type: 'error', message: `Failed to load: ${err.message}`, severity: 'high' }];
+            }
+            await page.waitForTimeout(500);
+
+            return await page.evaluate((vw) => {
+              const found = [];
+              const docWidth = document.documentElement.clientWidth;
+              const scrollWidth = document.documentElement.scrollWidth;
+
+              // Horizontal page overflow
+              if (scrollWidth > docWidth + 2) {
+                found.push({
+                  type: 'page-overflow',
+                  message: `Horizontal scroll: scrollWidth=${scrollWidth} > clientWidth=${docWidth} (${scrollWidth - docWidth}px overflow)`,
+                  severity: 'high',
+                });
+              }
+
+              // Elements overflowing viewport
+              const all = document.querySelectorAll('body *');
+              const reported = new Set();
+              for (const el of all) {
+                const rect = el.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0 || rect.bottom < 0) continue;
+                if (rect.right > docWidth + 5) {
+                  let dominated = false;
+                  for (const p of reported) { if (p.contains(el)) { dominated = true; break; } }
+                  if (!dominated) {
+                    reported.add(el);
+                    const tag = el.tagName.toLowerCase();
+                    const cls = el.className && typeof el.className === 'string'
+                      ? '.' + el.className.trim().split(/\s+/).join('.') : '';
+                    found.push({
+                      type: 'element-overflow',
+                      message: `${tag}${cls} overflows viewport: right=${Math.round(rect.right)}px (viewport: ${docWidth}px)`,
+                      severity: 'high',
+                    });
+                  }
+                }
+              }
+
+              // Grid/flex child overflow
+              const containers = document.querySelectorAll('[class*="grid"], [class*="card"], [class*="hero"], [class*="tool"]');
+              for (const c of containers) {
+                const style = getComputedStyle(c);
+                if (style.display !== 'grid' && style.display !== 'flex') continue;
+                const cRect = c.getBoundingClientRect();
+                for (const child of c.children) {
+                  const chRect = child.getBoundingClientRect();
+                  if (chRect.width === 0) continue;
+                  if (chRect.right > cRect.right + 10) {
+                    const tag = c.tagName.toLowerCase();
+                    const cls = c.className && typeof c.className === 'string'
+                      ? '.' + c.className.trim().split(/\s+/).join('.') : '';
+                    found.push({
+                      type: 'child-overflow',
+                      message: `Child overflows ${tag}${cls}: right=${Math.round(chRect.right)}px > container=${Math.round(cRect.right)}px`,
+                      severity: 'medium',
+                    });
+                    break;
+                  }
+                }
+              }
+
+              // Empty tool cards
+              for (const tc of document.querySelectorAll('.tool-card')) {
+                if (tc.textContent.trim().length < 3) {
+                  found.push({ type: 'empty-card', message: 'Tool card appears empty', severity: 'high' });
+                }
+              }
+
+              return found;
+            }, viewport.width);
+          }
+
+          async function main() {
+            mkdirSync('qa-screenshots', { recursive: true });
+            const pages = getPages();
+            const browser = await chromium.launch({ headless: true });
+            const summary = { total: 0, high: 0, medium: 0, pagesWithIssues: 0 };
+            const allIssues = [];
+
+            for (const pagePath of pages) {
+              const url = `${BASE}${pagePath}`;
+              const page = await browser.newPage();
+              let pageHasIssues = false;
+
+              for (const vp of VIEWPORTS) {
+                const issues = await checkPage(page, url, vp);
+
+                // Screenshot
+                const name = `${pagePath.replace(/\//g, '_').replace(/^_|_$/g, '') || 'home'}_${vp.name}.png`;
+                try { await page.screenshot({ path: `qa-screenshots/${name}`, fullPage: true }); } catch {}
+
+                for (const issue of issues) {
+                  summary.total++;
+                  if (issue.severity === 'high') summary.high++;
+                  else summary.medium++;
+                  pageHasIssues = true;
+                  allIssues.push({ page: pagePath, viewport: vp.name, ...issue });
+                }
+              }
+
+              if (pageHasIssues) summary.pagesWithIssues++;
+              await page.close();
+
+              const idx = pages.indexOf(pagePath) + 1;
+              console.log(`[${idx}/${pages.length}] ${pagePath} ${pageHasIssues ? '⚠' : '✓'}`);
+            }
+
+            await browser.close();
+
+            // Output summary
+            console.log(`\n=== Visual QA Results ===`);
+            console.log(`Pages tested: ${pages.length}`);
+            console.log(`Pages with issues: ${summary.pagesWithIssues}`);
+            console.log(`Total issues: ${summary.total} (${summary.high} high, ${summary.medium} medium)`);
+
+            if (allIssues.length > 0) {
+              console.log(`\n--- Issues ---`);
+              for (const i of allIssues) {
+                const sev = i.severity === 'high' ? '🔴' : '🟡';
+                console.log(`${sev} [${i.viewport}] ${i.page}: ${i.message}`);
+              }
+            }
+
+            // Write results for downstream steps
+            writeFileSync('qa-results.json', JSON.stringify({ summary, issues: allIssues }, null, 2));
+
+            // Exit code: fail on high severity issues
+            if (summary.high > 0) {
+              console.log(`\n❌ FAILED: ${summary.high} high-severity issues found`);
+              process.exit(1);
+            } else if (summary.total > 0) {
+              console.log(`\n⚠️ PASSED with warnings: ${summary.total} medium-severity issues`);
+            } else {
+              console.log(`\n✅ ALL CLEAR: No layout issues detected`);
+            }
+          }
+
+          main().catch(err => { console.error(err); process.exit(1); });
+          SCRIPT
+          node visual-qa-ci.mjs
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-screenshots
+          path: qa-screenshots/
+          retention-days: 7
+
+      - name: Upload QA results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-results
+          path: qa-results.json
+          retention-days: 30
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_OWNER_ID: ${{ secrets.TELEGRAM_OWNER_ID }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_OWNER_ID" ]; then
+            echo "No Telegram credentials — skipping notification"
+            exit 0
+          fi
+          ISSUES=$(cat qa-results.json 2>/dev/null | node -e "
+            const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+            const lines = data.issues.filter(i=>i.severity==='high').slice(0,10)
+              .map(i=>'• ['+i.viewport+'] '+i.page+': '+i.message);
+            console.log(lines.join('\n'));
+          " 2>/dev/null || echo "See workflow run for details")
+          MSG="🚨 Post-deploy QA FAILED after push to utilshed
+
+          ${ISSUES}
+
+          https://github.com/KarlbottAgent/utilshed/actions"
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"${TELEGRAM_OWNER_ID}\", \"text\": $(echo "$MSG" | jq -Rs .)}"
