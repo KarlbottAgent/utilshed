@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Minify CSS — UtilShed</title>
+    <meta name="description" content="Learn how to minify CSS to reduce file size and improve page load speed. Covers manual techniques, build tools like PostCSS and cssnano, and a free online CSS minifier.">
+    <meta name="keywords" content="how to minify css, css minification, minify css online, css minifier, reduce css file size, css optimization, compress css, cssnano, postcss minify">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-minify-css/">
+    <meta property="og:title" content="How to Minify CSS — UtilShed">
+    <meta property="og:description" content="Learn how to minify CSS to reduce file size and improve page load speed. Covers tools, techniques, and a free online minifier.">
+    <meta property="og:type" content="article">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Minify CSS","description":"Learn how to minify CSS to reduce file size and improve page load speed.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-minify-css/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.875rem; }
+        th, td { padding: 0.5rem 0.75rem; border: 1px solid var(--border); text-align: left; }
+        th { background: var(--surface); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Minify CSS</div>
+            <div class="tool-header">
+                <h1>How to Minify CSS</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 7 min read</p>
+            </div>
+
+            <p>CSS minification removes whitespace, comments, and unnecessary characters from your stylesheets without changing how they work. The result is a smaller file that loads faster — often 20-50% smaller than the original.</p>
+
+            <p>This guide covers what CSS minification does, how to do it with build tools, and when (and when not) to minify.</p>
+
+            <h2>What Does CSS Minification Do?</h2>
+
+            <p>A CSS minifier performs several transformations:</p>
+            <ul>
+                <li><strong>Removes whitespace</strong> — spaces, tabs, and newlines that are only there for readability</li>
+                <li><strong>Strips comments</strong> — <span class="code-inline">/* ... */</span> blocks are removed entirely</li>
+                <li><strong>Shortens values</strong> — <span class="code-inline">#ffffff</span> becomes <span class="code-inline">#fff</span>, <span class="code-inline">0px</span> becomes <span class="code-inline">0</span></li>
+                <li><strong>Merges rules</strong> — duplicate selectors or properties get combined</li>
+                <li><strong>Removes redundant semicolons</strong> — the last semicolon before <span class="code-inline">}</span> is optional</li>
+            </ul>
+
+            <h3>Before Minification</h3>
+            <div class="code-block">/* Main navigation styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.navbar .logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333333;
+}</div>
+
+            <h3>After Minification</h3>
+            <div class="code-block">.navbar{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;background-color:#fff;border-bottom:1px solid #e0e0e0}.navbar .logo{font-size:1.25rem;font-weight:700;color:#333}</div>
+
+            <p>Same exact rendering in the browser, but significantly fewer bytes over the wire.</p>
+
+            <div class="cta-box">
+                <strong>Minify your CSS instantly</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Paste your CSS and get a minified version in one click — no signup required.</p>
+                <a href="../../tools/css-minifier/">Open CSS Minifier</a>
+            </div>
+
+            <h2>Why Minify CSS?</h2>
+
+            <p>File size directly affects page load speed, and page load speed affects everything:</p>
+
+            <ul>
+                <li><strong>Faster page loads</strong> — fewer bytes = less download time, especially on mobile networks</li>
+                <li><strong>Better Core Web Vitals</strong> — smaller CSS improves First Contentful Paint (FCP) and Largest Contentful Paint (LCP)</li>
+                <li><strong>SEO benefit</strong> — Google uses page speed as a ranking factor</li>
+                <li><strong>Lower bandwidth costs</strong> — matters at scale when you're serving millions of requests</li>
+                <li><strong>Better user experience</strong> — users on slow connections notice the difference</li>
+            </ul>
+
+            <h2>How to Minify CSS with Build Tools</h2>
+
+            <h3>1. PostCSS + cssnano (Recommended)</h3>
+
+            <p><a href="https://cssnano.github.io/cssnano/">cssnano</a> is the most popular CSS minifier in the Node.js ecosystem. It runs as a PostCSS plugin:</p>
+
+            <div class="code-block">npm install postcss cssnano postcss-cli</div>
+
+            <p>Create a <span class="code-inline">postcss.config.js</span>:</p>
+
+            <div class="code-block">module.exports = {
+    plugins: [
+        require('cssnano')({
+            preset: 'default'
+        })
+    ]
+};</div>
+
+            <p>Then run it:</p>
+
+            <div class="code-block">npx postcss src/style.css -o dist/style.min.css</div>
+
+            <h3>2. esbuild (Fastest)</h3>
+
+            <p><a href="https://esbuild.github.io/">esbuild</a> is a bundler written in Go that's incredibly fast — it can minify CSS as part of the build:</p>
+
+            <div class="code-block">npx esbuild src/style.css --minify --outfile=dist/style.min.css</div>
+
+            <p>esbuild is ideal when you need speed over maximum compression. It doesn't do advanced optimizations like merging rules, but it's 10-100x faster than cssnano.</p>
+
+            <h3>3. Lightning CSS (Modern)</h3>
+
+            <p><a href="https://lightningcss.dev/">Lightning CSS</a> (formerly Parcel CSS) is a Rust-based tool that also handles vendor prefixes and modern CSS transpilation:</p>
+
+            <div class="code-block">npx lightningcss --minify src/style.css -o dist/style.min.css</div>
+
+            <p>It combines minification with features like automatic vendor prefixing and syntax lowering — a good all-in-one choice.</p>
+
+            <h3>4. clean-css (CLI)</h3>
+
+            <p><span class="code-inline">clean-css</span> is a battle-tested minifier with aggressive optimization options:</p>
+
+            <div class="code-block">npx clean-css-cli src/style.css -o dist/style.min.css</div>
+
+            <h2>Build Tool Integration</h2>
+
+            <p>Most bundlers and build tools have built-in CSS minification:</p>
+
+            <table>
+                <tr><th>Tool</th><th>Minification</th><th>Notes</th></tr>
+                <tr><td>Webpack</td><td>css-minimizer-webpack-plugin</td><td>Uses cssnano by default</td></tr>
+                <tr><td>Vite</td><td>Built-in (esbuild)</td><td>Enabled in production builds automatically</td></tr>
+                <tr><td>Next.js</td><td>Built-in</td><td>Automatic in production</td></tr>
+                <tr><td>Parcel</td><td>Built-in (Lightning CSS)</td><td>Zero config</td></tr>
+                <tr><td>Gulp</td><td>gulp-clean-css</td><td>Plugin-based</td></tr>
+            </table>
+
+            <p>If you're using a modern framework, CSS minification is probably already happening in your production build. Check your build output to confirm.</p>
+
+            <h2>When NOT to Minify</h2>
+
+            <ul>
+                <li><strong>During development</strong> — keep CSS readable while you're working on it. Minify only for production.</li>
+                <li><strong>Inline styles in HTML emails</strong> — email clients are finicky; aggressive minification can break rendering in some clients.</li>
+                <li><strong>Tiny stylesheets</strong> — if your CSS is under 1KB, the savings are negligible and not worth the build complexity.</li>
+            </ul>
+
+            <h2>CSS Minification vs. Gzip</h2>
+
+            <p>A common question: "If the server gzips everything, do I still need to minify?"</p>
+
+            <p><strong>Yes.</strong> Minification and gzip are complementary, not alternatives:</p>
+
+            <ul>
+                <li><strong>Minification</strong> removes redundant characters from the source</li>
+                <li><strong>Gzip/Brotli</strong> compresses the remaining bytes for transfer</li>
+                <li>Minified + gzipped is always smaller than just gzipped</li>
+            </ul>
+
+            <p>Think of it this way: minification removes waste, then compression squeezes what's left. You want both.</p>
+
+            <h2>Quick Minification Online</h2>
+
+            <p>If you need to minify a CSS file quickly without setting up a build pipeline, use the <a href="../../tools/css-minifier/">free CSS minifier</a> on UtilShed. Paste your CSS, click minify, and copy the result. Everything runs in your browser — nothing is uploaded to a server.</p>
+
+            <p>Related tools:</p>
+            <ul>
+                <li><a href="../../tools/css-minifier/">CSS Minifier</a> — minify CSS online, instantly</li>
+                <li><a href="../../tools/css-beautifier/">CSS Beautifier</a> — format and indent CSS for readability</li>
+                <li><a href="../../tools/js-minifier/">JavaScript Minifier</a> — minify JS files the same way</li>
+                <li><a href="../../tools/html-minifier/">HTML Minifier</a> — strip whitespace from HTML</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

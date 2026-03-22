@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Calculate Chmod Permissions — UtilShed</title>
+    <meta name="description" content="Learn how Unix file permissions work and how to calculate chmod values. Covers octal notation, symbolic notation, common permission sets, and a free online chmod calculator.">
+    <meta name="keywords" content="how to calculate chmod permissions, chmod calculator, unix file permissions, chmod 777, chmod 755, chmod 644, file permissions linux, chmod octal, chmod symbolic">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-calculate-chmod-permissions/">
+    <meta property="og:title" content="How to Calculate Chmod Permissions — UtilShed">
+    <meta property="og:description" content="Learn how Unix file permissions work and how to calculate chmod values with examples and a free calculator.">
+    <meta property="og:type" content="article">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Calculate Chmod Permissions","description":"Learn how Unix file permissions work and how to calculate chmod values.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-calculate-chmod-permissions/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.875rem; }
+        th, td { padding: 0.5rem 0.75rem; border: 1px solid var(--border); text-align: left; }
+        th { background: var(--surface); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Calculate Chmod Permissions</div>
+            <div class="tool-header">
+                <h1>How to Calculate Chmod Permissions</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 8 min read</p>
+            </div>
+
+            <p>Every file and directory on a Unix/Linux system has permissions that control who can read, write, and execute it. The <span class="code-inline">chmod</span> command sets these permissions — but its octal notation (<span class="code-inline">chmod 755</span>) can be confusing if you don't know how the numbers work.</p>
+
+            <p>This guide breaks down exactly how Unix permissions work, how to calculate chmod values, and which permission sets to use for common scenarios.</p>
+
+            <h2>The Permission Model</h2>
+
+            <p>Unix permissions have three components for each of three user categories:</p>
+
+            <table>
+                <tr><th></th><th>Read (r)</th><th>Write (w)</th><th>Execute (x)</th></tr>
+                <tr><td><strong>Owner (u)</strong></td><td>Can read the file</td><td>Can modify the file</td><td>Can execute the file</td></tr>
+                <tr><td><strong>Group (g)</strong></td><td>Can read the file</td><td>Can modify the file</td><td>Can execute the file</td></tr>
+                <tr><td><strong>Others (o)</strong></td><td>Can read the file</td><td>Can modify the file</td><td>Can execute the file</td></tr>
+            </table>
+
+            <p>When you run <span class="code-inline">ls -l</span>, you see permissions displayed like this:</p>
+
+            <div class="code-block">-rwxr-xr--  1 user group  4096 Mar 22 12:00 script.sh
+│└┬┘└┬┘└┬┘
+│ │   │   └── Others: read only (r--)
+│ │   └────── Group: read + execute (r-x)
+│ └────────── Owner: read + write + execute (rwx)
+└──────────── File type (- = file, d = directory)</div>
+
+            <h2>Octal (Numeric) Notation</h2>
+
+            <p>Each permission has a numeric value:</p>
+
+            <table>
+                <tr><th>Permission</th><th>Value</th></tr>
+                <tr><td>Read (r)</td><td>4</td></tr>
+                <tr><td>Write (w)</td><td>2</td></tr>
+                <tr><td>Execute (x)</td><td>1</td></tr>
+                <tr><td>None (-)</td><td>0</td></tr>
+            </table>
+
+            <p>You add the values together for each user category to get a single digit. Three digits make the full permission:</p>
+
+            <div class="code-block">Owner:  rwx = 4 + 2 + 1 = 7
+Group:  r-x = 4 + 0 + 1 = 5
+Others: r-- = 4 + 0 + 0 = 4
+
+Result: 754</div>
+
+            <p>So <span class="code-inline">chmod 754 file.txt</span> means: owner can do everything, group can read and execute, others can only read.</p>
+
+            <div class="cta-box">
+                <strong>Calculate chmod permissions visually</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Toggle checkboxes for read/write/execute and get the numeric value instantly.</p>
+                <a href="../../tools/chmod-calculator/">Open Chmod Calculator</a>
+            </div>
+
+            <h2>Symbolic Notation</h2>
+
+            <p>Instead of numbers, you can use symbolic notation with <span class="code-inline">chmod</span>:</p>
+
+            <div class="code-block"># Add execute permission for the owner
+chmod u+x script.sh
+
+# Remove write permission for group and others
+chmod go-w file.txt
+
+# Set exact permissions: owner=rwx, group=rx, others=r
+chmod u=rwx,g=rx,o=r file.txt
+
+# Add read permission for everyone
+chmod a+r file.txt</div>
+
+            <p>The operators:</p>
+            <ul>
+                <li><span class="code-inline">+</span> — add a permission</li>
+                <li><span class="code-inline">-</span> — remove a permission</li>
+                <li><span class="code-inline">=</span> — set exact permissions (removes anything not specified)</li>
+            </ul>
+
+            <p>The targets:</p>
+            <ul>
+                <li><span class="code-inline">u</span> — owner (user)</li>
+                <li><span class="code-inline">g</span> — group</li>
+                <li><span class="code-inline">o</span> — others</li>
+                <li><span class="code-inline">a</span> — all (owner + group + others)</li>
+            </ul>
+
+            <h2>Common Permission Sets</h2>
+
+            <table>
+                <tr><th>Octal</th><th>Symbolic</th><th>Use Case</th></tr>
+                <tr><td><span class="code-inline">755</span></td><td>rwxr-xr-x</td><td>Executable scripts, directories (standard default)</td></tr>
+                <tr><td><span class="code-inline">644</span></td><td>rw-r--r--</td><td>Regular files — owner writes, everyone reads</td></tr>
+                <tr><td><span class="code-inline">700</span></td><td>rwx------</td><td>Private scripts — only owner has access</td></tr>
+                <tr><td><span class="code-inline">600</span></td><td>rw-------</td><td>Private files (SSH keys, config with secrets)</td></tr>
+                <tr><td><span class="code-inline">777</span></td><td>rwxrwxrwx</td><td>Everyone can do everything — <strong>avoid this</strong></td></tr>
+                <tr><td><span class="code-inline">444</span></td><td>r--r--r--</td><td>Read-only for everyone, including owner</td></tr>
+                <tr><td><span class="code-inline">750</span></td><td>rwxr-x---</td><td>Owner full access, group can read/execute, others nothing</td></tr>
+                <tr><td><span class="code-inline">664</span></td><td>rw-rw-r--</td><td>Shared files — owner and group can write, others read</td></tr>
+            </table>
+
+            <h2>Directory Permissions</h2>
+
+            <p>Permissions mean slightly different things for directories:</p>
+
+            <ul>
+                <li><strong>Read (r)</strong> — list the directory contents (<span class="code-inline">ls</span>)</li>
+                <li><strong>Write (w)</strong> — create, rename, or delete files in the directory</li>
+                <li><strong>Execute (x)</strong> — enter the directory (<span class="code-inline">cd</span>) and access files within it</li>
+            </ul>
+
+            <p>A directory with <span class="code-inline">r--</span> permission lets you list files but not access them. You almost always need <span class="code-inline">x</span> on directories.</p>
+
+            <div class="code-block"># Standard directory permissions
+chmod 755 /var/www/html           # Web root — everyone can read/traverse
+chmod 700 ~/.ssh                  # SSH directory — owner only
+chmod 1777 /tmp                   # Temp dir — sticky bit (see below)</div>
+
+            <h2>Special Permissions</h2>
+
+            <h3>Sticky Bit (1000)</h3>
+            <p>On a directory, prevents users from deleting files they don't own. Used on <span class="code-inline">/tmp</span>:</p>
+            <div class="code-block">chmod 1777 /tmp    # or: chmod +t /tmp
+ls -ld /tmp
+# drwxrwxrwt — note the 't' at the end</div>
+
+            <h3>Setuid (4000)</h3>
+            <p>When set on an executable, it runs with the file owner's permissions (not the caller's). Used by programs like <span class="code-inline">passwd</span>:</p>
+            <div class="code-block">chmod 4755 /usr/bin/someprogram
+ls -l /usr/bin/someprogram
+# -rwsr-xr-x — note the 's' in owner execute</div>
+
+            <h3>Setgid (2000)</h3>
+            <p>On a file, runs with the group's permissions. On a directory, new files inherit the directory's group:</p>
+            <div class="code-block">chmod 2775 /shared/project
+# New files in /shared/project inherit the group</div>
+
+            <h2>Security Best Practices</h2>
+
+            <ul>
+                <li><strong>Never use 777</strong> — if "everyone can do everything" seems like the fix, find the real problem. Usually you need to fix ownership (<span class="code-inline">chown</span>) or group membership instead.</li>
+                <li><strong>SSH keys must be 600</strong> — SSH refuses to use keys with group/other permissions. <span class="code-inline">chmod 600 ~/.ssh/id_rsa</span></li>
+                <li><strong>.ssh directory must be 700</strong> — <span class="code-inline">chmod 700 ~/.ssh</span></li>
+                <li><strong>Web files: 644, directories: 755</strong> — the web server user needs read access, not write.</li>
+                <li><strong>Config files with secrets: 600</strong> — database passwords, API keys, etc. should only be readable by the owner.</li>
+                <li><strong>Use <span class="code-inline">chown</span> before <span class="code-inline">chmod</span></strong> — fix ownership first, then permissions. <span class="code-inline">chmod 777</span> is often a band-aid for wrong ownership.</li>
+            </ul>
+
+            <h2>Quick Reference: Calculating Permissions</h2>
+
+            <p>To calculate a chmod value from scratch:</p>
+
+            <ol>
+                <li>For each category (owner, group, others), decide which permissions they need</li>
+                <li>Add up the values: read (4) + write (2) + execute (1)</li>
+                <li>Combine the three digits</li>
+            </ol>
+
+            <div class="code-block">Example: Web application directory
+  Owner needs:  read + write + execute = 4+2+1 = 7
+  Group needs:  read + execute          = 4+0+1 = 5
+  Others need:  read + execute          = 4+0+1 = 5
+  Result: chmod 755</div>
+
+            <p>Or use the <a href="../../tools/chmod-calculator/">chmod calculator</a> to toggle checkboxes and get the value instantly — no mental math required.</p>
+
+            <p>Related tools:</p>
+            <ul>
+                <li><a href="../../tools/chmod-calculator/">Chmod Calculator</a> — visual permission calculator</li>
+                <li><a href="../../tools/cron-parser/">Cron Expression Parser</a> — another Linux admin essential</li>
+                <li><a href="../../tools/hash/">Hash Generator</a> — generate MD5, SHA-256, and other hashes</li>
+                <li><a href="../../tools/password-generator/">Password Generator</a> — create strong passwords</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
