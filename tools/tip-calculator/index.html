@@ -59,17 +59,28 @@ function setTip(p){document.getElementById('tipPct').value=p;document.querySelec
 function calc(){const bill=parseFloat(document.getElementById('bill').value)||0;const pct=parseFloat(document.getElementById('tipPct').value)||0;const split=parseInt(document.getElementById('split').value)||1;const tip=bill*pct/100;const total=bill+tip;document.getElementById('tipAmt').textContent='$'+tip.toFixed(2);document.getElementById('total').textContent='$'+total.toFixed(2);if(split>1){document.getElementById('perPerson').textContent='$'+(total/split).toFixed(2);document.getElementById('splitResult').style.display='block';}else{document.getElementById('splitResult').style.display='none';}}
 document.getElementById('bill').addEventListener('input',calc);document.getElementById('tipPct').addEventListener('input',calc);document.getElementById('split').addEventListener('input',calc);
     </script>
-
     <section class="related-tools">
         <h2>Related Tools</h2>
         <div class="related-tools-grid">
-            <a href="../percentage-calculator/" class="related-tool-card">
-                <strong>Percentage Calculator</strong>
-                <span>Calculate percentages</span>
+            <a href="../discount-calculator/" class="related-tool-card">
+                <strong>Discount Calculator</strong>
+                <span>Free online discount calculator. Calculate sale prices, savings, and find the or</span>
             </a>
             <a href="../loan-calculator/" class="related-tool-card">
                 <strong>Loan Calculator</strong>
-                <span>Calculate loan payments</span>
+                <span>Free online loan calculator. Calculate monthly payments, total interest, and amo</span>
+            </a>
+            <a href="../percentage-calculator/" class="related-tool-card">
+                <strong>Percentage Calculator</strong>
+                <span>Free online percentage calculator. Calculate percentages, percentage change, and</span>
+            </a>
+            <a href="../invoice-generator/" class="related-tool-card">
+                <strong>Invoice Generator</strong>
+                <span>Free online invoice generator. Create professional invoices and download as PDF </span>
+            </a>
+            <a href="../scientific-calculator/" class="related-tool-card">
+                <strong>Scientific Calculator</strong>
+                <span>Free online scientific calculator. Full-featured scientific calculator with trig</span>
             </a>
         </div>
     </section>
