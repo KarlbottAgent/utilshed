@@ -63,7 +63,9 @@ jobs:
               const sitemap = readFileSync('sitemap.xml', 'utf8');
               const urls = [...sitemap.matchAll(/<loc>(https:\/\/utilshed\.com[^<]*)<\/loc>/g)]
                 .map(m => m[1].replace(BASE, ''));
-              if (urls.length > 0) return urls;
+              // Filter out non-HTML files (XML sitemaps, robots.txt, etc.)
+              const htmlUrls = urls.filter(u => !u.match(/\.(xml|txt|json|ico|png|jpg|svg|css|js|pdf)($|\?)/));
+              if (htmlUrls.length > 0) return htmlUrls;
             } catch {}
             return ['/'];
           }
