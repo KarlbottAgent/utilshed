@@ -46,6 +46,58 @@
             <p>This free online time zone converter lets you convert times between any time zones worldwide. see current time in multiple zones at once — directly in your browser with no signup or installation required.</p>
             <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
         </div>
+    
+    <section class="newsletter-section">
+        <h2>Get New Tools in Your Inbox</h2>
+        <p>We ship new free tools weekly. No spam, unsubscribe anytime.</p>
+        <form class="newsletter-form"  data-newsletter-form>
+            <input type="email" name="email_address" placeholder="you@example.com" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-success">You're in! Check your email to confirm.</p>
+        <p class="newsletter-error">Something went wrong. Please try again.</p>
+    </section>
+    <script>
+    (function() {
+        var form = document.querySelector('[data-newsletter-form]');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            var action = form.getAttribute('action');
+            if (!action) {
+                // No Kit form configured yet — store locally and show success
+                e.preventDefault();
+                var email = form.querySelector('input[type="email"]').value;
+                try {
+                    var stored = JSON.parse(localStorage.getItem('utilshed_newsletter') || '[]');
+                    if (stored.indexOf(email) === -1) stored.push(email);
+                    localStorage.setItem('utilshed_newsletter', JSON.stringify(stored));
+                } catch(err) {}
+                form.querySelector('.newsletter-success') ||
+                    (form.parentElement.querySelector('.newsletter-success').style.display = 'block');
+                form.parentElement.querySelector('.newsletter-success').style.display = 'block';
+                form.style.display = 'none';
+                return;
+            }
+            // Kit form — submit via fetch for better UX
+            e.preventDefault();
+            var email = form.querySelector('input[type="email"]').value;
+            var body = new FormData();
+            body.append('email_address', email);
+            fetch(action, { method: 'POST', body: body, headers: { 'Accept': 'application/json' } })
+                .then(function(r) {
+                    if (r.ok || r.status === 200) {
+                        form.parentElement.querySelector('.newsletter-success').style.display = 'block';
+                        form.style.display = 'none';
+                    } else {
+                        form.parentElement.querySelector('.newsletter-error').style.display = 'block';
+                    }
+                })
+                .catch(function() {
+                    form.parentElement.querySelector('.newsletter-error').style.display = 'block';
+                });
+        });
+    })();
+    </script>
     </main>
     <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
     <script>
