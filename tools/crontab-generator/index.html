@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crontab Generator — UtilShed</title>
+    <meta name="description" content="Free online crontab generator. Build cron expressions visually with a human-readable schedule preview. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/crontab-generator/">
+    <meta property="og:title" content="Crontab Generator — UtilShed">
+    <meta property="og:description" content="Free online crontab generator. Build cron expressions visually with a human-readable schedule preview. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/crontab-generator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.cron-field { display: grid; grid-template-columns: 120px 1fr; gap: 0.5rem; align-items: center; }
+.cron-field label { color: #aaa; font-size: 0.9rem; }
+.cron-field select, .cron-field .custom-input { padding: 0.6rem; background: #1e1e2e; border: 1px solid #333; color: #e0e0e0; border-radius: 6px; font-family: monospace; }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crontab Generator","description":"Free online crontab generator. Build cron expressions visually with a human-readable schedule preview. No signup required.","url":"https://utilshed.com/tools/crontab-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Crontab Generator","item":"https://utilshed.com/tools/crontab-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Crontab Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Crontab Generator</h1>
+            <p>Build cron expressions visually with a human-readable schedule preview.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:700px;margin:0 auto">
+            <div style="background:#1e1e2e;border-radius:8px;padding:1.5rem;border:1px solid #333;margin-bottom:1rem">
+                <div id="cronOutput" style="font-family:monospace;font-size:1.5rem;text-align:center;color:#7dd3fc;margin-bottom:0.5rem">* * * * *</div>
+                <div id="cronHuman" style="text-align:center;color:#aaa;font-size:0.9rem">Every minute</div>
+            </div>
+            <div style="display:grid;gap:1rem">
+                <div class="cron-field"><label>Minute</label><select id="minute" onchange="update()"><option value="*">Every minute (*)</option><option value="*/5">Every 5 minutes</option><option value="*/10">Every 10 minutes</option><option value="*/15">Every 15 minutes</option><option value="*/30">Every 30 minutes</option><option value="0">At minute 0</option><option value="custom">Custom...</option></select><input type="text" id="minuteCustom" class="custom-input" placeholder="e.g. 0,15,30,45" style="display:none" oninput="update()"></div>
+                <div class="cron-field"><label>Hour</label><select id="hour" onchange="update()"><option value="*">Every hour (*)</option><option value="*/2">Every 2 hours</option><option value="*/6">Every 6 hours</option><option value="0">Midnight (0)</option><option value="9">9 AM</option><option value="12">Noon (12)</option><option value="17">5 PM (17)</option><option value="custom">Custom...</option></select><input type="text" id="hourCustom" class="custom-input" placeholder="e.g. 9,17" style="display:none" oninput="update()"></div>
+                <div class="cron-field"><label>Day of Month</label><select id="dom" onchange="update()"><option value="*">Every day (*)</option><option value="1">1st</option><option value="15">15th</option><option value="1,15">1st and 15th</option><option value="custom">Custom...</option></select><input type="text" id="domCustom" class="custom-input" placeholder="e.g. 1,15" style="display:none" oninput="update()"></div>
+                <div class="cron-field"><label>Month</label><select id="month" onchange="update()"><option value="*">Every month (*)</option><option value="1">January</option><option value="6">June</option><option value="12">December</option><option value="custom">Custom...</option></select><input type="text" id="monthCustom" class="custom-input" placeholder="e.g. 1,6" style="display:none" oninput="update()"></div>
+                <div class="cron-field"><label>Day of Week</label><select id="dow" onchange="update()"><option value="*">Every day (*)</option><option value="1-5">Weekdays (Mon-Fri)</option><option value="0,6">Weekends (Sat,Sun)</option><option value="1">Monday</option><option value="5">Friday</option><option value="custom">Custom...</option></select><input type="text" id="dowCustom" class="custom-input" placeholder="e.g. 1,3,5" style="display:none" oninput="update()"></div>
+            </div>
+            <div style="margin-top:1.5rem">
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:0.5rem">Common Presets</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+                    <button class="btn" onclick="setPreset('0 * * * *')">Hourly</button>
+                    <button class="btn" onclick="setPreset('0 0 * * *')">Daily midnight</button>
+                    <button class="btn" onclick="setPreset('0 9 * * 1-5')">Weekdays 9am</button>
+                    <button class="btn" onclick="setPreset('0 0 * * 0')">Weekly Sunday</button>
+                    <button class="btn" onclick="setPreset('0 0 1 * *')">Monthly 1st</button>
+                    <button class="btn" onclick="setPreset('*/5 * * * *')">Every 5 min</button>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:1rem;width:100%" onclick="copyCron()">Copy Cron Expression</button>
+            <div id="status" class="status" style="text-align:center;margin-top:0.5rem"></div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Crontab Generator</h2>
+            <p>Build cron expressions visually without memorizing the syntax. Select schedules from dropdowns or use common presets, then copy the generated expression for use in crontab, CI/CD pipelines, or task schedulers.</p>
+            <p><strong>Cron format:</strong> <code>minute hour day-of-month month day-of-week</code></p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+const fields = ['minute','hour','dom','month','dow'];
+const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const monthNames = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+function getVal(f) {
+  const sel = document.getElementById(f);
+  if (sel.value === 'custom') return document.getElementById(f+'Custom').value || '*';
+  return sel.value;
+}
+function update() {
+  fields.forEach(f => {
+    const sel = document.getElementById(f);
+    document.getElementById(f+'Custom').style.display = sel.value==='custom' ? 'block' : 'none';
+  });
+  const parts = fields.map(getVal);
+  document.getElementById('cronOutput').textContent = parts.join(' ');
+  document.getElementById('cronHuman').textContent = humanize(parts);
+}
+function humanize(p) {
+  let [min,hr,dom,mon,dow] = p;
+  let s = 'At ';
+  if (min === '*') s = 'Every minute';
+  else if (min.startsWith('*/')) s = 'Every ' + min.slice(2) + ' minutes';
+  else s = 'At minute ' + min;
+  if (hr !== '*') { if (hr.startsWith('*/')) s += ' every ' + hr.slice(2) + ' hours'; else { const h=parseInt(hr); s += ' at '+(h>12?(h-12)+' PM':h===0?'12 AM':h===12?'12 PM':h+' AM'); } }
+  if (dom !== '*') s += ' on day ' + dom;
+  if (mon !== '*') { const ms = mon.split(',').map(m => monthNames[parseInt(m)]||m).join(', '); s += ' in ' + ms; }
+  if (dow !== '*') { if (dow === '1-5') s += ' on weekdays'; else if (dow === '0,6') s += ' on weekends'; else { const ds = dow.split(',').map(d => dayNames[parseInt(d)]||d).join(', '); s += ' on ' + ds; } }
+  return s;
+}
+function setPreset(expr) {
+  const parts = expr.split(' ');
+  const presetMap = { minute: {}, hour: {}, dom: {}, month: {}, dow: {} };
+  fields.forEach((f, i) => {
+    const sel = document.getElementById(f);
+    const val = parts[i];
+    const opts = Array.from(sel.options).map(o => o.value);
+    if (opts.includes(val)) { sel.value = val; } else { sel.value = 'custom'; document.getElementById(f+'Custom').value = val; }
+  });
+  update();
+}
+function copyCron() {
+  const expr = document.getElementById('cronOutput').textContent;
+  navigator.clipboard.writeText(expr).then(() => {
+    document.getElementById('status').textContent = 'Copied!';
+    setTimeout(() => document.getElementById('status').textContent = '', 2000);
+  });
+}
+update();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../cron-parser/" class="related-tool-card">
+                <strong>Cron Parser</strong>
+                <span>Parse and explain cron expressions</span>
+            </a>
+            <a href="../timestamp/" class="related-tool-card">
+                <strong>Timestamp Converter</strong>
+                <span>Convert Unix timestamps</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

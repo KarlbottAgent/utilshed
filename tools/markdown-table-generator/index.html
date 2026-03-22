@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Table Generator — UtilShed</title>
+    <meta name="description" content="Free online markdown table generator. Create Markdown tables visually with an interactive grid editor. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/markdown-table-generator/">
+    <meta property="og:title" content="Markdown Table Generator — UtilShed">
+    <meta property="og:description" content="Free online markdown table generator. Create Markdown tables visually with an interactive grid editor. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/markdown-table-generator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+#tableWrap table { width: 100%; border-collapse: collapse; }
+#tableWrap th, #tableWrap td { border: 1px solid #333; padding: 0; }
+#tableWrap input { width: 100%; padding: 0.5rem; background: transparent; border: none; color: #e0e0e0; font-family: monospace; font-size: 0.9rem; box-sizing: border-box; }
+#tableWrap th input { color: #7dd3fc; font-weight: bold; }
+#tableWrap th { background: #1a1a2e; }
+#tableWrap select { background: #1e1e2e; border: 1px solid #333; color: #aaa; padding: 2px; border-radius: 4px; font-size: 0.75rem; }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Markdown Table Generator","description":"Free online markdown table generator. Create Markdown tables visually with an interactive grid editor. No signup required.","url":"https://utilshed.com/tools/markdown-table-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Markdown Table Generator","item":"https://utilshed.com/tools/markdown-table-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Markdown Table Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Markdown Table Generator</h1>
+            <p>Create Markdown tables visually with an interactive grid editor.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:900px;margin:0 auto">
+            <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center">
+                <label style="color:#aaa">Rows:</label>
+                <input type="number" id="rows" value="4" min="1" max="50" style="width:60px;padding:0.5rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:6px;text-align:center">
+                <label style="color:#aaa;margin-left:0.5rem">Cols:</label>
+                <input type="number" id="cols" value="3" min="1" max="20" style="width:60px;padding:0.5rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:6px;text-align:center">
+                <button class="btn" onclick="buildTable()">Resize</button>
+                <span style="flex:1"></span>
+                <button class="btn btn-primary" onclick="copyMd()">Copy Markdown</button>
+            </div>
+            <div id="tableWrap" style="overflow-x:auto;margin-bottom:1rem"></div>
+            <div class="panel-header">Markdown Output</div>
+            <textarea class="tool-output" id="output" readonly style="min-height:150px"></textarea>
+            <div id="status" class="status" style="margin-top:0.5rem"></div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Markdown Table Generator</h2>
+            <p>Create perfectly formatted Markdown tables with this visual editor. Set column alignment, edit cells inline, and copy the generated Markdown for use in GitHub, GitLab, documentation, or any Markdown-supporting platform.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+let tableData = { headers: ['Header 1','Header 2','Header 3'], align: ['left','left','left'], rows: [['','',''],['','',''],['','',' ']] };
+function buildTable() {
+  const r = parseInt(document.getElementById('rows').value);
+  const c = parseInt(document.getElementById('cols').value);
+  while (tableData.headers.length < c) { tableData.headers.push('Header '+(tableData.headers.length+1)); tableData.align.push('left'); }
+  tableData.headers.length = c; tableData.align.length = c;
+  while (tableData.rows.length < r) tableData.rows.push(Array(c).fill(''));
+  tableData.rows.length = r;
+  tableData.rows.forEach(row => { while(row.length < c) row.push(''); row.length = c; });
+  render();
+}
+function render() {
+  const c = tableData.headers.length;
+  let html = '<table><thead><tr>';
+  for (let i=0; i<c; i++) {
+    html += '<th><input value="'+esc(tableData.headers[i])+'" oninput="tableData.headers['+i+']=this.value;genMd()"><select onchange="tableData.align['+i+']=this.value;genMd()">';
+    ['left','center','right'].forEach(a => html += '<option value="'+a+'"'+(tableData.align[i]===a?' selected':'')+'>'+a+'</option>');
+    html += '</select></th>';
+  }
+  html += '</tr></thead><tbody>';
+  tableData.rows.forEach((row, ri) => {
+    html += '<tr>';
+    for (let ci=0; ci<c; ci++) html += '<td><input value="'+esc(row[ci])+'" oninput="tableData.rows['+ri+']['+ci+']=this.value;genMd()"></td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('tableWrap').innerHTML = html;
+  genMd();
+}
+function genMd() {
+  const c = tableData.headers.length;
+  const widths = tableData.headers.map((h,i) => Math.max(h.length, 3, ...tableData.rows.map(r => (r[i]||'').length)));
+  const pad = (s, w, a) => { s = s || ''; if (a==='right') return s.padStart(w); if (a==='center') { const l=Math.floor((w-s.length)/2); return ' '.repeat(l)+s+' '.repeat(w-s.length-l); } return s.padEnd(w); };
+  let md = '| ' + tableData.headers.map((h,i) => pad(h, widths[i], tableData.align[i])).join(' | ') + ' |\n';
+  md += '| ' + tableData.align.map((a,i) => { const w = widths[i]; if(a==='center') return ':'+'-'.repeat(w-2)+':'; if(a==='right') return '-'.repeat(w-1)+':'; return '-'.repeat(w); }).join(' | ') + ' |\n';
+  tableData.rows.forEach(row => { md += '| ' + row.map((cell,i) => pad(cell, widths[i], tableData.align[i])).join(' | ') + ' |\n'; });
+  document.getElementById('output').value = md;
+}
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function copyMd() {
+  navigator.clipboard.writeText(document.getElementById('output').value).then(() => {
+    document.getElementById('status').textContent = 'Copied!';
+    setTimeout(() => document.getElementById('status').textContent = '', 2000);
+  });
+}
+render();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../markdown-preview/" class="related-tool-card">
+                <strong>Markdown Preview</strong>
+                <span>Preview Markdown with live rendering</span>
+            </a>
+            <a href="../markdown-to-html/" class="related-tool-card">
+                <strong>Markdown to HTML</strong>
+                <span>Convert Markdown to HTML</span>
+            </a>
+            <a href="../csv-to-json/" class="related-tool-card">
+                <strong>CSV to JSON</strong>
+                <span>Convert CSV data to JSON</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

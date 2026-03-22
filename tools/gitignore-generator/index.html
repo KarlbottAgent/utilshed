@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gitignore Generator — UtilShed</title>
+    <meta name="description" content="Free online gitignore generator. Generate .gitignore files for any language, framework, or IDE. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/gitignore-generator/">
+    <meta property="og:title" content="Gitignore Generator — UtilShed">
+    <meta property="og:description" content="Free online gitignore generator. Generate .gitignore files for any language, framework, or IDE. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/gitignore-generator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.gi-opt { padding: 0.5rem 0.75rem; background: #1e1e2e; border: 1px solid #333; border-radius: 6px; cursor: pointer; color: #e0e0e0; font-size: 0.85rem; text-align: center; transition: all 0.15s; }
+.gi-opt:hover { border-color: #555; }
+.gi-opt.selected { border-color: #7dd3fc; background: #1a2a3e; color: #7dd3fc; }
+.gi-tag { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.6rem; background: #1a2a3e; border: 1px solid #7dd3fc; border-radius: 20px; color: #7dd3fc; font-size: 0.8rem; cursor: pointer; }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Gitignore Generator","description":"Free online gitignore generator. Generate .gitignore files for any language, framework, or IDE. No signup required.","url":"https://utilshed.com/tools/gitignore-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Gitignore Generator","item":"https://utilshed.com/tools/gitignore-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Gitignore Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Gitignore Generator</h1>
+            <p>Generate .gitignore files for any language, framework, or IDE.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:800px;margin:0 auto">
+            <div style="margin-bottom:1rem">
+                <input type="text" id="search" placeholder="Search languages, frameworks, IDEs..." style="width:100%;padding:0.8rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:8px;font-size:1rem;box-sizing:border-box">
+            </div>
+            <div id="tags" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem"></div>
+            <div id="options" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-bottom:1.5rem;max-height:250px;overflow-y:auto;padding:0.5rem"></div>
+            <div class="panel-header">Generated .gitignore <button class="btn" style="float:right;font-size:0.8rem" onclick="copyOutput()">Copy</button></div>
+            <textarea id="output" readonly style="width:100%;min-height:300px;padding:0.8rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:8px;font-family:monospace;font-size:0.85rem;box-sizing:border-box"></textarea>
+            <div id="status" class="status" style="margin-top:0.5rem"></div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Gitignore Generator</h2>
+            <p>Instantly generate .gitignore files for any combination of languages, frameworks, and IDEs. Select what you're using and get a comprehensive gitignore file ready to copy into your project.</p>
+            <p><strong>Tip:</strong> Always include OS-specific ignores (macOS, Windows, Linux) along with your language/framework ignores.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+const templates = {
+  'Node.js': 'node_modules/\n.npm\ndist/\n.env\n.env.local\n*.log\nnpm-debug.log*\ncoverage/\n.nyc_output/',
+  'Python': '__pycache__/\n*.py[cod]\n*$py.class\n*.so\n.Python\nbuild/\ndevelop-eggs/\ndist/\n*.egg-info/\n.venv/\nvenv/\n.env',
+  'Java': '*.class\n*.jar\n*.war\ntarget/\n.gradle/\nbuild/\n.settings/\n.project\n.classpath',
+  'Go': 'bin/\npkg/\n*.exe\n*.test\n*.out\nvendor/',
+  'Rust': 'target/\nCargo.lock\n**/*.rs.bk',
+  'Ruby': '*.gem\n*.rbc\n.bundle/\nvendor/bundle\nlog/\ntmp/\n.env\nGemfile.lock',
+  'PHP': 'vendor/\ncomposer.lock\n.env\n*.cache\nstorage/\nbootstrap/cache/',
+  'C/C++': '*.o\n*.obj\n*.exe\n*.dll\n*.so\n*.dylib\nbuild/\ncmake-build*/\n*.dSYM/',
+  'Swift': '.build/\n*.xcodeproj\nxcuserdata/\nDerivedData/\n*.playground/\nPackages/',
+  'React': 'node_modules/\nbuild/\n.env.local\n.env.development.local\n.env.test.local\n.env.production.local\ncoverage/',
+  'Next.js': 'node_modules/\n.next/\nout/\n.env*.local\ncoverage/\n*.tsbuildinfo',
+  'Vue': 'node_modules/\ndist/\n.env.local\ncoverage/\n*.local',
+  'Angular': 'node_modules/\ndist/\ntmp/\n.angular/\n.env',
+  'Django': '*.pyc\ndb.sqlite3\nmedia/\nstaticfiles/\n.env\n__pycache__/',
+  'Rails': 'log/\ntmp/\ndb/*.sqlite3\npublic/assets\n.env\nstorage/',
+  'Docker': '.dockerignore\n*.env\n.env.*',
+  'Terraform': '.terraform/\n*.tfstate\n*.tfstate.*\n*.tfvars\ncrash.log',
+  'VS Code': '.vscode/\n*.code-workspace',
+  'IntelliJ': '.idea/\n*.iml\n*.ipr\n*.iws\nout/',
+  'Vim': '*.swp\n*.swo\n*~\ntags',
+  'macOS': '.DS_Store\n.AppleDouble\n.LSOverride\nIcon\n._*\n.Spotlight-V100\n.Trashes',
+  'Windows': 'Thumbs.db\nehthumbs.db\nDesktop.ini\n$RECYCLE.BIN/',
+  'Linux': '*~\n.fuse_hidden*\n.Trash-*\n.nfs*',
+  'Logs': '*.log\nlogs/\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*',
+  'Environment': '.env\n.env.local\n.env.*.local\n*.pem\n*.key\ncredentials.json',
+};
+let selected = new Set();
+function renderOptions(filter) {
+  const f = (filter || '').toLowerCase();
+  const keys = Object.keys(templates).filter(k => !f || k.toLowerCase().includes(f));
+  document.getElementById('options').innerHTML = keys.map(k =>
+    '<div class="gi-opt'+(selected.has(k)?' selected':'')+'" onclick="toggle(\''+k+'\')">'+k+'</div>'
+  ).join('');
+}
+function renderTags() {
+  document.getElementById('tags').innerHTML = Array.from(selected).map(k =>
+    '<span class="gi-tag" onclick="toggle(\''+k+'\')">'+k+' x</span>'
+  ).join('');
+}
+function toggle(k) {
+  if (selected.has(k)) selected.delete(k); else selected.add(k);
+  renderOptions(document.getElementById('search').value);
+  renderTags();
+  generateOutput();
+}
+function generateOutput() {
+  if (selected.size === 0) { document.getElementById('output').value = '# Select languages/frameworks above to generate a .gitignore file'; return; }
+  let output = '# Generated by UtilShed Gitignore Generator\n# https://utilshed.com/tools/gitignore-generator/\n\n';
+  selected.forEach(k => {
+    output += '# === ' + k + ' ===\n' + templates[k] + '\n\n';
+  });
+  document.getElementById('output').value = output.trim();
+}
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('output').value).then(() => {
+    document.getElementById('status').textContent = 'Copied!';
+    setTimeout(() => document.getElementById('status').textContent = '', 2000);
+  });
+}
+document.getElementById('search').addEventListener('input', e => renderOptions(e.target.value));
+renderOptions();
+generateOutput();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../diff-checker/" class="related-tool-card">
+                <strong>Diff Checker</strong>
+                <span>Compare two texts side by side</span>
+            </a>
+            <a href="../slug-generator/" class="related-tool-card">
+                <strong>Slug Generator</strong>
+                <span>Generate URL-friendly slugs</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

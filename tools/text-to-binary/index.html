@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Binary Converter — UtilShed</title>
+    <meta name="description" content="Free online text to binary converter. Convert text to binary code and binary back to readable text. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/text-to-binary/">
+    <meta property="og:title" content="Text to Binary Converter — UtilShed">
+    <meta property="og:description" content="Free online text to binary converter. Convert text to binary code and binary back to readable text. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/text-to-binary/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Text to Binary Converter","description":"Free online text to binary converter. Convert text to binary code and binary back to readable text. No signup required.","url":"https://utilshed.com/tools/text-to-binary/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Text to Binary Converter","item":"https://utilshed.com/tools/text-to-binary/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Text to Binary Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Text to Binary Converter</h1>
+            <p>Convert text to binary code and binary back to readable text.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="textToBin()">Text → Binary</button>
+            <button class="btn" onclick="binToText()">Binary → Text</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Text <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="Type text here to convert to binary..."></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Binary <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Text to Binary Converter</h2>
+            <p>Convert between human-readable text and binary representation. Each character is converted to its 8-bit binary equivalent using ASCII/UTF-8 encoding.</p>
+            <p><strong>Example:</strong> The letter "A" (ASCII 65) becomes <code>01000001</code> in binary.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function textToBin() {
+  const input = document.getElementById('input').value;
+  const output = Array.from(input).map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+  document.getElementById('output').value = output;
+  document.getElementById('size-label').textContent = input.length + ' chars → ' + output.split(' ').length + ' bytes';
+}
+function binToText() {
+  const input = document.getElementById('input').value.trim();
+  try {
+    const bytes = input.split(/\s+/).filter(Boolean);
+    const text = bytes.map(b => String.fromCharCode(parseInt(b, 2))).join('');
+    document.getElementById('output').value = text;
+    document.getElementById('size-label').textContent = bytes.length + ' bytes → ' + text.length + ' chars';
+  } catch(e) { document.getElementById('output').value = 'Error: Invalid binary input'; }
+}
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('output').value);
+}
+document.getElementById('input').addEventListener('input', textToBin);
+textToBin();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encoder/Decoder</strong>
+                <span>Encode and decode Base64</span>
+            </a>
+            <a href="../number-base-converter/" class="related-tool-card">
+                <strong>Number Base Converter</strong>
+                <span>Convert between number bases</span>
+            </a>
+            <a href="../morse-code/" class="related-tool-card">
+                <strong>Morse Code</strong>
+                <span>Convert text to Morse code</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

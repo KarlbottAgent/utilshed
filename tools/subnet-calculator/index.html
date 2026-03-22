@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Subnet Calculator — UtilShed</title>
+    <meta name="description" content="Free online ip subnet calculator. Calculate subnet masks, network ranges, CIDR notation, and IP address details. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/subnet-calculator/">
+    <meta property="og:title" content="IP Subnet Calculator — UtilShed">
+    <meta property="og:description" content="Free online ip subnet calculator. Calculate subnet masks, network ranges, CIDR notation, and IP address details. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/subnet-calculator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+#result table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid #2a2a3a; color: #e0e0e0; font-family: monospace; }
+#result table td:first-child { color: #888; white-space: nowrap; width: 180px; }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"IP Subnet Calculator","description":"Free online ip subnet calculator. Calculate subnet masks, network ranges, CIDR notation, and IP address details. No signup required.","url":"https://utilshed.com/tools/subnet-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"IP Subnet Calculator","item":"https://utilshed.com/tools/subnet-calculator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">IP Subnet Calculator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>IP Subnet Calculator</h1>
+            <p>Calculate subnet masks, network ranges, CIDR notation, and IP address details.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:700px;margin:0 auto">
+            <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap">
+                <input type="text" id="ipInput" placeholder="192.168.1.0" style="flex:1;min-width:150px;padding:0.7rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:6px;font-family:monospace">
+                <span style="color:#888;padding:0.7rem 0">/</span>
+                <input type="number" id="cidrInput" value="24" min="0" max="32" style="width:70px;padding:0.7rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:6px;font-family:monospace;text-align:center">
+                <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+            </div>
+            <div id="result" style="display:none;background:#1e1e2e;border-radius:8px;padding:1.5rem;border:1px solid #333">
+                <table style="width:100%;border-collapse:collapse">
+                    <tbody id="resultBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About IP Subnet Calculator</h2>
+            <p>Calculate IPv4 subnet details instantly. Enter any IP address and CIDR prefix length to get the network address, subnet mask, broadcast address, host range, and more.</p>
+            <p><strong>Common CIDR values:</strong> /8 (Class A, 16M hosts), /16 (Class B, 65K hosts), /24 (Class C, 254 hosts), /32 (single host).</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function ipToLong(ip) {
+  return ip.split('.').reduce((acc, oct) => (acc << 8) + parseInt(oct), 0) >>> 0;
+}
+function longToIp(long) {
+  return [(long>>>24)&255,(long>>>16)&255,(long>>>8)&255,long&255].join('.');
+}
+function calculate() {
+  const ip = document.getElementById('ipInput').value.trim();
+  const cidr = parseInt(document.getElementById('cidrInput').value);
+  if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(ip)) { alert('Enter a valid IPv4 address'); return; }
+  if (isNaN(cidr) || cidr < 0 || cidr > 32) { alert('CIDR must be 0-32'); return; }
+  const mask = cidr === 0 ? 0 : (~0 << (32 - cidr)) >>> 0;
+  const ipLong = ipToLong(ip);
+  const network = (ipLong & mask) >>> 0;
+  const broadcast = (network | ~mask) >>> 0;
+  const firstHost = cidr >= 31 ? network : (network + 1) >>> 0;
+  const lastHost = cidr >= 31 ? broadcast : (broadcast - 1) >>> 0;
+  const totalHosts = cidr >= 31 ? Math.pow(2, 32 - cidr) : Math.pow(2, 32 - cidr) - 2;
+  const wildcard = (~mask) >>> 0;
+  const rows = [
+    ['Network Address', longToIp(network)],
+    ['Subnet Mask', longToIp(mask)],
+    ['Wildcard Mask', longToIp(wildcard)],
+    ['Broadcast Address', longToIp(broadcast)],
+    ['First Usable Host', longToIp(firstHost)],
+    ['Last Usable Host', longToIp(lastHost)],
+    ['Total Usable Hosts', totalHosts.toLocaleString()],
+    ['CIDR Notation', '/' + cidr],
+    ['IP Class', getClass(ipLong)],
+    ['IP Type', isPrivate(ipLong) ? 'Private' : 'Public'],
+    ['Binary Subnet Mask', mask.toString(2).padStart(32,'0').match(/.{8}/g).join('.')],
+  ];
+  document.getElementById('resultBody').innerHTML = rows.map(r => '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('');
+  document.getElementById('result').style.display = 'block';
+}
+function getClass(ip) { const f=(ip>>>24)&255; if(f<128) return 'A'; if(f<192) return 'B'; if(f<224) return 'C'; if(f<240) return 'D (Multicast)'; return 'E (Reserved)'; }
+function isPrivate(ip) { const f=(ip>>>24)&255,s=(ip>>>16)&255; return f===10||(f===172&&s>=16&&s<=31)||(f===192&&s===168); }
+document.getElementById('ipInput').addEventListener('keydown', e => { if(e.key==='Enter') calculate(); });
+calculate();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../ip-lookup/" class="related-tool-card">
+                <strong>IP Lookup</strong>
+                <span>Look up geolocation for any IP</span>
+            </a>
+            <a href="../number-base-converter/" class="related-tool-card">
+                <strong>Number Base Converter</strong>
+                <span>Convert between binary, decimal, hex</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

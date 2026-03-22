@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Status Code Reference — UtilShed</title>
+    <meta name="description" content="Free online http status code reference. Complete HTTP status code reference with descriptions, use cases, and search. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/http-status-codes/">
+    <meta property="og:title" content="HTTP Status Code Reference — UtilShed">
+    <meta property="og:description" content="Free online http status code reference. Complete HTTP status code reference with descriptions, use cases, and search. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/http-status-codes/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.code-group { margin-bottom: 2rem; }
+.code-group h2 { font-size: 1.1rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #2a2a3a; }
+.code-card { display: grid; grid-template-columns: 70px 1fr; gap: 0.75rem; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.25rem; }
+.code-card:hover { background: #1a1a2e; }
+.code-num { font-family: monospace; font-weight: bold; font-size: 1.1rem; }
+.code-desc strong { color: #e0e0e0; }
+.code-desc p { color: #888; font-size: 0.85rem; margin: 0.25rem 0 0; }
+.c1xx .code-num { color: #7dd3fc; }
+.c2xx .code-num { color: #86efac; }
+.c3xx .code-num { color: #fcd34d; }
+.c4xx .code-num { color: #fca5a5; }
+.c5xx .code-num { color: #f87171; }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"HTTP Status Code Reference","description":"Free online http status code reference. Complete HTTP status code reference with descriptions, use cases, and search. No signup required.","url":"https://utilshed.com/tools/http-status-codes/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"HTTP Status Code Reference","item":"https://utilshed.com/tools/http-status-codes/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">HTTP Status Code Reference</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>HTTP Status Code Reference</h1>
+            <p>Complete HTTP status code reference with descriptions, use cases, and search.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:800px;margin:0 auto">
+            <input type="text" id="search" placeholder="Search by code or description (e.g. 404, not found, redirect)..." style="width:100%;padding:0.8rem 1rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:8px;font-size:1rem;margin-bottom:1.5rem;box-sizing:border-box">
+            <div id="codes"></div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About HTTP Status Code Reference</h2>
+            <p>Quick reference for all common HTTP status codes. Search by code number or description to find exactly what you need. Essential for web developers debugging API responses and server issues.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+const codes = [
+  [100,'Continue','Server received request headers; client should proceed with body'],
+  [101,'Switching Protocols','Server is switching to the protocol requested by the client (e.g. WebSocket)'],
+  [200,'OK','Standard successful response'],
+  [201,'Created','Resource was successfully created (common for POST requests)'],
+  [204,'No Content','Success but no response body (common for DELETE requests)'],
+  [206,'Partial Content','Server is delivering only part of the resource (Range header)'],
+  [301,'Moved Permanently','Resource permanently moved to a new URL — update bookmarks and links'],
+  [302,'Found','Resource temporarily at a different URL — original URL should still be used'],
+  [304,'Not Modified','Resource has not changed since last request — use cached version'],
+  [307,'Temporary Redirect','Like 302 but method and body must not change'],
+  [308,'Permanent Redirect','Like 301 but method and body must not change'],
+  [400,'Bad Request','Server cannot process the request due to malformed syntax'],
+  [401,'Unauthorized','Authentication is required and has failed or not been provided'],
+  [403,'Forbidden','Server understood the request but refuses to authorize it'],
+  [404,'Not Found','Resource could not be found on the server'],
+  [405,'Method Not Allowed','HTTP method is not allowed for this resource (e.g. POST to a read-only endpoint)'],
+  [408,'Request Timeout','Server timed out waiting for the client request'],
+  [409,'Conflict','Request conflicts with current state of the resource (e.g. duplicate entry)'],
+  [410,'Gone','Resource is permanently gone and will not return (unlike 404)'],
+  [413,'Payload Too Large','Request body exceeds the server limit'],
+  [415,'Unsupported Media Type','Server does not support the Content-Type of the request'],
+  [422,'Unprocessable Entity','Request is well-formed but has semantic errors (common in REST APIs)'],
+  [429,'Too Many Requests','Client has sent too many requests — rate limiting applied'],
+  [500,'Internal Server Error','Generic server error — something went wrong on the server side'],
+  [502,'Bad Gateway','Server received an invalid response from an upstream server'],
+  [503,'Service Unavailable','Server is temporarily unavailable (maintenance or overloaded)'],
+  [504,'Gateway Timeout','Upstream server did not respond in time'],
+];
+const groups = {1:'1xx — Informational',2:'2xx — Success',3:'3xx — Redirection',4:'4xx — Client Error',5:'5xx — Server Error'};
+const groupClass = {1:'c1xx',2:'c2xx',3:'c3xx',4:'c4xx',5:'c5xx'};
+function renderCodes(filter) {
+  const f = (filter||'').toLowerCase();
+  const filtered = f ? codes.filter(c => String(c[0]).includes(f) || c[1].toLowerCase().includes(f) || c[2].toLowerCase().includes(f)) : codes;
+  const grouped = {};
+  filtered.forEach(c => { const g = Math.floor(c[0]/100); if (!grouped[g]) grouped[g]=[]; grouped[g].push(c); });
+  let html = '';
+  Object.keys(grouped).sort().forEach(g => {
+    html += '<div class="code-group '+groupClass[g]+'"><h2>'+groups[g]+'</h2>';
+    grouped[g].forEach(c => { html += '<div class="code-card"><div class="code-num">'+c[0]+'</div><div class="code-desc"><strong>'+c[1]+'</strong><p>'+c[2]+'</p></div></div>'; });
+    html += '</div>';
+  });
+  document.getElementById('codes').innerHTML = html || '<p style="color:#888;text-align:center">No matching status codes</p>';
+}
+document.getElementById('search').addEventListener('input', e => renderCodes(e.target.value));
+renderCodes();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter</strong>
+                <span>Format API response JSON</span>
+            </a>
+            <a href="../jwt-decoder/" class="related-tool-card">
+                <strong>JWT Decoder</strong>
+                <span>Decode JWT authentication tokens</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

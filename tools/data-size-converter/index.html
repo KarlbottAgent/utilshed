@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Size Converter — UtilShed</title>
+    <meta name="description" content="Free online data size converter. Convert between bytes, KB, MB, GB, TB, and PB instantly. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/data-size-converter/">
+    <meta property="og:title" content="Data Size Converter — UtilShed">
+    <meta property="og:description" content="Free online data size converter. Convert between bytes, KB, MB, GB, TB, and PB instantly. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/data-size-converter/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.size-row { display: flex; justify-content: space-between; padding: 0.6rem 0.75rem; border-bottom: 1px solid #2a2a3a; cursor: pointer; border-radius: 4px; }
+.size-row:hover { background: #2a2a3a; }
+.size-row:last-child { border-bottom: none; }
+.size-label { color: #888; }
+.size-value { color: #e0e0e0; font-family: monospace; }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Data Size Converter","description":"Free online data size converter. Convert between bytes, KB, MB, GB, TB, and PB instantly. No signup required.","url":"https://utilshed.com/tools/data-size-converter/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Data Size Converter","item":"https://utilshed.com/tools/data-size-converter/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Data Size Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Data Size Converter</h1>
+            <p>Convert between bytes, KB, MB, GB, TB, and PB instantly.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:600px;margin:0 auto">
+            <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap">
+                <input type="number" id="valueInput" value="1" style="flex:1;min-width:120px;padding:0.7rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:6px;font-family:monospace;font-size:1.1rem">
+                <select id="unitInput" style="padding:0.7rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:6px;font-size:1rem">
+                    <option value="0">Bytes</option>
+                    <option value="1">KB</option>
+                    <option value="2" selected>MB</option>
+                    <option value="3">GB</option>
+                    <option value="4">TB</option>
+                    <option value="5">PB</option>
+                </select>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                    <label style="color:#aaa;font-size:0.85rem">Base:</label>
+                    <select id="base" style="padding:0.5rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:6px;font-size:0.85rem">
+                        <option value="1024">Binary (1024)</option>
+                        <option value="1000">Decimal (1000)</option>
+                    </select>
+                </div>
+            </div>
+            <div id="results" style="background:#1e1e2e;border-radius:8px;padding:1rem;border:1px solid #333"></div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Data Size Converter</h2>
+            <p>Convert between data storage units instantly. Supports both binary (1024-based: KiB, MiB, GiB) and decimal (1000-based: KB, MB, GB) standards. Click any result to copy it.</p>
+            <p><strong>Binary vs Decimal:</strong> Hard drives use decimal (1 TB = 1,000 GB), while operating systems typically use binary (1 TiB = 1,024 GiB).</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+const units = ['Bytes','KB','MB','GB','TB','PB'];
+const binaryUnits = ['Bytes','KiB','MiB','GiB','TiB','PiB'];
+function convert() {
+  const val = parseFloat(document.getElementById('valueInput').value) || 0;
+  const fromIdx = parseInt(document.getElementById('unitInput').value);
+  const base = parseInt(document.getElementById('base').value);
+  const bytes = val * Math.pow(base, fromIdx);
+  const labels = base === 1024 ? binaryUnits : units;
+  let html = '';
+  for (let i = 0; i < units.length; i++) {
+    const converted = bytes / Math.pow(base, i);
+    const display = i === 0 ? Math.round(converted).toLocaleString() : converted < 0.01 && converted > 0 ? converted.toExponential(2) : converted.toLocaleString(undefined, {maximumFractionDigits: 6});
+    html += '<div class="size-row" onclick="navigator.clipboard.writeText(\''+display+'\')"><span class="size-label">'+labels[i]+'</span><span class="size-value">'+display+'</span></div>';
+  }
+  document.getElementById('results').innerHTML = html;
+}
+document.getElementById('valueInput').addEventListener('input', convert);
+document.getElementById('unitInput').addEventListener('change', convert);
+document.getElementById('base').addEventListener('change', convert);
+convert();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../number-base-converter/" class="related-tool-card">
+                <strong>Number Base Converter</strong>
+                <span>Convert between binary, decimal, hex</span>
+            </a>
+            <a href="../length-converter/" class="related-tool-card">
+                <strong>Length Converter</strong>
+                <span>Convert between length units</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
