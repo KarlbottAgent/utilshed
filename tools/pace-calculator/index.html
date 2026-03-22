@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pace Calculator — UtilShed</title>
+    <meta name="description" content="Free online pace calculator. Calculate running pace, speed, distance, or time for any workout. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/pace-calculator/">
+    <meta property="og:title" content="Pace Calculator — UtilShed">
+    <meta property="og:description" content="Free online pace calculator. Calculate running pace, speed, distance, or time for any workout. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/pace-calculator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Pace Calculator","description":"Free online pace calculator. Calculate running pace, speed, distance, or time for any workout. No signup required.","url":"https://utilshed.com/tools/pace-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Pace Calculator","item":"https://utilshed.com/tools/pace-calculator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Pace Calculator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Pace Calculator</h1>
+            <p>Calculate running pace, speed, distance, or time for any workout.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:550px;margin:0 auto">
+            <div style="display:grid;gap:1rem;margin-bottom:1.5rem">
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:80px">Distance</label><input type="number" id="distance" placeholder="5" step="0.01" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><select id="distUnit" style="padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px"><option value="mi">miles</option><option value="km">km</option><option value="m">meters</option></select></div>
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:80px">Time</label><input type="number" id="hours" placeholder="0" min="0" style="width:55px;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">h</span><input type="number" id="minutes" placeholder="25" min="0" max="59" style="width:55px;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">m</span><input type="number" id="seconds" placeholder="0" min="0" max="59" style="width:55px;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">s</span></div>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                    <button class="btn" onclick="setRace(5,'km')">5K</button><button class="btn" onclick="setRace(10,'km')">10K</button><button class="btn" onclick="setRace(21.0975,'km')">Half Marathon</button><button class="btn" onclick="setRace(42.195,'km')">Marathon</button>
+                </div>
+                <button class="btn btn-primary" onclick="calcPace()">Calculate</button>
+            </div>
+            <div id="result" style="display:none;display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div style="color:#888;font-size:0.8rem;margin-bottom:0.3rem">Pace (min/mi)</div><div id="pacePerMile" style="color:#4ade80;font-size:1.5rem;font-weight:bold;font-family:monospace">—</div></div>
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div style="color:#888;font-size:0.8rem;margin-bottom:0.3rem">Pace (min/km)</div><div id="pacePerKm" style="color:#7dd3fc;font-size:1.5rem;font-weight:bold;font-family:monospace">—</div></div>
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div style="color:#888;font-size:0.8rem;margin-bottom:0.3rem">Speed (mph)</div><div id="speedMph" style="color:#fbbf24;font-size:1.5rem;font-weight:bold;font-family:monospace">—</div></div>
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div style="color:#888;font-size:0.8rem;margin-bottom:0.3rem">Speed (km/h)</div><div id="speedKmh" style="color:#f87171;font-size:1.5rem;font-weight:bold;font-family:monospace">—</div></div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Pace Calculator</h2>
+            <p>Calculate your running pace, speed, or race time. Supports miles and kilometers with quick-set buttons for common race distances (5K, 10K, half marathon, marathon).</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function setRace(d,u){document.getElementById('distance').value=d;document.getElementById('distUnit').value=u;}
+function fmtPace(totalSec){const m=Math.floor(totalSec/60);const s=Math.round(totalSec%60);return m+':'+String(s).padStart(2,'0');}
+function calcPace(){const d=parseFloat(document.getElementById('distance').value);const u=document.getElementById('distUnit').value;const h=parseInt(document.getElementById('hours').value)||0;const m=parseInt(document.getElementById('minutes').value)||0;const s=parseInt(document.getElementById('seconds').value)||0;const totalSec=h*3600+m*60+s;if(!d||!totalSec){alert('Enter distance and time');return;}
+let distMi,distKm;if(u==='mi'){distMi=d;distKm=d*1.60934;}else if(u==='km'){distKm=d;distMi=d/1.60934;}else{distKm=d/1000;distMi=distKm/1.60934;}
+document.getElementById('pacePerMile').textContent=fmtPace(totalSec/distMi)+' /mi';
+document.getElementById('pacePerKm').textContent=fmtPace(totalSec/distKm)+' /km';
+document.getElementById('speedMph').textContent=(distMi/(totalSec/3600)).toFixed(2);
+document.getElementById('speedKmh').textContent=(distKm/(totalSec/3600)).toFixed(2);
+document.getElementById('result').style.display='grid';}
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../length-converter/" class="related-tool-card">
+                <strong>Length Converter</strong>
+                <span>Convert between length units</span>
+            </a>
+            <a href="../timestamp/" class="related-tool-card">
+                <strong>Timestamp Converter</strong>
+                <span>Convert time formats</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

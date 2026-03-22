@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Calculator — UtilShed</title>
+    <meta name="description" content="Free online discount calculator. Calculate sale prices, savings, and find the original price from a discounted amount. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/discount-calculator/">
+    <meta property="og:title" content="Discount Calculator — UtilShed">
+    <meta property="og:description" content="Free online discount calculator. Calculate sale prices, savings, and find the original price from a discounted amount. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/discount-calculator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Discount Calculator","description":"Free online discount calculator. Calculate sale prices, savings, and find the original price from a discounted amount. No signup required.","url":"https://utilshed.com/tools/discount-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Discount Calculator","item":"https://utilshed.com/tools/discount-calculator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Discount Calculator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Discount Calculator</h1>
+            <p>Calculate sale prices, savings, and find the original price from a discounted amount.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:550px;margin:0 auto">
+            <div style="display:grid;gap:1.5rem">
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.5rem;border:1px solid #333">
+                    <h3 style="color:#7dd3fc;margin:0 0 1rem 0;font-size:1rem">Calculate Sale Price</h3>
+                    <div style="display:grid;gap:0.75rem">
+                        <div style="display:flex;gap:0.5rem;align-items:center"><span style="color:#aaa;width:100px">Original Price</span><span style="color:#888">$</span><input type="number" id="d1price" placeholder="99.99" step="0.01" style="flex:1;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace"></div>
+                        <div style="display:flex;gap:0.5rem;align-items:center"><span style="color:#aaa;width:100px">Discount</span><input type="number" id="d1pct" placeholder="25" style="flex:1;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">%</span></div>
+                        <div style="display:flex;gap:0.5rem;align-items:center"><span style="color:#aaa;width:100px">Sale Tax</span><input type="number" id="d1tax" placeholder="0" value="0" style="flex:1;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">%</span></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-top:1rem">
+                        <div style="text-align:center"><div style="color:#888;font-size:0.75rem">You Save</div><div id="d1save" style="color:#4ade80;font-size:1.3rem;font-weight:bold;font-family:monospace">—</div></div>
+                        <div style="text-align:center"><div style="color:#888;font-size:0.75rem">Sale Price</div><div id="d1sale" style="color:#7dd3fc;font-size:1.3rem;font-weight:bold;font-family:monospace">—</div></div>
+                        <div style="text-align:center"><div style="color:#888;font-size:0.75rem">After Tax</div><div id="d1total" style="color:#fbbf24;font-size:1.3rem;font-weight:bold;font-family:monospace">—</div></div>
+                    </div>
+                </div>
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.5rem;border:1px solid #333">
+                    <h3 style="color:#7dd3fc;margin:0 0 1rem 0;font-size:1rem">Double Discount (Stacked Sales)</h3>
+                    <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;margin-bottom:0.75rem">
+                        <span style="color:#aaa">$</span><input type="number" id="d2price" placeholder="200" step="0.01" style="width:90px;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace">
+                        <span style="color:#aaa">first</span><input type="number" id="d2first" placeholder="20" style="width:60px;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">%</span>
+                        <span style="color:#aaa">then</span><input type="number" id="d2second" placeholder="10" style="width:60px;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">%</span>
+                    </div>
+                    <div style="display:flex;gap:1rem;justify-content:center">
+                        <div style="text-align:center"><div style="color:#888;font-size:0.75rem">Final Price</div><div id="d2final" style="color:#4ade80;font-size:1.3rem;font-weight:bold;font-family:monospace">—</div></div>
+                        <div style="text-align:center"><div style="color:#888;font-size:0.75rem">Total Saved</div><div id="d2saved" style="color:#f87171;font-size:1.3rem;font-weight:bold;font-family:monospace">—</div></div>
+                        <div style="text-align:center"><div style="color:#888;font-size:0.75rem">Effective %</div><div id="d2eff" style="color:#fbbf24;font-size:1.3rem;font-weight:bold;font-family:monospace">—</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Discount Calculator</h2>
+            <p>Calculate sale prices instantly. Enter the original price and discount percentage to see how much you save. Includes sales tax calculation and a double-discount calculator for stacked sales (e.g., 20% off + extra 10% off).</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function calc1(){const p=parseFloat(document.getElementById('d1price').value);const d=parseFloat(document.getElementById('d1pct').value);const t=parseFloat(document.getElementById('d1tax').value)||0;if(!p||!d)return;const save=p*d/100;const sale=p-save;const total=sale*(1+t/100);document.getElementById('d1save').textContent='$'+save.toFixed(2);document.getElementById('d1sale').textContent='$'+sale.toFixed(2);document.getElementById('d1total').textContent='$'+total.toFixed(2);}
+function calc2(){const p=parseFloat(document.getElementById('d2price').value);const f=parseFloat(document.getElementById('d2first').value);const s=parseFloat(document.getElementById('d2second').value);if(!p||!f||!s)return;const afterFirst=p*(1-f/100);const final=afterFirst*(1-s/100);const saved=p-final;const eff=(saved/p*100);document.getElementById('d2final').textContent='$'+final.toFixed(2);document.getElementById('d2saved').textContent='$'+saved.toFixed(2);document.getElementById('d2eff').textContent=eff.toFixed(1)+'%';}
+['d1price','d1pct','d1tax'].forEach(id=>document.getElementById(id).addEventListener('input',calc1));
+['d2price','d2first','d2second'].forEach(id=>document.getElementById(id).addEventListener('input',calc2));
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../percentage-calculator/" class="related-tool-card">
+                <strong>Percentage Calculator</strong>
+                <span>Calculate percentages</span>
+            </a>
+            <a href="../tip-calculator/" class="related-tool-card">
+                <strong>Tip Calculator</strong>
+                <span>Calculate tips and split bills</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

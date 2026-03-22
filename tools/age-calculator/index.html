@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator — UtilShed</title>
+    <meta name="description" content="Free online age calculator. Calculate exact age in years, months, and days from any birth date. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/age-calculator/">
+    <meta property="og:title" content="Age Calculator — UtilShed">
+    <meta property="og:description" content="Free online age calculator. Calculate exact age in years, months, and days from any birth date. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/age-calculator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Age Calculator","description":"Free online age calculator. Calculate exact age in years, months, and days from any birth date. No signup required.","url":"https://utilshed.com/tools/age-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Age Calculator","item":"https://utilshed.com/tools/age-calculator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Age Calculator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Age Calculator</h1>
+            <p>Calculate exact age in years, months, and days from any birth date.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:500px;margin:0 auto">
+            <div style="display:grid;gap:1rem;margin-bottom:1.5rem">
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:100px">Birth Date</label><input type="date" id="birthDate" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"></div>
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:100px">As of Date</label><input type="date" id="asOfDate" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"></div>
+                <button class="btn btn-primary" onclick="calcAge()">Calculate Age</button>
+            </div>
+            <div id="result" style="display:none">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem">
+                    <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div id="years" style="color:#4ade80;font-size:2.5rem;font-weight:bold;font-family:monospace">—</div><div style="color:#888;font-size:0.85rem">Years</div></div>
+                    <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div id="months" style="color:#7dd3fc;font-size:2.5rem;font-weight:bold;font-family:monospace">—</div><div style="color:#888;font-size:0.85rem">Months</div></div>
+                    <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div id="days" style="color:#fbbf24;font-size:2.5rem;font-weight:bold;font-family:monospace">—</div><div style="color:#888;font-size:0.85rem">Days</div></div>
+                </div>
+                <div style="background:#1e1e2e;border-radius:8px;padding:1rem;border:1px solid #333">
+                    <div id="details" style="color:#aaa;font-size:0.9rem;line-height:1.8"></div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Age Calculator</h2>
+            <p>Calculate your exact age or the age between any two dates. Shows years, months, days, plus total days, weeks, hours, and days until next birthday.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+document.getElementById('asOfDate').valueAsDate=new Date();
+function calcAge(){const bd=new Date(document.getElementById('birthDate').value);const ad=new Date(document.getElementById('asOfDate').value);if(isNaN(bd)){alert('Enter a birth date');return;}
+let y=ad.getFullYear()-bd.getFullYear();let m=ad.getMonth()-bd.getMonth();let d=ad.getDate()-bd.getDate();if(d<0){m--;const prev=new Date(ad.getFullYear(),ad.getMonth(),0);d+=prev.getDate();}if(m<0){y--;m+=12;}
+document.getElementById('years').textContent=y;document.getElementById('months').textContent=m;document.getElementById('days').textContent=d;
+const totalDays=Math.floor((ad-bd)/(1000*60*60*24));const totalWeeks=Math.floor(totalDays/7);const totalMonths=y*12+m;const totalHours=totalDays*24;
+document.getElementById('details').innerHTML='<strong>'+totalDays.toLocaleString()+'</strong> total days · <strong>'+totalWeeks.toLocaleString()+'</strong> weeks · <strong>'+totalMonths+'</strong> months · <strong>'+totalHours.toLocaleString()+'</strong> hours';
+const nextBd=new Date(ad.getFullYear(),bd.getMonth(),bd.getDate());if(nextBd<=ad)nextBd.setFullYear(nextBd.getFullYear()+1);const daysUntil=Math.ceil((nextBd-ad)/(1000*60*60*24));
+document.getElementById('details').innerHTML+='<br>Next birthday in <strong>'+daysUntil+'</strong> days';
+document.getElementById('result').style.display='block';}
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../timestamp/" class="related-tool-card">
+                <strong>Timestamp Converter</strong>
+                <span>Convert Unix timestamps</span>
+            </a>
+            <a href="../number-to-words/" class="related-tool-card">
+                <strong>Number to Words</strong>
+                <span>Convert numbers to written words</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator — UtilShed</title>
+    <meta name="description" content="Free online bmi calculator. Calculate your Body Mass Index (BMI) with imperial or metric units. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/bmi-calculator/">
+    <meta property="og:title" content="BMI Calculator — UtilShed">
+    <meta property="og:description" content="Free online bmi calculator. Calculate your Body Mass Index (BMI) with imperial or metric units. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/bmi-calculator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"BMI Calculator","description":"Free online bmi calculator. Calculate your Body Mass Index (BMI) with imperial or metric units. No signup required.","url":"https://utilshed.com/tools/bmi-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"BMI Calculator","item":"https://utilshed.com/tools/bmi-calculator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">BMI Calculator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>BMI Calculator</h1>
+            <p>Calculate your Body Mass Index (BMI) with imperial or metric units.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:550px;margin:0 auto">
+            <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
+                <button class="btn btn-primary" id="btnImperial" onclick="setUnit('imperial')">Imperial (lbs/ft)</button>
+                <button class="btn" id="btnMetric" onclick="setUnit('metric')">Metric (kg/cm)</button>
+            </div>
+            <div id="imperialInputs" style="display:grid;gap:1rem;margin-bottom:1.5rem">
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:80px">Weight</label><input type="number" id="weightLbs" placeholder="170" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">lbs</span></div>
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:80px">Height</label><input type="number" id="heightFt" placeholder="5" style="width:60px;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">ft</span><input type="number" id="heightIn" placeholder="10" style="width:60px;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">in</span></div>
+            </div>
+            <div id="metricInputs" style="display:none;display:grid;gap:1rem;margin-bottom:1.5rem">
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:80px">Weight</label><input type="number" id="weightKg" placeholder="77" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">kg</span></div>
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:80px">Height</label><input type="number" id="heightCm" placeholder="178" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">cm</span></div>
+            </div>
+            <button class="btn btn-primary" onclick="calcBMI()" style="width:100%;margin-bottom:1.5rem">Calculate BMI</button>
+            <div id="result" style="display:none;background:#1e1e2e;border-radius:8px;padding:1.5rem;border:1px solid #333;text-align:center">
+                <div style="color:#888;font-size:0.9rem">Your BMI</div>
+                <div id="bmiValue" style="font-size:3rem;font-weight:bold;font-family:monospace;margin:0.5rem 0">—</div>
+                <div id="bmiCategory" style="font-size:1.1rem;margin-bottom:1rem">—</div>
+                <div style="background:#16161e;border-radius:6px;padding:0.8rem;font-size:0.85rem;color:#aaa">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem"><span>Underweight</span><span>&lt; 18.5</span></div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem"><span>Normal</span><span>18.5 – 24.9</span></div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem"><span>Overweight</span><span>25 – 29.9</span></div>
+                    <div style="display:flex;justify-content:space-between"><span>Obese</span><span>≥ 30</span></div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About BMI Calculator</h2>
+            <p>Calculate your Body Mass Index (BMI) using either imperial (pounds/feet) or metric (kg/cm) units. BMI is a screening tool — it doesn't diagnose body fatness or health directly.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+let unit='imperial';
+function setUnit(u){unit=u;document.getElementById('imperialInputs').style.display=u==='imperial'?'grid':'none';document.getElementById('metricInputs').style.display=u==='metric'?'grid':'none';document.getElementById('btnImperial').className=u==='imperial'?'btn btn-primary':'btn';document.getElementById('btnMetric').className=u==='metric'?'btn btn-primary':'btn';}
+function calcBMI(){let bmi;
+if(unit==='imperial'){const w=parseFloat(document.getElementById('weightLbs').value);const f=parseInt(document.getElementById('heightFt').value)||0;const i=parseInt(document.getElementById('heightIn').value)||0;const h=f*12+i;if(!w||!h){alert('Enter weight and height');return;}bmi=(w/(h*h))*703;}
+else{const w=parseFloat(document.getElementById('weightKg').value);const h=parseFloat(document.getElementById('heightCm').value)/100;if(!w||!h){alert('Enter weight and height');return;}bmi=w/(h*h);}
+document.getElementById('bmiValue').textContent=bmi.toFixed(1);
+let cat,color;if(bmi<18.5){cat='Underweight';color='#7dd3fc';}else if(bmi<25){cat='Normal weight';color='#4ade80';}else if(bmi<30){cat='Overweight';color='#fbbf24';}else{cat='Obese';color='#f87171';}
+document.getElementById('bmiCategory').innerHTML='<span style="color:'+color+';font-weight:bold">'+cat+'</span>';
+document.getElementById('bmiValue').style.color=color;
+document.getElementById('result').style.display='block';}
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../percentage-calculator/" class="related-tool-card">
+                <strong>Percentage Calculator</strong>
+                <span>Calculate percentages</span>
+            </a>
+            <a href="../weight-converter/" class="related-tool-card">
+                <strong>Weight Converter</strong>
+                <span>Convert between weight units</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

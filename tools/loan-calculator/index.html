@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Calculator — UtilShed</title>
+    <meta name="description" content="Free online loan calculator. Calculate monthly payments, total interest, and amortization for any loan or mortgage. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/loan-calculator/">
+    <meta property="og:title" content="Loan Calculator — UtilShed">
+    <meta property="og:description" content="Free online loan calculator. Calculate monthly payments, total interest, and amortization for any loan or mortgage. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/loan-calculator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Loan Calculator","description":"Free online loan calculator. Calculate monthly payments, total interest, and amortization for any loan or mortgage. No signup required.","url":"https://utilshed.com/tools/loan-calculator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Loan Calculator","item":"https://utilshed.com/tools/loan-calculator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Loan Calculator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Loan Calculator</h1>
+            <p>Calculate monthly payments, total interest, and amortization for any loan or mortgage.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:650px;margin:0 auto">
+            <div style="display:grid;gap:1rem;margin-bottom:1.5rem">
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:130px">Loan Amount</label><span style="color:#888">$</span><input type="number" id="amount" value="250000" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"></div>
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:130px">Interest Rate</label><input type="number" id="rate" value="6.5" step="0.1" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">%/year</span></div>
+                <div style="display:flex;gap:0.5rem;align-items:center"><label style="color:#aaa;width:130px">Loan Term</label><input type="number" id="term" value="30" style="flex:1;padding:0.6rem;background:#1e1e2e;border:1px solid #333;color:#e0e0e0;border-radius:4px;font-family:monospace"><span style="color:#888">years</span></div>
+                <button class="btn btn-primary" onclick="calculate()" style="margin-top:0.5rem">Calculate</button>
+            </div>
+            <div id="result" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem">
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div style="color:#888;font-size:0.8rem;margin-bottom:0.3rem">Monthly Payment</div><div id="monthly" style="color:#4ade80;font-size:1.5rem;font-weight:bold;font-family:monospace">—</div></div>
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div style="color:#888;font-size:0.8rem;margin-bottom:0.3rem">Total Interest</div><div id="totalInterest" style="color:#f87171;font-size:1.5rem;font-weight:bold;font-family:monospace">—</div></div>
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.2rem;border:1px solid #333;text-align:center"><div style="color:#888;font-size:0.8rem;margin-bottom:0.3rem">Total Payment</div><div id="totalPayment" style="color:#7dd3fc;font-size:1.5rem;font-weight:bold;font-family:monospace">—</div></div>
+            </div>
+            <div id="amortization" style="display:none;background:#1e1e2e;border-radius:8px;padding:1rem;border:1px solid #333;max-height:400px;overflow-y:auto">
+                <h3 style="color:#e0e0e0;margin:0 0 0.5rem 0;font-size:0.9rem">Amortization Schedule (Yearly)</h3>
+                <table style="width:100%;border-collapse:collapse;font-size:0.85rem"><thead><tr style="color:#888"><th style="text-align:left;padding:0.4rem">Year</th><th style="text-align:right;padding:0.4rem">Principal</th><th style="text-align:right;padding:0.4rem">Interest</th><th style="text-align:right;padding:0.4rem">Balance</th></tr></thead><tbody id="amortBody"></tbody></table>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Loan Calculator</h2>
+            <p>Calculate loan or mortgage payments instantly. Enter your loan amount, interest rate, and term to see your monthly payment, total interest, and a full yearly amortization schedule.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function fmt(n){return '$'+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+function calculate(){
+  const P=parseFloat(document.getElementById('amount').value);
+  const r=parseFloat(document.getElementById('rate').value)/100/12;
+  const n=parseInt(document.getElementById('term').value)*12;
+  if(!P||!r||!n)return;
+  const M=P*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
+  const total=M*n;
+  const interest=total-P;
+  document.getElementById('monthly').textContent=fmt(M);
+  document.getElementById('totalInterest').textContent=fmt(interest);
+  document.getElementById('totalPayment').textContent=fmt(total);
+  let balance=P;let rows='';
+  const years=n/12;
+  for(let y=1;y<=years;y++){
+    let yPrincipal=0,yInterest=0;
+    for(let m=0;m<12&&balance>0;m++){
+      const mi=balance*r;const mp=M-mi;yInterest+=mi;yPrincipal+=mp;balance-=mp;
+    }
+    if(balance<0)balance=0;
+    rows+='<tr><td style="padding:0.3rem 0.4rem;color:#e0e0e0">'+y+'</td><td style="padding:0.3rem 0.4rem;text-align:right;color:#4ade80">'+fmt(yPrincipal)+'</td><td style="padding:0.3rem 0.4rem;text-align:right;color:#f87171">'+fmt(yInterest)+'</td><td style="padding:0.3rem 0.4rem;text-align:right;color:#7dd3fc">'+fmt(balance)+'</td></tr>';
+  }
+  document.getElementById('amortBody').innerHTML=rows;
+  document.getElementById('amortization').style.display='block';
+}
+calculate();
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../percentage-calculator/" class="related-tool-card">
+                <strong>Percentage Calculator</strong>
+                <span>Calculate percentages instantly</span>
+            </a>
+            <a href="../number-to-words/" class="related-tool-card">
+                <strong>Number to Words</strong>
+                <span>Convert numbers to written words</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

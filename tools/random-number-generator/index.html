@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Generator — UtilShed</title>
+    <meta name="description" content="Free online random number generator. Generate random numbers, pick random items from a list, roll dice, or flip coins. No signup required.">
+    <link rel="canonical" href="https://utilshed.com/tools/random-number-generator/">
+    <meta property="og:title" content="Random Number Generator — UtilShed">
+    <meta property="og:description" content="Free online random number generator. Generate random numbers, pick random items from a list, roll dice, or flip coins. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/random-number-generator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Random Number Generator","description":"Free online random number generator. Generate random numbers, pick random items from a list, roll dice, or flip coins. No signup required.","url":"https://utilshed.com/tools/random-number-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Random Number Generator","item":"https://utilshed.com/tools/random-number-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Random Number Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Random Number Generator</h1>
+            <p>Generate random numbers, pick random items from a list, roll dice, or flip coins.</p>
+        </div>
+
+        <div class="tool-single" style="max-width:600px;margin:0 auto">
+            <div style="display:grid;gap:1.5rem">
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.5rem;border:1px solid #333">
+                    <h3 style="color:#7dd3fc;margin:0 0 1rem 0;font-size:1rem">Random Number</h3>
+                    <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem">
+                        <span style="color:#aaa">Between</span><input type="number" id="rMin" value="1" style="width:80px;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace">
+                        <span style="color:#aaa">and</span><input type="number" id="rMax" value="100" style="width:80px;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace">
+                        <span style="color:#aaa">count:</span><input type="number" id="rCount" value="1" min="1" max="100" style="width:60px;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace">
+                        <button class="btn btn-primary" onclick="genRandom()">Generate</button>
+                    </div>
+                    <div id="rResult" style="font-family:monospace;font-size:2rem;text-align:center;color:#4ade80;min-height:2.5rem">—</div>
+                </div>
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.5rem;border:1px solid #333">
+                    <h3 style="color:#7dd3fc;margin:0 0 1rem 0;font-size:1rem">Dice Roller</h3>
+                    <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem">
+                        <input type="number" id="diceCount" value="2" min="1" max="20" style="width:50px;padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px;font-family:monospace">
+                        <span style="color:#aaa">×</span>
+                        <select id="diceSides" style="padding:0.5rem;background:#16161e;border:1px solid #444;color:#e0e0e0;border-radius:4px"><option value="4">d4</option><option value="6" selected>d6</option><option value="8">d8</option><option value="10">d10</option><option value="12">d12</option><option value="20">d20</option><option value="100">d100</option></select>
+                        <button class="btn btn-primary" onclick="rollDice()">Roll</button>
+                    </div>
+                    <div id="dResult" style="font-family:monospace;font-size:1.5rem;text-align:center;color:#fbbf24;min-height:2rem">—</div>
+                </div>
+                <div style="background:#1e1e2e;border-radius:8px;padding:1.5rem;border:1px solid #333">
+                    <h3 style="color:#7dd3fc;margin:0 0 1rem 0;font-size:1rem">Coin Flip</h3>
+                    <div style="display:flex;gap:0.5rem;align-items:center;justify-content:center">
+                        <button class="btn btn-primary" onclick="flipCoin()" style="font-size:1.1rem;padding:0.7rem 2rem">Flip!</button>
+                    </div>
+                    <div id="coinResult" style="font-size:2.5rem;text-align:center;margin-top:0.5rem;min-height:3rem">—</div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Random Number Generator</h2>
+            <p>Generate cryptographically random numbers, roll dice for tabletop games, or flip a coin. All randomness is generated locally in your browser.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function genRandom(){const min=parseInt(document.getElementById('rMin').value);const max=parseInt(document.getElementById('rMax').value);const count=Math.min(parseInt(document.getElementById('rCount').value)||1,100);if(min>max){alert('Min must be ≤ Max');return;}const nums=[];for(let i=0;i<count;i++)nums.push(Math.floor(Math.random()*(max-min+1))+min);document.getElementById('rResult').textContent=nums.join(', ');}
+function rollDice(){const count=parseInt(document.getElementById('diceCount').value)||1;const sides=parseInt(document.getElementById('diceSides').value);const rolls=[];for(let i=0;i<count;i++)rolls.push(Math.floor(Math.random()*sides)+1);const total=rolls.reduce((a,b)=>a+b,0);document.getElementById('dResult').innerHTML=rolls.join(' + ')+' = <span style="color:#4ade80">'+total+'</span>';}
+function flipCoin(){const heads=Math.random()<0.5;document.getElementById('coinResult').textContent=heads?'🪙 Heads':'🪙 Tails';}
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUIDs</span>
+            </a>
+            <a href="../password-generator/" class="related-tool-card">
+                <strong>Password Generator</strong>
+                <span>Generate secure passwords</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
