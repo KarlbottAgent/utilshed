@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Generate UUIDs — UtilShed</title>
+    <meta name="description" content="Learn how to generate UUIDs (Universally Unique Identifiers) in JavaScript, Python, and the command line. Covers UUID v1, v4, v5, and when to use each version.">
+    <meta name="keywords" content="generate UUID, UUID generator, how to generate UUID, UUID v4, UUID v1, unique identifier, GUID generator, random UUID, UUID JavaScript, UUID Python">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-generate-uuids/">
+    <meta property="og:title" content="How to Generate UUIDs — UtilShed">
+    <meta property="og:description" content="Learn how to generate UUIDs in JavaScript, Python, and the command line. Covers UUID versions and when to use each.">
+    <meta property="og:type" content="article">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Generate UUIDs","description":"Learn how to generate UUIDs in JavaScript, Python, and the command line. Covers UUID versions and when to use each.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-generate-uuids/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Generate UUIDs</div>
+            <div class="tool-header">
+                <h1>How to Generate UUIDs</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 6 min read</p>
+            </div>
+
+            <p>UUIDs (Universally Unique Identifiers) are 128-bit identifiers used everywhere in software — database primary keys, API request IDs, session tokens, distributed systems, and more. They're designed to be unique across time and space without a central authority.</p>
+
+            <p>In this guide, you'll learn what UUIDs are, the differences between UUID versions, and how to generate them in every major language and environment — or just use our <a href="../../tools/uuid/">free UUID generator</a>.</p>
+
+            <h2>What Is a UUID?</h2>
+
+            <p>A UUID is a 128-bit number typically displayed as 32 hexadecimal digits in five groups separated by hyphens:</p>
+
+            <div class="code-block">550e8400-e29b-41d4-a716-446655440000</div>
+
+            <p>The format is <span class="code-inline">8-4-4-4-12</span> characters. With 2<sup>128</sup> possible values (over 340 undecillion), the probability of generating two identical UUIDs is astronomically small — you'd need to generate 1 billion UUIDs per second for about 85 years to have a 50% chance of a single collision.</p>
+
+            <h2>UUID Versions Explained</h2>
+
+            <p>Not all UUIDs are created the same way. The version number is encoded in the UUID itself (the 13th character):</p>
+
+            <h3>UUID v1 — Timestamp + MAC Address</h3>
+            <p>Generated from the current timestamp and the machine's MAC address. Guarantees uniqueness but leaks information about when and where it was created.</p>
+            <div class="code-block">6ba7b810-9dad-11d1-80b4-00c04fd430c8
+                     ^ v1</div>
+            <p><strong>Use when:</strong> You need time-sortable IDs and don't care about privacy.</p>
+
+            <h3>UUID v4 — Random</h3>
+            <p>Generated from random (or pseudo-random) numbers. The most commonly used version — simple, fast, and doesn't leak any information.</p>
+            <div class="code-block">f47ac10b-58cc-4372-a567-0e02b2c3d479
+                     ^ v4</div>
+            <p><strong>Use when:</strong> You need a unique ID and don't have special requirements. This is the default choice for most applications.</p>
+
+            <h3>UUID v5 — Name-Based (SHA-1)</h3>
+            <p>Generated by hashing a namespace UUID and a name with SHA-1. Always produces the same UUID for the same namespace + name combination — deterministic and reproducible.</p>
+            <div class="code-block">886313e1-3b8a-5372-9b90-0c9aee199e5d
+                     ^ v5</div>
+            <p><strong>Use when:</strong> You need the same UUID for the same input every time (e.g., generating an ID from a URL or email address).</p>
+
+            <h3>UUID v7 — The Modern Choice</h3>
+            <p>A newer standard (RFC 9562) that combines a Unix timestamp with random bits. Time-sortable like v1 but without leaking a MAC address. Increasingly the recommended default for databases.</p>
+            <p><strong>Use when:</strong> You need database-friendly, time-sortable IDs (many new projects are adopting v7 over v4).</p>
+
+            <div class="cta-box">
+                <strong>Generate UUIDs instantly</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Generate UUID v1, v4, or bulk UUIDs with one click.</p>
+                <a href="../../tools/uuid/">Open UUID Generator</a>
+            </div>
+
+            <h2>How to Generate UUIDs</h2>
+
+            <h3>Method 1: Online Generator</h3>
+            <p>The fastest way — use our <a href="../../tools/uuid/">UUID generator tool</a> to create single or bulk UUIDs instantly. Supports v1 and v4 with one-click copy.</p>
+
+            <h3>Method 2: JavaScript / Node.js</h3>
+            <p>Modern browsers and Node.js have built-in UUID generation:</p>
+            <div class="code-block">// Browser (Web Crypto API) — built-in, no library needed
+const uuid = crypto.randomUUID();
+console.log(uuid); // "3b241101-e2bb-4d55-af19-a2b3c4d5e6f7"
+
+// Node.js (v14.17+)
+const { randomUUID } = require('crypto');
+console.log(randomUUID());
+
+// Using the 'uuid' npm package (for v1, v5, etc.)
+const { v1, v4, v5 } = require('uuid');
+console.log(v4()); // Random UUID
+console.log(v1()); // Timestamp-based UUID</div>
+
+            <h3>Method 3: Python</h3>
+            <div class="code-block">import uuid
+
+# UUID v4 (random) — most common
+print(uuid.uuid4())  # e.g., "a8098c1a-f86e-11da-bd1a-00112444be1e"
+
+# UUID v1 (timestamp + MAC)
+print(uuid.uuid1())
+
+# UUID v5 (name-based, deterministic)
+print(uuid.uuid5(uuid.NAMESPACE_URL, "https://utilshed.com"))
+# Always produces the same UUID for the same input</div>
+
+            <h3>Method 4: Command Line</h3>
+            <div class="code-block"># Linux
+uuidgen
+
+# macOS
+uuidgen | tr '[:upper:]' '[:lower:]'
+
+# PowerShell
+[guid]::NewGuid()
+
+# Using Python one-liner
+python3 -c "import uuid; print(uuid.uuid4())"</div>
+
+            <h3>Method 5: SQL</h3>
+            <div class="code-block">-- PostgreSQL (built-in)
+SELECT gen_random_uuid();
+
+-- MySQL 8+
+SELECT UUID();
+
+-- SQLite (with extension)
+SELECT lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6)));</div>
+
+            <h2>UUID vs. Other ID Formats</h2>
+
+            <ul>
+                <li><strong>UUID vs. auto-increment</strong> — UUIDs don't require a central database to guarantee uniqueness. Auto-increment is simpler but creates bottlenecks in distributed systems.</li>
+                <li><strong>UUID vs. ULID</strong> — ULIDs are lexicographically sortable and use Crockford's Base32 (shorter). UUIDs are more widely supported.</li>
+                <li><strong>UUID vs. nanoid</strong> — nanoid generates shorter, URL-friendly IDs. UUIDs are the universal standard with broader library support.</li>
+                <li><strong>GUID vs. UUID</strong> — They're the same thing. "GUID" (Globally Unique Identifier) is Microsoft's term for UUID.</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <ul>
+                <li><strong>Default to v4</strong> for most use cases — it's simple, random, and widely supported.</li>
+                <li><strong>Use v7 for database primary keys</strong> — time-sortable UUIDs have better index performance than random v4.</li>
+                <li><strong>Never use UUIDs as secrets</strong> — v1 UUIDs are predictable, and even v4 UUIDs shouldn't replace proper tokens.</li>
+                <li><strong>Store as binary(16) in databases</strong> when possible — it's half the size of storing the string representation.</li>
+                <li><strong>Use lowercase</strong> — the RFC says UUIDs are case-insensitive, but lowercase is conventional.</li>
+            </ul>
+
+            <h2>Generate UUIDs Now</h2>
+
+            <p>Need a UUID right now? Use the <a href="../../tools/uuid/">free UUID generator</a> on UtilShed — generate single or bulk UUIDs with one click.</p>
+
+            <p>You might also find these tools useful:</p>
+            <ul>
+                <li><a href="../../tools/hash/">Hash Generator</a> — generate MD5, SHA-1, SHA-256 hashes</li>
+                <li><a href="../../tools/password-generator/">Password Generator</a> — create secure random passwords</li>
+                <li><a href="../../tools/base64/">Base64 Encoder/Decoder</a> — encode and decode Base64 strings</li>
+                <li><a href="../../tools/json-formatter/">JSON Formatter</a> — format and validate JSON data</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

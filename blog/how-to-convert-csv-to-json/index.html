@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Convert CSV to JSON — UtilShed</title>
+    <meta name="description" content="Learn how to convert CSV files to JSON format. Step-by-step guide with examples in JavaScript, Python, and the command line — plus a free online CSV to JSON converter.">
+    <meta name="keywords" content="convert CSV to JSON, CSV to JSON converter, how to convert CSV to JSON, CSV to JSON JavaScript, CSV to JSON Python, CSV parser, JSON from CSV, CSV import">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-convert-csv-to-json/">
+    <meta property="og:title" content="How to Convert CSV to JSON — UtilShed">
+    <meta property="og:description" content="Learn how to convert CSV to JSON with examples in JavaScript, Python, and the command line.">
+    <meta property="og:type" content="article">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Convert CSV to JSON","description":"Learn how to convert CSV to JSON with examples in JavaScript, Python, and the command line.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-convert-csv-to-json/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Convert CSV to JSON</div>
+            <div class="tool-header">
+                <h1>How to Convert CSV to JSON</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 6 min read</p>
+            </div>
+
+            <p>CSV (Comma-Separated Values) is the universal format for tabular data — spreadsheets, database exports, and data dumps almost always come in CSV. But modern APIs, web apps, and config files expect JSON. Converting between them is one of the most common data tasks developers face.</p>
+
+            <p>In this guide, you'll learn how to convert CSV to JSON — using an <a href="../../tools/csv-to-json/">online converter</a>, in code, and from the command line.</p>
+
+            <h2>CSV vs. JSON: When to Use Which</h2>
+
+            <p><strong>CSV</strong> is best for flat, tabular data — rows and columns, like a spreadsheet. It's compact and universally supported by Excel, Google Sheets, databases, and data tools.</p>
+
+            <p><strong>JSON</strong> is best for structured, nested data — objects with properties, arrays, and hierarchical relationships. It's the native format for web APIs and JavaScript applications.</p>
+
+            <div class="code-block">CSV:
+name,age,city
+Alice,30,NYC
+Bob,25,LA
+
+JSON:
+[
+  { "name": "Alice", "age": "30", "city": "NYC" },
+  { "name": "Bob", "age": "25", "city": "LA" }
+]</div>
+
+            <p>The conversion is straightforward: the CSV header row becomes the JSON property names, and each subsequent row becomes an object.</p>
+
+            <div class="cta-box">
+                <strong>Convert CSV to JSON instantly</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Paste CSV data and get formatted JSON output with one click.</p>
+                <a href="../../tools/csv-to-json/">Open CSV to JSON Converter</a>
+            </div>
+
+            <h2>Method 1: Online Converter</h2>
+
+            <p>The fastest approach — paste your CSV into our <a href="../../tools/csv-to-json/">CSV to JSON converter</a> and get formatted JSON instantly. No installation, no code, works right in your browser.</p>
+
+            <h2>Method 2: JavaScript</h2>
+
+            <p>Here's a simple function to parse CSV to JSON in JavaScript:</p>
+
+            <div class="code-block">function csvToJson(csv) {
+  const lines = csv.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim());
+
+  return lines.slice(1).map(line => {
+    const values = line.split(',');
+    return headers.reduce((obj, header, i) => {
+      obj[header] = values[i]?.trim() || '';
+      return obj;
+    }, {});
+  });
+}
+
+const csv = `name,age,city
+Alice,30,NYC
+Bob,25,LA`;
+
+console.log(JSON.stringify(csvToJson(csv), null, 2));
+// [{ "name": "Alice", "age": "30", "city": "NYC" }, ...]</div>
+
+            <p><strong>Caveat:</strong> This simple parser doesn't handle quoted fields (values containing commas). For production use, use a library like <span class="code-inline">papaparse</span>:</p>
+
+            <div class="code-block">// Using Papa Parse (npm install papaparse)
+const Papa = require('papaparse');
+
+const result = Papa.parse(csvString, { header: true });
+console.log(result.data);
+// [{ name: "Alice", age: "30", city: "NYC" }, ...]</div>
+
+            <h2>Method 3: Python</h2>
+
+            <p>Python's standard library makes this trivial:</p>
+
+            <div class="code-block">import csv
+import json
+
+# From a CSV file
+with open('data.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    data = list(reader)
+
+# Write to JSON file
+with open('data.json', 'w') as f:
+    json.dump(data, f, indent=2)
+
+print(json.dumps(data, indent=2))
+# [{"name": "Alice", "age": "30", "city": "NYC"}, ...]</div>
+
+            <p>For a one-liner from the command line:</p>
+
+            <div class="code-block">python3 -c "import csv,json,sys; print(json.dumps(list(csv.DictReader(open(sys.argv[1]))),indent=2))" data.csv</div>
+
+            <h2>Method 4: Command Line</h2>
+
+            <h3>Using jq (if installed)</h3>
+            <div class="code-block"># Install: brew install jq (macOS) or apt install jq (Linux)
+
+# Convert CSV to JSON using jq and Miller
+mlr --icsv --ojson cat data.csv</div>
+
+            <h3>Using csvjson (csvkit)</h3>
+            <div class="code-block"># Install: pip install csvkit
+csvjson data.csv</div>
+
+            <h3>Using Node.js</h3>
+            <div class="code-block">node -e "
+const fs = require('fs');
+const csv = fs.readFileSync('data.csv', 'utf8');
+const lines = csv.trim().split('\n');
+const headers = lines[0].split(',');
+const result = lines.slice(1).map(l => {
+  const vals = l.split(',');
+  return Object.fromEntries(headers.map((h,i) => [h.trim(), vals[i]?.trim()]));
+});
+console.log(JSON.stringify(result, null, 2));
+"</div>
+
+            <h2>Handling Edge Cases</h2>
+
+            <p>Real-world CSV data is messy. Here are the common pitfalls:</p>
+
+            <h3>Quoted Fields with Commas</h3>
+            <div class="code-block">name,description,price
+"Widget","A small, useful device",9.99
+"Gadget","Has ""quotes"" inside",19.99</div>
+            <p>Fields containing commas or quotes are wrapped in double quotes. Embedded quotes are escaped by doubling them. Simple <span class="code-inline">split(',')</span> won't handle this — use a proper CSV parser.</p>
+
+            <h3>Type Conversion</h3>
+            <p>CSV is all strings. After converting to JSON, you'll often want to cast types:</p>
+            <div class="code-block">// CSV gives you: { "age": "30", "active": "true", "score": "9.5" }
+// You probably want: { "age": 30, "active": true, "score": 9.5 }
+
+function inferTypes(obj) {
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => {
+      if (v === 'true') return [k, true];
+      if (v === 'false') return [k, false];
+      if (v !== '' && !isNaN(v)) return [k, Number(v)];
+      return [k, v];
+    })
+  );
+}</div>
+
+            <h3>Different Delimiters</h3>
+            <p>Not all "CSV" files use commas. TSV (tab-separated), semicolon-separated (common in Europe), and pipe-separated files are all common. Check your delimiter before parsing.</p>
+
+            <h2>JSON to CSV (The Reverse)</h2>
+
+            <p>Need to go the other way? Check out our <a href="../../tools/json-to-csv/">JSON to CSV converter</a>. The key challenge is flattening nested JSON into tabular rows — nested objects need to be serialized or flattened.</p>
+
+            <h2>Convert Your Data Now</h2>
+
+            <p>Use the <a href="../../tools/csv-to-json/">free CSV to JSON converter</a> on UtilShed — paste your data and get clean JSON output instantly.</p>
+
+            <p>Related tools for working with data formats:</p>
+            <ul>
+                <li><a href="../../tools/json-to-csv/">JSON to CSV Converter</a> — go the other way</li>
+                <li><a href="../../tools/json-formatter/">JSON Formatter</a> — pretty-print and validate JSON</li>
+                <li><a href="../../tools/json-to-yaml/">JSON to YAML Converter</a> — for config file formats</li>
+                <li><a href="../../tools/csv-to-xml/">CSV to XML Converter</a> — for XML-based systems</li>
+                <li><a href="../../tools/json-validator/">JSON Validator</a> — check if your output is valid JSON</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

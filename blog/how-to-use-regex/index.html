@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Use Regex (Regular Expressions) — UtilShed</title>
+    <meta name="description" content="Learn how to use regex (regular expressions) with practical examples. Covers matching patterns, character classes, quantifiers, groups, and lookaheads — with a free online regex tester.">
+    <meta name="keywords" content="how to use regex, regular expressions tutorial, regex examples, regex cheat sheet, regex tester, regex patterns, regex for beginners, regex match, regex replace">
+    <link rel="canonical" href="https://utilshed.com/blog/how-to-use-regex/">
+    <meta property="og:title" content="How to Use Regex (Regular Expressions) — UtilShed">
+    <meta property="og:description" content="Learn how to use regex with practical examples. Covers patterns, character classes, quantifiers, groups, and more.">
+    <meta property="og:type" content="article">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Use Regex (Regular Expressions)","description":"Learn how to use regex with practical examples. Covers patterns, character classes, quantifiers, groups, and more.","datePublished":"2026-03-22","author":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"publisher":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com/"},"mainEntityOfPage":"https://utilshed.com/blog/how-to-use-regex/"}</script>
+    <style>
+        .article { max-width: 760px; margin: 0 auto; line-height: 1.8; }
+        .article h2 { color: var(--text); font-size: 1.35rem; margin: 2.5rem 0 1rem; }
+        .article h3 { color: var(--text); font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+        .article p { margin-bottom: 1rem; }
+        .article ul, .article ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article li { margin-bottom: 0.4rem; }
+        .article a { color: var(--accent); text-decoration: none; }
+        .article a:hover { text-decoration: underline; }
+        .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; font-family: var(--mono); font-size: 0.8125rem; overflow-x: auto; margin: 1rem 0 1.5rem; color: var(--green); line-height: 1.6; white-space: pre; }
+        .code-inline { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: var(--mono); font-size: 0.8125rem; }
+        .cta-box { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-align: center; }
+        .cta-box a { display: inline-block; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .cta-box a:hover { background: var(--accent-hover); text-decoration: none; }
+        .breadcrumb { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.875rem; }
+        th, td { padding: 0.5rem 0.75rem; border: 1px solid var(--border); text-align: left; }
+        th { background: var(--surface); font-weight: 600; }
+        td:first-child { font-family: var(--mono); font-size: 0.8125rem; color: var(--green); white-space: nowrap; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">&gt;_ UtilShed</a>
+            <span class="tagline">Blog</span>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article">
+            <div class="breadcrumb"><a href="../../">Home</a> &rsaquo; <a href="../">Blog</a> &rsaquo; How to Use Regex</div>
+            <div class="tool-header">
+                <h1>How to Use Regex (Regular Expressions)</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">March 22, 2026 &middot; 8 min read</p>
+            </div>
+
+            <p>Regular expressions (regex) are one of the most powerful tools in a developer's arsenal — and one of the most intimidating. A pattern like <span class="code-inline">^(?=.*[A-Z])(?=.*\d).{8,}$</span> looks like noise, but once you understand the building blocks, regex becomes intuitive.</p>
+
+            <p>This guide takes you from zero to confident with practical examples you can test in our <a href="../../tools/regex-tester/">free regex tester</a>.</p>
+
+            <h2>What Is Regex?</h2>
+
+            <p>A regular expression is a pattern that describes a set of strings. You use them to:</p>
+            <ul>
+                <li><strong>Validate</strong> input (email, phone number, password strength)</li>
+                <li><strong>Search</strong> for patterns in text (find all URLs, extract dates)</li>
+                <li><strong>Replace</strong> text (reformat dates, strip HTML tags)</li>
+                <li><strong>Split</strong> strings on complex delimiters</li>
+            </ul>
+
+            <p>Every major programming language supports regex — JavaScript, Python, Java, Go, PHP, Ruby, C#, and more.</p>
+
+            <h2>The Basics: Literal Characters</h2>
+
+            <p>The simplest regex is just a literal string. The pattern <span class="code-inline">hello</span> matches the text "hello" anywhere in a string.</p>
+
+            <div class="code-block">Pattern: hello
+Text:    say hello world
+Match:       ^^^^^</div>
+
+            <p>Most characters match themselves literally. The special characters that have meaning in regex are: <span class="code-inline">. * + ? ^ $ { } [ ] ( ) | \</span></p>
+
+            <h2>Character Classes</h2>
+
+            <p>Character classes match one character from a set:</p>
+
+            <table>
+                <tr><th>Pattern</th><th>Matches</th><th>Example</th></tr>
+                <tr><td>[abc]</td><td>a, b, or c</td><td><span class="code-inline">[aeiou]</span> matches any vowel</td></tr>
+                <tr><td>[a-z]</td><td>Any lowercase letter</td><td><span class="code-inline">[a-zA-Z]</span> matches any letter</td></tr>
+                <tr><td>[0-9]</td><td>Any digit</td><td><span class="code-inline">[0-9]{3}</span> matches "123"</td></tr>
+                <tr><td>[^abc]</td><td>NOT a, b, or c</td><td><span class="code-inline">[^0-9]</span> matches non-digits</td></tr>
+                <tr><td>\d</td><td>Any digit (same as [0-9])</td><td><span class="code-inline">\d{4}</span> matches "2026"</td></tr>
+                <tr><td>\w</td><td>Word char [a-zA-Z0-9_]</td><td><span class="code-inline">\w+</span> matches "hello_world"</td></tr>
+                <tr><td>\s</td><td>Whitespace (space, tab, newline)</td><td><span class="code-inline">\s+</span> matches spaces</td></tr>
+                <tr><td>.</td><td>Any character (except newline)</td><td><span class="code-inline">a.c</span> matches "abc", "a1c"</td></tr>
+            </table>
+
+            <h2>Quantifiers: How Many?</h2>
+
+            <table>
+                <tr><th>Pattern</th><th>Meaning</th><th>Example</th></tr>
+                <tr><td>*</td><td>0 or more</td><td><span class="code-inline">ab*c</span> matches "ac", "abc", "abbc"</td></tr>
+                <tr><td>+</td><td>1 or more</td><td><span class="code-inline">ab+c</span> matches "abc", "abbc" (not "ac")</td></tr>
+                <tr><td>?</td><td>0 or 1 (optional)</td><td><span class="code-inline">colou?r</span> matches "color" and "colour"</td></tr>
+                <tr><td>{n}</td><td>Exactly n</td><td><span class="code-inline">\d{4}</span> matches exactly 4 digits</td></tr>
+                <tr><td>{n,m}</td><td>Between n and m</td><td><span class="code-inline">\d{2,4}</span> matches 2-4 digits</td></tr>
+                <tr><td>{n,}</td><td>n or more</td><td><span class="code-inline">\w{3,}</span> matches 3+ word chars</td></tr>
+            </table>
+
+            <div class="cta-box">
+                <strong>Test your regex patterns live</strong>
+                <p style="color:var(--text-muted);margin:0.5rem 0">Type a pattern and see matches highlighted in real time.</p>
+                <a href="../../tools/regex-tester/">Open Regex Tester</a>
+            </div>
+
+            <h2>Anchors: Where to Match</h2>
+
+            <table>
+                <tr><th>Pattern</th><th>Meaning</th><th>Example</th></tr>
+                <tr><td>^</td><td>Start of string/line</td><td><span class="code-inline">^Hello</span> matches "Hello world" but not "Say Hello"</td></tr>
+                <tr><td>$</td><td>End of string/line</td><td><span class="code-inline">world$</span> matches "hello world" but not "world cup"</td></tr>
+                <tr><td>\b</td><td>Word boundary</td><td><span class="code-inline">\bcat\b</span> matches "cat" but not "cats" or "concatenate"</td></tr>
+            </table>
+
+            <h2>Groups and Alternation</h2>
+
+            <p>Parentheses create <strong>capturing groups</strong> — they group patterns and capture the matched text:</p>
+
+            <div class="code-block">// Extract date parts
+Pattern: (\d{4})-(\d{2})-(\d{2})
+Text:    2026-03-22
+Group 1: 2026
+Group 2: 03
+Group 3: 22</div>
+
+            <p>The pipe <span class="code-inline">|</span> means "or":</p>
+
+            <div class="code-block">Pattern: (cat|dog|bird)
+Matches: "cat", "dog", or "bird"</div>
+
+            <h2>Practical Examples</h2>
+
+            <h3>Validate an Email Address</h3>
+            <div class="code-block">^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$</div>
+            <p>Matches: <span class="code-inline">user@example.com</span>, <span class="code-inline">name+tag@sub.domain.org</span></p>
+
+            <h3>Match a URL</h3>
+            <div class="code-block">https?://[^\s/$.?#].[^\s]*</div>
+            <p>Matches most HTTP and HTTPS URLs in text.</p>
+
+            <h3>Validate a Strong Password</h3>
+            <div class="code-block">^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$</div>
+            <p>Requires: 8+ characters, uppercase, lowercase, digit, and special character.</p>
+
+            <h3>Extract IP Addresses</h3>
+            <div class="code-block">\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b</div>
+            <p>Matches: <span class="code-inline">192.168.1.1</span>, <span class="code-inline">10.0.0.1</span></p>
+
+            <h3>Find HTML Tags</h3>
+            <div class="code-block">&lt;([a-z]+)[^&gt;]*&gt;(.*?)&lt;/\1&gt;</div>
+            <p>Matches paired HTML tags like <span class="code-inline">&lt;p&gt;text&lt;/p&gt;</span>. The <span class="code-inline">\1</span> is a backreference matching the same tag name.</p>
+
+            <h2>Using Regex in Code</h2>
+
+            <h3>JavaScript</h3>
+            <div class="code-block">// Test if a string matches
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+emailRegex.test('user@example.com'); // true
+
+// Find all matches
+const text = 'Call 555-1234 or 555-5678';
+const matches = text.match(/\d{3}-\d{4}/g);
+// ["555-1234", "555-5678"]
+
+// Replace with regex
+'2026-03-22'.replace(/(\d{4})-(\d{2})-(\d{2})/, '$2/$3/$1');
+// "03/22/2026"</div>
+
+            <h3>Python</h3>
+            <div class="code-block">import re
+
+# Test if a string matches
+if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+    print('Valid email')
+
+# Find all matches
+phones = re.findall(r'\d{3}-\d{4}', 'Call 555-1234 or 555-5678')
+# ['555-1234', '555-5678']
+
+# Replace with regex
+re.sub(r'(\d{4})-(\d{2})-(\d{2})', r'\2/\3/\1', '2026-03-22')
+# '03/22/2026'</div>
+
+            <h2>Common Mistakes</h2>
+
+            <ul>
+                <li><strong>Forgetting to escape dots</strong> — <span class="code-inline">.</span> matches ANY character. To match a literal dot, use <span class="code-inline">\.</span></li>
+                <li><strong>Greedy vs. lazy</strong> — <span class="code-inline">.*</span> is greedy (matches as much as possible). Use <span class="code-inline">.*?</span> for lazy (matches as little as possible).</li>
+                <li><strong>Not anchoring</strong> — Without <span class="code-inline">^</span> and <span class="code-inline">$</span>, a pattern matches anywhere in the string. <span class="code-inline">\d{3}</span> matches "123" inside "abc123def".</li>
+                <li><strong>Catastrophic backtracking</strong> — Nested quantifiers like <span class="code-inline">(a+)+</span> can cause exponential matching time. Keep patterns simple.</li>
+            </ul>
+
+            <h2>Try It Now</h2>
+
+            <p>The best way to learn regex is to practice. Use the <a href="../../tools/regex-tester/">free regex tester</a> on UtilShed — type a pattern and see matches highlighted in real time.</p>
+
+            <p>Related tools you might find useful:</p>
+            <ul>
+                <li><a href="../../tools/regex-tester/">Regex Tester</a> — test and debug patterns with live highlighting</li>
+                <li><a href="../../tools/text-case-converter/">Text Case Converter</a> — convert between camelCase, snake_case, etc.</li>
+                <li><a href="../../tools/slug-generator/">Slug Generator</a> — create URL-friendly slugs from text</li>
+                <li><a href="../../tools/remove-duplicates/">Remove Duplicate Lines</a> — clean up text data</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p>
+    </footer>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
