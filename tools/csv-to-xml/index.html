@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to XML Converter — UtilShed</title>
+    <meta name="description" content="Free online csv to xml converter. Convert CSV data to XML format instantly. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/csv-to-xml/">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"CSV to XML Converter","description":"Free online csv to xml converter. Convert CSV data to XML format instantly. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/csv-to-xml/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"CSV to XML Converter","item":"https://utilshed.com/tools/csv-to-xml/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">CSV to XML Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>CSV to XML Converter</h1>
+            <p>Convert CSV data to XML format instantly.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convert()">Convert</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="name,age,city
+Alice,30,NYC
+Bob,25,LA"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Output <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About CSV to XML Converter</h2>
+            <p>This free online csv to xml converter lets you convert csv data to xml format instantly — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever.</p></footer>
+    <script>
+function convert() {
+  const csv = document.getElementById('input').value.trim();
+  if (!csv) { document.getElementById('output').value = ''; return; }
+  try {
+    const lines = csv.split('\n').map(l => l.trim()).filter(Boolean);
+    if (lines.length < 2) { setStatus('Need header row + at least one data row', 'err'); return; }
+    const headers = parseCSVLine(lines[0]);
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<records>\n';
+    for (let i = 1; i < lines.length; i++) {
+      const values = parseCSVLine(lines[i]);
+      xml += '  <record>\n';
+      headers.forEach((h, j) => {
+        const tag = h.replace(/[^a-zA-Z0-9_]/g, '_').replace(/^\d/, '_$&');
+        const val = (values[j] || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        xml += `    <${tag}>${val}</${tag}>\n`;
+      });
+      xml += '  </record>\n';
+    }
+    xml += '</records>';
+    document.getElementById('output').value = xml;
+    setStatus(`Converted ${lines.length - 1} records`, 'ok');
+  } catch (e) { setStatus('Error: ' + e.message, 'err'); }
+}
+function parseCSVLine(line) {
+  const result = []; let current = ''; let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (inQuotes) { if (c === '"' && line[i+1] === '"') { current += '"'; i++; } else if (c === '"') { inQuotes = false; } else { current += c; } }
+    else { if (c === '"') { inQuotes = true; } else if (c === ',') { result.push(current); current = ''; } else { current += c; } }
+  }
+  result.push(current);
+  return result;
+}
+function loadSample() { document.getElementById('input').value = 'name,age,city,email\nAlice,30,"New York",alice@example.com\nBob,25,"Los Angeles",bob@example.com\nCharlie,35,Chicago,charlie@example.com'; convert(); }
+
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+function clearAll() { document.getElementById('input').value = ''; document.getElementById('output').value = ''; document.getElementById('status').textContent = ''; if (document.getElementById('size-label')) document.getElementById('size-label').textContent = ''; }
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+document.getElementById('input').addEventListener('input', convert);
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free online JSON formatter, validator, and minifier. Paste your JSON and get it beautifully formatted with syntax highlighting</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free online Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. Free online hash generator, no signup required.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once. Free, no signup required.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

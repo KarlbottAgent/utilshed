@@ -26,25 +26,23 @@
             <h1>Online Tools That Just Work</h1>
             <p>No signup. No ads. No nonsense. Just fast, free tools for developers and everyone.</p>
 
-            <div class="tools-grid" style="text-align:left">
-                <a href="tools/sql-formatter/" class="tool-card">
-                    <span class="tool-icon">SQL</span>
-                    <h2>SQL Formatter</h2>
-                    <p>Format and beautify SQL queries with proper indentation and keyword casing</p>
-                </a>
+            <a href="tools/sql-formatter/" class="tool-card">
+                <span class="tool-icon">SQL</span>
+                <h2>SQL Formatter</h2>
+                <p>Format and beautify SQL queries with proper indentation and keyword casing</p>
+            </a>
 
-                <a href="tools/js-minifier/" class="tool-card">
-                    <span class="tool-icon">JS</span>
-                    <h2>JS Minifier</h2>
-                    <p>Minify or beautify JavaScript code to optimize file size or readability</p>
-                </a>
+            <a href="tools/js-minifier/" class="tool-card">
+                <span class="tool-icon">JS</span>
+                <h2>JS Minifier</h2>
+                <p>Minify or beautify JavaScript code to optimize file size or readability</p>
+            </a>
 
-                <a href="tools/chmod-calculator/" class="tool-card">
-                    <span class="tool-icon">rwx</span>
-                    <h2>Chmod Calculator</h2>
-                    <p>Calculate Linux file permissions with visual editor and octal/symbolic conversion</p>
-                </a>
-            </div>
+            <a href="tools/chmod-calculator/" class="tool-card">
+                <span class="tool-icon">rwx</span>
+                <h2>Chmod Calculator</h2>
+                <p>Calculate Linux file permissions with visual editor and octal/symbolic conversion</p>
+            </a>
         </section>
 
         <h2 style="color:var(--text-muted);font-size:1.25rem;margin-bottom:0.5rem">Browse by Category</h2>
@@ -189,141 +187,6 @@
                 <span class="tool-icon">< ></span>
                 <h2>HTML Beautifier</h2>
                 <p>Format, beautify, and indent HTML code for better readability.</p>
-            </a>
-            <a href="tools/qr-code-generator/" class="tool-card">
-                <span class="tool-icon">QR</span>
-                <h2>QR Code Generator</h2>
-                <p>Generate QR codes for URLs, text, WiFi, and more. Download as PNG.</p>
-            </a>
-            <a href="tools/diff-checker/" class="tool-card">
-                <span class="tool-icon">+/-</span>
-                <h2>Diff Checker</h2>
-                <p>Compare two texts side-by-side and see differences highlighted.</p>
-            </a>
-            <a href="tools/image-to-base64/" class="tool-card">
-                <span class="tool-icon">IMG</span>
-                <h2>Image to Base64</h2>
-                <p>Convert images to Base64 encoded strings for embedding in HTML/CSS.</p>
-            </a>
-            <a href="tools/hex-to-rgb/" class="tool-card">
-                <span class="tool-icon">#rgb</span>
-                <h2>Hex to RGB Converter</h2>
-                <p>Convert HEX color codes to RGB values and vice versa.</p>
-            </a>
-            <a href="tools/ip-lookup/" class="tool-card">
-                <span class="tool-icon">IP</span>
-                <h2>IP Address Lookup</h2>
-                <p>Find your public IP and look up geolocation for any IP address.</p>
-            </a>
-            <a href="tools/json-to-yaml/" class="tool-card">
-                <span class="tool-icon">J>Y</span>
-                <h2>JSON to YAML Converter</h2>
-                <p>Convert JSON data to YAML format instantly. Free, fast, no signup required.</p>
-            </a>
-            <a href="tools/yaml-to-json/" class="tool-card">
-                <span class="tool-icon">Y>J</span>
-                <h2>YAML to JSON Converter</h2>
-                <p>Convert YAML data to JSON format instantly. Free, fast, no signup required.</p>
-            </a>
-            <a href="tools/json-to-csv/" class="tool-card">
-                <span class="tool-icon">J>C</span>
-                <h2>JSON to CSV Converter</h2>
-                <p>Convert JSON arrays to CSV format instantly. Free, fast, no signup required.</p>
-            </a>
-            <a href="tools/csv-to-json/" class="tool-card">
-                <span class="tool-icon">C>J</span>
-                <h2>CSV to JSON Converter</h2>
-                <p>Convert CSV data to JSON format instantly. Free, fast, no signup required.</p>
-            </a>
-            <a href="tools/js-beautifier/" class="tool-card">
-                <span class="tool-icon">JS</span>
-                <h2>JavaScript Beautifier</h2>
-                <p>Beautify and format JavaScript code with proper indentation, line breaks, and consistent style.</p>
-            </a>
-            <a href="tools/json-validator/" class="tool-card">
-                <span class="tool-icon">{✓}</span>
-                <h2>JSON Validator</h2>
-                <p>Validate JSON data with detailed error messages, line numbers, and syntax highlighting.</p>
-            </a>
-            <a href="tools/xml-formatter/" class="tool-card">
-                <span class="tool-icon">&lt;/&gt;</span>
-                <h2>XML Formatter</h2>
-                <p>Format and beautify XML documents with proper indentation. Minify or prettify XML with one click.</p>
-            </a>
-            <a href="tools/json-to-xml/" class="tool-card">
-                <span class="tool-icon">J>X</span>
-                <h2>JSON to XML Converter</h2>
-                <p>Convert JSON data to XML format instantly. Free, fast, no signup required.</p>
-            </a>
-            <a href="tools/xml-to-json/" class="tool-card">
-                <span class="tool-icon">X>J</span>
-                <h2>XML to JSON Converter</h2>
-                <p>Convert XML data to JSON format instantly. Free, fast, no signup required.</p>
-            </a>
-            <a href="tools/css-box-shadow/" class="tool-card">
-                <span class="tool-icon">[]</span>
-                <h2>CSS Box Shadow Generator</h2>
-                <p>Generate CSS box-shadow with a visual editor. Preview in real-time, copy the CSS code.</p>
-            </a>
-            <a href="tools/css-gradient/" class="tool-card">
-                <span class="tool-icon">//</span>
-                <h2>CSS Gradient Generator</h2>
-                <p>Create beautiful CSS gradients with a visual editor. Linear, radial, and conic gradients with real-time preview.</p>
-            </a>
-            <a href="tools/temperature-converter/" class="tool-card">
-                <span class="tool-icon">F/C</span>
-                <h2>Temperature Converter</h2>
-                <p>Convert between Fahrenheit, Celsius, and Kelvin instantly. Free temperature conversion calculator.</p>
-            </a>
-            <a href="tools/csv-to-xml/" class="tool-card">
-                <span class="tool-icon">C>X</span>
-                <h2>CSV to XML Converter</h2>
-                <p>Convert CSV data to XML format instantly.</p>
-            </a>
-            <a href="tools/slug-generator/" class="tool-card">
-                <span class="tool-icon">/-/</span>
-                <h2>Slug Generator</h2>
-                <p>Generate URL-friendly slugs from any text string.</p>
-            </a>
-            <a href="tools/remove-duplicates/" class="tool-card">
-                <span class="tool-icon">Dup</span>
-                <h2>Remove Duplicate Lines</h2>
-                <p>Remove duplicate lines from text, keeping unique entries only.</p>
-            </a>
-            <a href="tools/markdown-to-html/" class="tool-card">
-                <span class="tool-icon">M>H</span>
-                <h2>Markdown to HTML Converter</h2>
-                <p>Convert Markdown text to clean HTML code.</p>
-            </a>
-            <a href="tools/number-base-converter/" class="tool-card">
-                <span class="tool-icon">2>F</span>
-                <h2>Number Base Converter</h2>
-                <p>Convert numbers between decimal, binary, hexadecimal, and octal.</p>
-            </a>
-            <a href="tools/length-converter/" class="tool-card">
-                <span class="tool-icon">cm</span>
-                <h2>Length Converter</h2>
-                <p>Convert between meters, feet, inches, centimeters, kilometers, miles, and more.</p>
-            </a>
-            <a href="tools/weight-converter/" class="tool-card">
-                <span class="tool-icon">kg</span>
-                <h2>Weight Converter</h2>
-                <p>Convert between kilograms, pounds, ounces, grams, tons, and more.</p>
-            </a>
-            <a href="tools/xml-validator/" class="tool-card">
-                <span class="tool-icon">XML</span>
-                <h2>XML Validator</h2>
-                <p>Validate XML syntax and check for well-formedness errors.</p>
-            </a>
-            <a href="tools/aes-encryption/" class="tool-card">
-                <span class="tool-icon">AES</span>
-                <h2>AES Encryption</h2>
-                <p>Encrypt and decrypt text using AES-256 encryption in your browser.</p>
-            </a>
-            <a href="tools/sort-lines/" class="tool-card">
-                <span class="tool-icon">A-Z</span>
-                <h2>Sort Text Lines</h2>
-                <p>Sort lines of text alphabetically, numerically, or in reverse order.</p>
             </a>
         </section>
     </main>
