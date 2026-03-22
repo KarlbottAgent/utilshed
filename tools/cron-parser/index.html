@@ -38,7 +38,7 @@
             </div>
             <div id="result" style="display:none">
                 <div class="result-box" id="human-readable" style="cursor:default;font-size:1rem;color:var(--green);margin-bottom:1rem"></div>
-                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.5rem;margin-bottom:1rem" id="field-grid"></div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr));gap:0.5rem;margin-bottom:1rem" id="field-grid"></div>
                 <h3 style="font-size:0.9375rem;margin-bottom:0.5rem">Next 5 Run Times</h3>
                 <div id="next-runs" style="font-family:var(--mono);font-size:0.875rem;color:var(--text-muted)"></div>
             </div>
@@ -46,7 +46,7 @@
         </div>
         <div class="tool-single" style="margin-top:1rem">
             <h3 style="margin-bottom:0.75rem;font-size:0.9375rem">Cron Syntax Reference</h3>
-            <div style="font-family:var(--mono);font-size:0.8125rem;color:var(--text-muted);line-height:2">
+            <div style="font-family:var(--mono);font-size:0.8125rem;color:var(--text-muted);line-height:2;overflow-x:auto">
                 <div style="margin-bottom:0.5rem"><code style="color:var(--text)">┌───────── minute (0-59)</code></div>
                 <div style="margin-bottom:0.5rem"><code style="color:var(--text)">│ ┌─────── hour (0-23)</code></div>
                 <div style="margin-bottom:0.5rem"><code style="color:var(--text)">│ │ ┌───── day of month (1-31)</code></div>
