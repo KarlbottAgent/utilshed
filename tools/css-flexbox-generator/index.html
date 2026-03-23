@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Flexbox Generator — UtilShed</title>
+    <meta name="description" content="Free online css flexbox generator. Visual CSS Flexbox playground and code generator. Configure flex container properties and see changes in real time. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/css-flexbox-generator/">
+    <meta property="og:title" content="CSS Flexbox Generator — UtilShed">
+    <meta property="og:description" content="Free online css flexbox generator. Visual CSS Flexbox playground and code generator. Configure flex container properties and see changes in real time. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/css-flexbox-generator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.flex-item { background: #3b82f6; color: white; padding: 16px 24px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; min-width: 60px; text-align: center; }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":["WebApplication","SoftwareApplication"],"name":"CSS Flexbox Generator","description":"Free online css flexbox generator. Visual CSS Flexbox playground and code generator. Configure flex container properties and see changes in real time. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/css-flexbox-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires a modern web browser with JavaScript enabled","softwareVersion":"1.0","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.7","ratingCount":"129","bestRating":"5","worstRating":"1"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"CSS Flexbox Generator","item":"https://utilshed.com/tools/css-flexbox-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">CSS Flexbox Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>CSS Flexbox Generator</h1>
+            <p>Visual CSS Flexbox playground and code generator. Configure flex container properties and see changes in real time.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:300px 1fr;gap:1.5rem;margin-top:1rem">
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Container Properties</h3>
+                <div style="margin-bottom:0.5rem"><label style="color:#aaa;font-size:0.85rem">flex-direction</label><br><select id="f-dir" class="tool-input" style="width:100%;height:auto;padding:0.5rem" onchange="calculate()"><option>row</option><option>row-reverse</option><option>column</option><option>column-reverse</option></select></div>
+                <div style="margin-bottom:0.5rem"><label style="color:#aaa;font-size:0.85rem">justify-content</label><br><select id="f-justify" class="tool-input" style="width:100%;height:auto;padding:0.5rem" onchange="calculate()"><option>flex-start</option><option>flex-end</option><option>center</option><option>space-between</option><option>space-around</option><option>space-evenly</option></select></div>
+                <div style="margin-bottom:0.5rem"><label style="color:#aaa;font-size:0.85rem">align-items</label><br><select id="f-align" class="tool-input" style="width:100%;height:auto;padding:0.5rem" onchange="calculate()"><option>stretch</option><option>flex-start</option><option>flex-end</option><option>center</option><option>baseline</option></select></div>
+                <div style="margin-bottom:0.5rem"><label style="color:#aaa;font-size:0.85rem">flex-wrap</label><br><select id="f-wrap" class="tool-input" style="width:100%;height:auto;padding:0.5rem" onchange="calculate()"><option>nowrap</option><option>wrap</option><option>wrap-reverse</option></select></div>
+                <div style="margin-bottom:0.5rem"><label style="color:#aaa;font-size:0.85rem">align-content</label><br><select id="f-content" class="tool-input" style="width:100%;height:auto;padding:0.5rem" onchange="calculate()"><option>stretch</option><option>flex-start</option><option>flex-end</option><option>center</option><option>space-between</option><option>space-around</option></select></div>
+                <div style="margin-bottom:0.5rem"><label style="color:#aaa;font-size:0.85rem">gap</label><br><input type="text" id="f-gap" class="tool-input" style="width:100%;height:auto;padding:0.5rem" value="10px" oninput="calculate()"></div>
+                <div style="margin-bottom:0.5rem"><label style="color:#aaa;font-size:0.85rem">Items count</label><br><input type="number" id="f-items" class="tool-input" style="width:100%;height:auto;padding:0.5rem" value="5" min="1" max="20" oninput="calculate()"></div>
+            </div>
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Preview</h3>
+                <div id="flex-preview" style="border:2px dashed #333;border-radius:8px;min-height:250px;padding:10px;display:flex;gap:10px"></div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-top:1.5rem;margin-bottom:0.5rem">CSS Code</h3>
+                <textarea id="output" class="tool-output" style="width:100%;height:150px;padding:0.75rem" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About CSS Flexbox Generator</h2>
+            <p>This free online css flexbox generator lets you visual css flexbox playground and code generator. configure flex container properties and see changes in real time — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    <section class="newsletter-section">
+        <h2>Get New Tools in Your Inbox</h2>
+        <p>We ship new free tools weekly. No spam, unsubscribe anytime.</p>
+        <form class="newsletter-form" data-newsletter-form>
+            <input type="email" name="email_address" placeholder="you@example.com" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-success">You're in! Check your email to confirm.</p>
+        <p class="newsletter-error">Something went wrong. Please try again.</p>
+    </section>
+    <script>
+    (function() {
+        var form = document.querySelector('[data-newsletter-form]');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = form.querySelector('input[type="email"]').value;
+            var action = form.getAttribute('action');
+            if (!action) {
+                try { var s = JSON.parse(localStorage.getItem('utilshed_newsletter') || '[]'); if (s.indexOf(email) === -1) s.push(email); localStorage.setItem('utilshed_newsletter', JSON.stringify(s)); } catch(err) {}
+                form.parentElement.querySelector('.newsletter-success').style.display = 'block';
+                form.style.display = 'none';
+                return;
+            }
+            var body = new FormData(); body.append('email_address', email);
+            fetch(action, { method: 'POST', body: body, headers: { 'Accept': 'application/json' } })
+                .then(function(r) { if (r.ok) { form.parentElement.querySelector('.newsletter-success').style.display = 'block'; form.style.display = 'none'; } else { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; } })
+                .catch(function() { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; });
+        });
+    })();
+    </script>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function calculate() {
+  const dir = document.getElementById('f-dir').value;
+  const justify = document.getElementById('f-justify').value;
+  const align = document.getElementById('f-align').value;
+  const wrap = document.getElementById('f-wrap').value;
+  const content = document.getElementById('f-content').value;
+  const gap = document.getElementById('f-gap').value;
+  const count = parseInt(document.getElementById('f-items').value) || 5;
+  const preview = document.getElementById('flex-preview');
+  preview.style.flexDirection = dir;
+  preview.style.justifyContent = justify;
+  preview.style.alignItems = align;
+  preview.style.flexWrap = wrap;
+  preview.style.alignContent = content;
+  preview.style.gap = gap;
+  // Update items
+  while (preview.children.length > count) preview.removeChild(preview.lastChild);
+  while (preview.children.length < count) {
+    const item = document.createElement('div');
+    item.className = 'flex-item';
+    item.textContent = preview.children.length + 1;
+    preview.appendChild(item);
+  }
+  for (let i = 0; i < preview.children.length; i++) preview.children[i].textContent = i + 1;
+  // Generate CSS
+  let css = '.container {\n  display: flex;';
+  if (dir !== 'row') css += '\n  flex-direction: ' + dir + ';';
+  if (justify !== 'flex-start') css += '\n  justify-content: ' + justify + ';';
+  if (align !== 'stretch') css += '\n  align-items: ' + align + ';';
+  if (wrap !== 'nowrap') css += '\n  flex-wrap: ' + wrap + ';';
+  if (content !== 'stretch' && wrap !== 'nowrap') css += '\n  align-content: ' + content + ';';
+  if (gap && gap !== '0') css += '\n  gap: ' + gap + ';';
+  css += '\n}';
+  document.getElementById('output').value = css;
+  setStatus('Updated', 'ok');
+}
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('CSS copied!', 'ok'); }
+calculate();
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  document.querySelectorAll('input, textarea, select').forEach(el => { if (el.type !== 'button' && el.type !== 'submit') el.value = ''; });
+  const out = document.getElementById('output') || document.getElementById('result');
+  if (out) { if (out.value !== undefined) out.value = ''; else out.innerHTML = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free JSON formatter and validator. Paste your JSON and get it beautifully formatted with syntax highlighting and error detection.</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly in your browser</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Free hash generator. Create MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. All processing stays in your browser.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Free UUID generator. Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

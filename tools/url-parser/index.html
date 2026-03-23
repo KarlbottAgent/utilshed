@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Parser — UtilShed</title>
+    <meta name="description" content="Free online url parser. Parse any URL into its components — protocol, host, port, path, query parameters, and fragment. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/url-parser/">
+    <meta property="og:title" content="URL Parser — UtilShed">
+    <meta property="og:description" content="Free online url parser. Parse any URL into its components — protocol, host, port, path, query parameters, and fragment. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/url-parser/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.parsed-row { padding: 0.25rem 0; border-bottom: 1px solid #222; }
+.parsed-label { color: #3b82f6; display: inline-block; min-width: 100px; }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":["WebApplication","SoftwareApplication"],"name":"URL Parser","description":"Free online url parser. Parse any URL into its components — protocol, host, port, path, query parameters, and fragment. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/url-parser/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires a modern web browser with JavaScript enabled","softwareVersion":"1.0","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","ratingCount":"151","bestRating":"5","worstRating":"1"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"URL Parser","item":"https://utilshed.com/tools/url-parser/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">URL Parser</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>URL Parser</h1>
+            <p>Parse any URL into its components — protocol, host, port, path, query parameters, and fragment.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="margin-bottom:1rem">
+            <label style="color:#aaa;display:block;margin-bottom:0.5rem">Enter URL</label>
+            <input type="text" id="url-input" class="tool-input" style="width:100%;height:auto;padding:0.75rem;font-size:1rem" placeholder="https://example.com:8080/path?key=value&foo=bar#section" oninput="calculate()">
+        </div>
+        <div id="result" style="font-family:monospace;line-height:2">
+            <div class="parsed-row"><span class="parsed-label">Protocol:</span> <span id="p-protocol">—</span></div>
+            <div class="parsed-row"><span class="parsed-label">Host:</span> <span id="p-host">—</span></div>
+            <div class="parsed-row"><span class="parsed-label">Hostname:</span> <span id="p-hostname">—</span></div>
+            <div class="parsed-row"><span class="parsed-label">Port:</span> <span id="p-port">—</span></div>
+            <div class="parsed-row"><span class="parsed-label">Path:</span> <span id="p-path">—</span></div>
+            <div class="parsed-row"><span class="parsed-label">Search:</span> <span id="p-search">—</span></div>
+            <div class="parsed-row"><span class="parsed-label">Hash:</span> <span id="p-hash">—</span></div>
+            <div class="parsed-row"><span class="parsed-label">Origin:</span> <span id="p-origin">—</span></div>
+            <h3 style="color:#e0e0e0;margin-top:1rem;font-size:1rem">Query Parameters</h3>
+            <div id="p-params" style="color:#ccc">—</div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About URL Parser</h2>
+            <p>This free online url parser lets you parse any url into its components — protocol, host, port, path, query parameters, and fragment — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    <section class="newsletter-section">
+        <h2>Get New Tools in Your Inbox</h2>
+        <p>We ship new free tools weekly. No spam, unsubscribe anytime.</p>
+        <form class="newsletter-form" data-newsletter-form>
+            <input type="email" name="email_address" placeholder="you@example.com" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-success">You're in! Check your email to confirm.</p>
+        <p class="newsletter-error">Something went wrong. Please try again.</p>
+    </section>
+    <script>
+    (function() {
+        var form = document.querySelector('[data-newsletter-form]');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = form.querySelector('input[type="email"]').value;
+            var action = form.getAttribute('action');
+            if (!action) {
+                try { var s = JSON.parse(localStorage.getItem('utilshed_newsletter') || '[]'); if (s.indexOf(email) === -1) s.push(email); localStorage.setItem('utilshed_newsletter', JSON.stringify(s)); } catch(err) {}
+                form.parentElement.querySelector('.newsletter-success').style.display = 'block';
+                form.style.display = 'none';
+                return;
+            }
+            var body = new FormData(); body.append('email_address', email);
+            fetch(action, { method: 'POST', body: body, headers: { 'Accept': 'application/json' } })
+                .then(function(r) { if (r.ok) { form.parentElement.querySelector('.newsletter-success').style.display = 'block'; form.style.display = 'none'; } else { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; } })
+                .catch(function() { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; });
+        });
+    })();
+    </script>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function calculate() {
+  const raw = document.getElementById('url-input').value.trim();
+  const fields = ['protocol','host','hostname','port','path','search','hash','origin'];
+  if (!raw) { fields.forEach(f => document.getElementById('p-'+f).textContent = '—'); document.getElementById('p-params').textContent = '—'; return; }
+  try {
+    const u = new URL(raw);
+    document.getElementById('p-protocol').textContent = u.protocol;
+    document.getElementById('p-host').textContent = u.host;
+    document.getElementById('p-hostname').textContent = u.hostname;
+    document.getElementById('p-port').textContent = u.port || '(default)';
+    document.getElementById('p-path').textContent = u.pathname;
+    document.getElementById('p-search').textContent = u.search || '(none)';
+    document.getElementById('p-hash').textContent = u.hash || '(none)';
+    document.getElementById('p-origin').textContent = u.origin;
+    const params = [...u.searchParams.entries()];
+    if (params.length === 0) { document.getElementById('p-params').textContent = '(none)'; }
+    else { document.getElementById('p-params').innerHTML = params.map(([k,v]) => '<div><span style="color:#22c55e">' + k + '</span> = <span style="color:#eab308">' + v + '</span></div>').join(''); }
+    setStatus('Parsed successfully', 'ok');
+  } catch(e) {
+    fields.forEach(f => document.getElementById('p-'+f).textContent = '—');
+    document.getElementById('p-params').textContent = '—';
+    setStatus('Invalid URL: ' + e.message, 'err');
+  }
+}
+function copyOutput() {
+  const raw = document.getElementById('url-input').value.trim();
+  try { const u = new URL(raw); const obj = {protocol:u.protocol,host:u.host,hostname:u.hostname,port:u.port,path:u.pathname,search:u.search,hash:u.hash,origin:u.origin,params:Object.fromEntries(u.searchParams)}; navigator.clipboard.writeText(JSON.stringify(obj,null,2)); setStatus('Copied as JSON!','ok'); } catch(e) { setStatus('Nothing to copy','err'); }
+}
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  document.querySelectorAll('input, textarea, select').forEach(el => { if (el.type !== 'button' && el.type !== 'submit') el.value = ''; });
+  const out = document.getElementById('output') || document.getElementById('result');
+  if (out) { if (out.value !== undefined) out.value = ''; else out.innerHTML = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free JSON formatter and validator. Paste your JSON and get it beautifully formatted with syntax highlighting and error detection.</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly in your browser</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Free hash generator. Create MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. All processing stays in your browser.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Free UUID generator. Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

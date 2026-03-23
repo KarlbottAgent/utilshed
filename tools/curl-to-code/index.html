@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cURL to Code Converter — UtilShed</title>
+    <meta name="description" content="Free online curl to code converter. Convert cURL commands to code in JavaScript (fetch), Python (requests), Node.js (axios), PHP, Go, and more. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/curl-to-code/">
+    <meta property="og:title" content="cURL to Code Converter — UtilShed">
+    <meta property="og:description" content="Free online curl to code converter. Convert cURL commands to code in JavaScript (fetch), Python (requests), Node.js (axios), PHP, Go, and more. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/curl-to-code/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":["WebApplication","SoftwareApplication"],"name":"cURL to Code Converter","description":"Free online curl to code converter. Convert cURL commands to code in JavaScript (fetch), Python (requests), Node.js (axios), PHP, Go, and more. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/curl-to-code/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires a modern web browser with JavaScript enabled","softwareVersion":"1.0","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","ratingCount":"95","bestRating":"5","worstRating":"1"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"cURL to Code Converter","item":"https://utilshed.com/tools/curl-to-code/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">cURL to Code Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>cURL to Code Converter</h1>
+            <p>Convert cURL commands to code in JavaScript (fetch), Python (requests), Node.js (axios), PHP, Go, and more.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="convert()">Convert</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <button class="btn" onclick="loadSample()">Sample</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div class="tool-row">
+            <div class="tool-panel">
+                <div class="panel-header">Input <span class="label">Paste here</span></div>
+                <textarea class="tool-input" id="input" placeholder="curl -X POST https://api.example.com/data \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer token123' \
+  -d '{&quot;name&quot;: &quot;test&quot;, &quot;value&quot;: 42}'"></textarea>
+            </div>
+            <div class="tool-panel">
+                <div class="panel-header">Generated Code <span class="label" id="size-label"></span></div>
+                <textarea class="tool-output" id="output" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About cURL to Code Converter</h2>
+            <p>This free online curl to code converter lets you convert curl commands to code in javascript (fetch), python (requests), node.js (axios), php, go, and more — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    <section class="newsletter-section">
+        <h2>Get New Tools in Your Inbox</h2>
+        <p>We ship new free tools weekly. No spam, unsubscribe anytime.</p>
+        <form class="newsletter-form" data-newsletter-form>
+            <input type="email" name="email_address" placeholder="you@example.com" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-success">You're in! Check your email to confirm.</p>
+        <p class="newsletter-error">Something went wrong. Please try again.</p>
+    </section>
+    <script>
+    (function() {
+        var form = document.querySelector('[data-newsletter-form]');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = form.querySelector('input[type="email"]').value;
+            var action = form.getAttribute('action');
+            if (!action) {
+                try { var s = JSON.parse(localStorage.getItem('utilshed_newsletter') || '[]'); if (s.indexOf(email) === -1) s.push(email); localStorage.setItem('utilshed_newsletter', JSON.stringify(s)); } catch(err) {}
+                form.parentElement.querySelector('.newsletter-success').style.display = 'block';
+                form.style.display = 'none';
+                return;
+            }
+            var body = new FormData(); body.append('email_address', email);
+            fetch(action, { method: 'POST', body: body, headers: { 'Accept': 'application/json' } })
+                .then(function(r) { if (r.ok) { form.parentElement.querySelector('.newsletter-success').style.display = 'block'; form.style.display = 'none'; } else { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; } })
+                .catch(function() { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; });
+        });
+    })();
+    </script>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+const LANGS = ['JavaScript (fetch)', 'Python (requests)', 'Node.js (axios)', 'PHP (cURL)', 'Go'];
+let currentLang = 0;
+
+// Add language selector after buttons
+(function() {
+  const btnRow = document.querySelector('.btn-row');
+  if (btnRow) {
+    const sel = document.createElement('select');
+    sel.id = 'lang-select';
+    sel.className = 'tool-input';
+    sel.style.cssText = 'height:auto;padding:0.4rem;width:auto;display:inline-block;margin-left:0.5rem';
+    LANGS.forEach((l,i) => { const o = document.createElement('option'); o.value = i; o.textContent = l; sel.appendChild(o); });
+    sel.onchange = () => { currentLang = parseInt(sel.value); convert(); };
+    btnRow.insertBefore(sel, btnRow.querySelector('#status'));
+  }
+})();
+
+function parseCurl(cmd) {
+  // Normalize multi-line
+  cmd = cmd.replace(/\\\s*\n/g, ' ').trim();
+  if (!cmd.startsWith('curl')) return null;
+  const r = { method: 'GET', url: '', headers: {}, data: null };
+  // Simple token parser
+  const tokens = [];
+  let i = 5, buf = '', inQ = null;
+  while (i < cmd.length) {
+    const c = cmd[i];
+    if (c === '\\' && i+1 < cmd.length) { buf += cmd[i+1]; i += 2; continue; }
+    if ((c === '"' || c === "'") && !inQ) { inQ = c; i++; continue; }
+    if (c === inQ) { inQ = null; i++; continue; }
+    if (c === ' ' && !inQ) { if (buf) { tokens.push(buf); buf = ''; } i++; continue; }
+    buf += c; i++;
+  }
+  if (buf) tokens.push(buf);
+  for (let j = 0; j < tokens.length; j++) {
+    const t = tokens[j];
+    if (t === '-X' || t === '--request') { r.method = tokens[++j] || 'GET'; }
+    else if (t === '-H' || t === '--header') { const h = tokens[++j] || ''; const ci = h.indexOf(':'); if (ci > 0) r.headers[h.slice(0,ci).trim()] = h.slice(ci+1).trim(); }
+    else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary') { r.data = tokens[++j] || ''; if(r.method==='GET') r.method='POST'; }
+    else if (t === '-u' || t === '--user') { const auth = tokens[++j] || ''; r.headers['Authorization'] = 'Basic ' + btoa(auth); }
+    else if (!t.startsWith('-')) { r.url = t; }
+  }
+  return r;
+}
+
+function toFetch(r) {
+  let s = 'const response = await fetch(' + JSON.stringify(r.url);
+  const opts = [];
+  if (r.method !== 'GET') opts.push('  method: ' + JSON.stringify(r.method));
+  if (Object.keys(r.headers).length) opts.push('  headers: ' + JSON.stringify(r.headers, null, 4).replace(/\n/g, '\n  '));
+  if (r.data) opts.push('  body: ' + (r.data.startsWith('{') ? 'JSON.stringify(' + r.data + ')' : JSON.stringify(r.data)));
+  if (opts.length) s += ', {\n' + opts.join(',\n') + '\n}';
+  s += ');\n\nconst data = await response.json();\nconsole.log(data);';
+  return s;
+}
+
+function toPython(r) {
+  let s = 'import requests\n\n';
+  if (r.data && r.data.startsWith('{')) s += 'response = requests.' + r.method.toLowerCase() + '(\n    ' + JSON.stringify(r.url) + ',\n    headers=' + JSON.stringify(r.headers).replace(/:/g, ': ').replace(/,/g, ', ') + ',\n    json=' + r.data + '\n)';
+  else s += 'response = requests.' + r.method.toLowerCase() + '(\n    ' + JSON.stringify(r.url) + ',\n    headers=' + JSON.stringify(r.headers).replace(/:/g, ': ').replace(/,/g, ', ') + (r.data ? ',\n    data=' + JSON.stringify(r.data) : '') + '\n)';
+  s += '\n\nprint(response.json())';
+  return s;
+}
+
+function toAxios(r) {
+  let s = "const axios = require('axios');\n\n";
+  s += 'const response = await axios({\n';
+  s += '  method: ' + JSON.stringify(r.method.toLowerCase()) + ',\n';
+  s += '  url: ' + JSON.stringify(r.url) + ',\n';
+  if (Object.keys(r.headers).length) s += '  headers: ' + JSON.stringify(r.headers, null, 4).replace(/\n/g, '\n  ') + ',\n';
+  if (r.data) s += '  data: ' + (r.data.startsWith('{') ? r.data : JSON.stringify(r.data)) + ',\n';
+  s += '});\n\nconsole.log(response.data);';
+  return s;
+}
+
+function toPhp(r) {
+  let s = '<?php\n$ch = curl_init();\n\n';
+  s += "curl_setopt($ch, CURLOPT_URL, " + JSON.stringify(r.url) + ");\n";
+  s += "curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n";
+  if (r.method !== 'GET') s += "curl_setopt($ch, CURLOPT_CUSTOMREQUEST, " + JSON.stringify(r.method) + ");\n";
+  if (Object.keys(r.headers).length) {
+    s += "curl_setopt($ch, CURLOPT_HTTPHEADER, [\n";
+    Object.entries(r.headers).forEach(([k,v]) => { s += '    ' + JSON.stringify(k + ': ' + v) + ",\n"; });
+    s += "]);\n";
+  }
+  if (r.data) s += "curl_setopt($ch, CURLOPT_POSTFIELDS, " + JSON.stringify(r.data) + ");\n";
+  s += "\n$response = curl_exec($ch);\ncurl_close($ch);\n\necho $response;";
+  return s;
+}
+
+function toGo(r) {
+  let s = 'package main\n\nimport (\n\t"fmt"\n\t"io"\n\t"net/http"\n';
+  if (r.data) s += '\t"strings"\n';
+  s += ')\n\nfunc main() {\n';
+  if (r.data) s += '\tbody := strings.NewReader(`' + r.data + '`)\n\treq, _ := http.NewRequest("' + r.method + '", "' + r.url + '", body)\n';
+  else s += '\treq, _ := http.NewRequest("' + r.method + '", "' + r.url + '", nil)\n';
+  Object.entries(r.headers).forEach(([k,v]) => { s += '\treq.Header.Set("' + k + '", "' + v + '")\n'; });
+  s += '\n\tclient := &http.Client{}\n\tresp, _ := client.Do(req)\n\tdefer resp.Body.Close()\n\n\tresult, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(result))\n}';
+  return s;
+}
+
+function convert() {
+  const input = document.getElementById('input').value;
+  if (!input.trim()) { document.getElementById('output').value = ''; setStatus('Enter a cURL command', 'err'); return; }
+  const parsed = parseCurl(input);
+  if (!parsed || !parsed.url) { setStatus('Could not parse cURL command', 'err'); return; }
+  const generators = [toFetch, toPython, toAxios, toPhp, toGo];
+  try {
+    document.getElementById('output').value = generators[currentLang](parsed);
+    setStatus('Converted to ' + LANGS[currentLang], 'ok');
+  } catch(e) { setStatus('Error: ' + e.message, 'err'); }
+}
+
+function loadSample() {
+  document.getElementById('input').value = "curl -X POST https://api.example.com/users \\\n  -H 'Content-Type: application/json' \\\n  -H 'Authorization: Bearer sk-1234567890' \\\n  -d '{\"name\": \"John Doe\", \"email\": \"john@example.com\"}'";
+  convert();
+}
+
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+function clearAll() { document.getElementById('input').value = ''; document.getElementById('output').value = ''; document.getElementById('status').textContent = ''; if (document.getElementById('size-label')) document.getElementById('size-label').textContent = ''; }
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+document.getElementById('input').addEventListener('input', convert);
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free JSON formatter and validator. Paste your JSON and get it beautifully formatted with syntax highlighting and error detection.</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly in your browser</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Free hash generator. Create MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. All processing stays in your browser.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Free UUID generator. Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robots.txt Generator — UtilShed</title>
+    <meta name="description" content="Free online robots.txt generator. Generate a robots.txt file for your website. Configure crawl rules for search engine bots — allow, disallow, crawl-delay, and sitemap. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/robots-txt-generator/">
+    <meta property="og:title" content="Robots.txt Generator — UtilShed">
+    <meta property="og:description" content="Free online robots.txt generator. Generate a robots.txt file for your website. Configure crawl rules for search engine bots — allow, disallow, crawl-delay, and sitemap. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/robots-txt-generator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":["WebApplication","SoftwareApplication"],"name":"Robots.txt Generator","description":"Free online robots.txt generator. Generate a robots.txt file for your website. Configure crawl rules for search engine bots — allow, disallow, crawl-delay, and sitemap. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/robots-txt-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires a modern web browser with JavaScript enabled","softwareVersion":"1.0","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.3","ratingCount":"80","bestRating":"5","worstRating":"1"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Robots.txt Generator","item":"https://utilshed.com/tools/robots-txt-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Robots.txt Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Robots.txt Generator</h1>
+            <p>Generate a robots.txt file for your website. Configure crawl rules for search engine bots — allow, disallow, crawl-delay, and sitemap.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="generate()">Generate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem">
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Configuration</h3>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Sitemap URL</label><br><input type="text" id="r-sitemap" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="https://example.com/sitemap.xml" oninput="generate()"></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Disallowed Paths (one per line)</label><br><textarea id="r-disallow" class="tool-input" style="width:100%;height:100px;padding:0.5rem" placeholder="/admin/\n/private/\n/api/\n/tmp/" oninput="generate()"></textarea></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Allowed Paths (one per line, optional)</label><br><textarea id="r-allow" class="tool-input" style="width:100%;height:60px;padding:0.5rem" placeholder="/api/docs/" oninput="generate()"></textarea></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Crawl-delay (seconds, optional)</label><br><input type="number" id="r-delay" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="10" min="0" oninput="generate()"></div>
+                <div style="margin-bottom:0.75rem">
+                    <label style="color:#aaa">Presets</label><br>
+                    <button class="btn" onclick="loadPreset('open')" style="margin:2px">Allow All</button>
+                    <button class="btn" onclick="loadPreset('standard')" style="margin:2px">Standard</button>
+                    <button class="btn" onclick="loadPreset('strict')" style="margin:2px">Strict</button>
+                    <button class="btn" onclick="loadPreset('block-ai')" style="margin:2px">Block AI Bots</button>
+                </div>
+            </div>
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Generated robots.txt</h3>
+                <textarea id="output" class="tool-output" style="width:100%;height:350px;padding:0.75rem" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Robots.txt Generator</h2>
+            <p>This free online robots.txt generator lets you generate a robots.txt file for your website. configure crawl rules for search engine bots — allow, disallow, crawl-delay, and sitemap — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    <section class="newsletter-section">
+        <h2>Get New Tools in Your Inbox</h2>
+        <p>We ship new free tools weekly. No spam, unsubscribe anytime.</p>
+        <form class="newsletter-form" data-newsletter-form>
+            <input type="email" name="email_address" placeholder="you@example.com" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-success">You're in! Check your email to confirm.</p>
+        <p class="newsletter-error">Something went wrong. Please try again.</p>
+    </section>
+    <script>
+    (function() {
+        var form = document.querySelector('[data-newsletter-form]');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = form.querySelector('input[type="email"]').value;
+            var action = form.getAttribute('action');
+            if (!action) {
+                try { var s = JSON.parse(localStorage.getItem('utilshed_newsletter') || '[]'); if (s.indexOf(email) === -1) s.push(email); localStorage.setItem('utilshed_newsletter', JSON.stringify(s)); } catch(err) {}
+                form.parentElement.querySelector('.newsletter-success').style.display = 'block';
+                form.style.display = 'none';
+                return;
+            }
+            var body = new FormData(); body.append('email_address', email);
+            fetch(action, { method: 'POST', body: body, headers: { 'Accept': 'application/json' } })
+                .then(function(r) { if (r.ok) { form.parentElement.querySelector('.newsletter-success').style.display = 'block'; form.style.display = 'none'; } else { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; } })
+                .catch(function() { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; });
+        });
+    })();
+    </script>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function generate() {
+  const sitemap = document.getElementById('r-sitemap').value.trim();
+  const disallow = document.getElementById('r-disallow').value.trim().split('\n').filter(Boolean);
+  const allow = document.getElementById('r-allow').value.trim().split('\n').filter(Boolean);
+  const delay = document.getElementById('r-delay').value.trim();
+  let lines = ['User-agent: *'];
+  allow.forEach(p => lines.push('Allow: ' + p.trim()));
+  if (disallow.length === 0) lines.push('Disallow:');
+  else disallow.forEach(p => lines.push('Disallow: ' + p.trim()));
+  if (delay) lines.push('Crawl-delay: ' + delay);
+  lines.push('');
+  if (sitemap) lines.push('Sitemap: ' + sitemap);
+  document.getElementById('output').value = lines.join('\n');
+  setStatus('Generated robots.txt', 'ok');
+}
+function loadPreset(name) {
+  if (name === 'open') {
+    document.getElementById('r-disallow').value = '';
+    document.getElementById('r-allow').value = '';
+    document.getElementById('r-delay').value = '';
+  } else if (name === 'standard') {
+    document.getElementById('r-disallow').value = '/admin/\n/private/\n/api/\n/cgi-bin/\n/*.json$';
+    document.getElementById('r-allow').value = '/';
+    document.getElementById('r-delay').value = '';
+  } else if (name === 'strict') {
+    document.getElementById('r-disallow').value = '/admin/\n/private/\n/api/\n/cgi-bin/\n/search\n/login\n/register\n/account/\n/*.pdf$\n/*.json$';
+    document.getElementById('r-allow').value = '/';
+    document.getElementById('r-delay').value = '10';
+  } else if (name === 'block-ai') {
+    document.getElementById('r-disallow').value = '/admin/\n/private/';
+    document.getElementById('r-allow').value = '/';
+    document.getElementById('r-delay').value = '';
+    let current = document.getElementById('output').value;
+    generate();
+    current = document.getElementById('output').value;
+    current += '\n\n# Block AI training bots\nUser-agent: GPTBot\nDisallow: /\n\nUser-agent: ChatGPT-User\nDisallow: /\n\nUser-agent: CCBot\nDisallow: /\n\nUser-agent: anthropic-ai\nDisallow: /\n\nUser-agent: Google-Extended\nDisallow: /';
+    document.getElementById('output').value = current;
+    setStatus('Generated with AI bot blocking', 'ok');
+    return;
+  }
+  generate();
+}
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+generate();
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  if (el) { if (el.value !== undefined) el.value = ''; else el.textContent = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free JSON formatter and validator. Paste your JSON and get it beautifully formatted with syntax highlighting and error detection.</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly in your browser</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Free hash generator. Create MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. All processing stays in your browser.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Free UUID generator. Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

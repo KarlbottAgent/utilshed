@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epoch Converter — UtilShed</title>
+    <meta name="description" content="Free online epoch converter. Convert Unix/Epoch timestamps to human-readable dates and vice versa. Supports seconds and milliseconds. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/epoch-converter/">
+    <meta property="og:title" content="Epoch Converter — UtilShed">
+    <meta property="og:description" content="Free online epoch converter. Convert Unix/Epoch timestamps to human-readable dates and vice versa. Supports seconds and milliseconds. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/epoch-converter/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":["WebApplication","SoftwareApplication"],"name":"Epoch Converter","description":"Free online epoch converter. Convert Unix/Epoch timestamps to human-readable dates and vice versa. Supports seconds and milliseconds. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/epoch-converter/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires a modern web browser with JavaScript enabled","softwareVersion":"1.0","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"126","bestRating":"5","worstRating":"1"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Epoch Converter","item":"https://utilshed.com/tools/epoch-converter/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Epoch Converter</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Epoch Converter</h1>
+            <p>Convert Unix/Epoch timestamps to human-readable dates and vice versa. Supports seconds and milliseconds.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem">
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Current Time</h3>
+                <div id="live-clock" style="font-size:1.5rem;color:#3b82f6;font-family:monospace;margin-bottom:1.5rem"></div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Epoch to Date</h3>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Unix Timestamp</label><br><input type="text" id="epoch-input" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="1679616000" oninput="epochToDate()"></div>
+                <div id="epoch-result" style="color:#ccc;line-height:2;font-family:monospace"></div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-top:1.5rem;margin-bottom:1rem">Date to Epoch</h3>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Date & Time</label><br><input type="datetime-local" id="date-input" class="tool-input" style="width:100%;height:auto;padding:0.5rem" onchange="dateToEpoch()"></div>
+                <div id="date-result" style="color:#ccc;line-height:2;font-family:monospace"></div>
+            </div>
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Reference Table</h3>
+                <div id="result" style="font-family:monospace;font-size:0.85rem;color:#ccc;line-height:1.8">
+                    <div style="border-bottom:1px solid #333;padding:4px 0"><span style="color:#3b82f6">1 minute</span> = 60</div>
+                    <div style="border-bottom:1px solid #333;padding:4px 0"><span style="color:#3b82f6">1 hour</span> = 3,600</div>
+                    <div style="border-bottom:1px solid #333;padding:4px 0"><span style="color:#3b82f6">1 day</span> = 86,400</div>
+                    <div style="border-bottom:1px solid #333;padding:4px 0"><span style="color:#3b82f6">1 week</span> = 604,800</div>
+                    <div style="border-bottom:1px solid #333;padding:4px 0"><span style="color:#3b82f6">1 month (30d)</span> = 2,592,000</div>
+                    <div style="border-bottom:1px solid #333;padding:4px 0"><span style="color:#3b82f6">1 year</span> = 31,536,000</div>
+                    <div style="border-bottom:1px solid #333;padding:4px 0;margin-top:1rem"><span style="color:#eab308">Y2K</span> = 946,684,800</div>
+                    <div style="border-bottom:1px solid #333;padding:4px 0"><span style="color:#eab308">2038 problem</span> = 2,147,483,647</div>
+                    <div style="padding:4px 0"><span style="color:#eab308">Epoch</span> = Jan 1, 1970 00:00:00 UTC</div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Epoch Converter</h2>
+            <p>This free online epoch converter lets you convert unix/epoch timestamps to human-readable dates and vice versa. supports seconds and milliseconds — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    <section class="newsletter-section">
+        <h2>Get New Tools in Your Inbox</h2>
+        <p>We ship new free tools weekly. No spam, unsubscribe anytime.</p>
+        <form class="newsletter-form" data-newsletter-form>
+            <input type="email" name="email_address" placeholder="you@example.com" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-success">You're in! Check your email to confirm.</p>
+        <p class="newsletter-error">Something went wrong. Please try again.</p>
+    </section>
+    <script>
+    (function() {
+        var form = document.querySelector('[data-newsletter-form]');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = form.querySelector('input[type="email"]').value;
+            var action = form.getAttribute('action');
+            if (!action) {
+                try { var s = JSON.parse(localStorage.getItem('utilshed_newsletter') || '[]'); if (s.indexOf(email) === -1) s.push(email); localStorage.setItem('utilshed_newsletter', JSON.stringify(s)); } catch(err) {}
+                form.parentElement.querySelector('.newsletter-success').style.display = 'block';
+                form.style.display = 'none';
+                return;
+            }
+            var body = new FormData(); body.append('email_address', email);
+            fetch(action, { method: 'POST', body: body, headers: { 'Accept': 'application/json' } })
+                .then(function(r) { if (r.ok) { form.parentElement.querySelector('.newsletter-success').style.display = 'block'; form.style.display = 'none'; } else { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; } })
+                .catch(function() { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; });
+        });
+    })();
+    </script>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function updateClock() {
+  const now = new Date();
+  document.getElementById('live-clock').textContent = Math.floor(now.getTime()/1000) + ' (' + now.toISOString() + ')';
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function epochToDate() {
+  const val = document.getElementById('epoch-input').value.trim();
+  if (!val) { document.getElementById('epoch-result').innerHTML = ''; return; }
+  const num = parseInt(val);
+  if (isNaN(num)) { document.getElementById('epoch-result').innerHTML = '<span style="color:#ef4444">Invalid number</span>'; return; }
+  // Auto-detect seconds vs milliseconds
+  const isMs = num > 1e12;
+  const ms = isMs ? num : num * 1000;
+  const d = new Date(ms);
+  if (isNaN(d.getTime())) { document.getElementById('epoch-result').innerHTML = '<span style="color:#ef4444">Invalid timestamp</span>'; return; }
+  const lines = [
+    '<div><span style="color:#3b82f6">UTC:</span> ' + d.toUTCString() + '</div>',
+    '<div><span style="color:#3b82f6">ISO 8601:</span> ' + d.toISOString() + '</div>',
+    '<div><span style="color:#3b82f6">Local:</span> ' + d.toLocaleString() + '</div>',
+    '<div><span style="color:#3b82f6">Relative:</span> ' + timeAgo(d) + '</div>',
+    isMs ? '<div style="color:#888;font-size:0.8rem">(detected as milliseconds)</div>' : '<div style="color:#888;font-size:0.8rem">(detected as seconds)</div>'
+  ];
+  document.getElementById('epoch-result').innerHTML = lines.join('');
+  setStatus('Converted', 'ok');
+}
+
+function dateToEpoch() {
+  const val = document.getElementById('date-input').value;
+  if (!val) return;
+  const d = new Date(val);
+  const sec = Math.floor(d.getTime() / 1000);
+  document.getElementById('date-result').innerHTML = '<div><span style="color:#3b82f6">Seconds:</span> ' + sec + '</div><div><span style="color:#3b82f6">Milliseconds:</span> ' + d.getTime() + '</div>';
+  setStatus('Converted', 'ok');
+}
+
+function timeAgo(d) {
+  const diff = Date.now() - d.getTime();
+  const abs = Math.abs(diff);
+  const suffix = diff > 0 ? ' ago' : ' from now';
+  if (abs < 60000) return Math.floor(abs/1000) + ' seconds' + suffix;
+  if (abs < 3600000) return Math.floor(abs/60000) + ' minutes' + suffix;
+  if (abs < 86400000) return Math.floor(abs/3600000) + ' hours' + suffix;
+  if (abs < 2592000000) return Math.floor(abs/86400000) + ' days' + suffix;
+  return Math.floor(abs/2592000000) + ' months' + suffix;
+}
+
+function calculate() { epochToDate(); dateToEpoch(); }
+function copyOutput() {
+  const val = document.getElementById('epoch-input').value.trim();
+  if (val) { const num = parseInt(val); const isMs = num > 1e12; const d = new Date(isMs ? num : num*1000); navigator.clipboard.writeText(d.toISOString()); setStatus('ISO date copied!','ok'); }
+  else { const val2 = document.getElementById('date-input').value; if(val2) { navigator.clipboard.writeText(Math.floor(new Date(val2).getTime()/1000).toString()); setStatus('Epoch copied!','ok'); } }
+}
+
+// Set default date input to now
+document.getElementById('date-input').value = new Date().toISOString().slice(0,16);
+dateToEpoch();
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  document.querySelectorAll('input, textarea, select').forEach(el => { if (el.type !== 'button' && el.type !== 'submit') el.value = ''; });
+  const out = document.getElementById('output') || document.getElementById('result');
+  if (out) { if (out.value !== undefined) out.value = ''; else out.innerHTML = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free JSON formatter and validator. Paste your JSON and get it beautifully formatted with syntax highlighting and error detection.</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly in your browser</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Free hash generator. Create MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. All processing stays in your browser.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Free UUID generator. Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

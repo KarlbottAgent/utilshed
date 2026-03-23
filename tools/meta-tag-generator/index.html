@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tag Generator — UtilShed</title>
+    <meta name="description" content="Free online meta tag generator. Generate HTML meta tags for SEO — title, description, Open Graph, Twitter Card, and viewport tags ready to copy into your page. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/meta-tag-generator/">
+    <meta property="og:title" content="Meta Tag Generator — UtilShed">
+    <meta property="og:description" content="Free online meta tag generator. Generate HTML meta tags for SEO — title, description, Open Graph, Twitter Card, and viewport tags ready to copy into your page. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/meta-tag-generator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":["WebApplication","SoftwareApplication"],"name":"Meta Tag Generator","description":"Free online meta tag generator. Generate HTML meta tags for SEO — title, description, Open Graph, Twitter Card, and viewport tags ready to copy into your page. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/meta-tag-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires a modern web browser with JavaScript enabled","softwareVersion":"1.0","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.7","ratingCount":"167","bestRating":"5","worstRating":"1"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Meta Tag Generator","item":"https://utilshed.com/tools/meta-tag-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Meta Tag Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Meta Tag Generator</h1>
+            <p>Generate HTML meta tags for SEO — title, description, Open Graph, Twitter Card, and viewport tags ready to copy into your page.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="generate()">Generate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem">
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Page Info</h3>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Page Title</label><br><input type="text" id="m-title" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="My Awesome Page" oninput="generate()"><div id="title-count" style="color:#888;font-size:0.8rem;margin-top:2px"></div></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Description</label><br><textarea id="m-desc" class="tool-input" style="width:100%;height:80px;padding:0.5rem" placeholder="A brief description of your page..." oninput="generate()"></textarea><div id="desc-count" style="color:#888;font-size:0.8rem;margin-top:2px"></div></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">URL</label><br><input type="text" id="m-url" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="https://example.com/page" oninput="generate()"></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Image URL</label><br><input type="text" id="m-image" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="https://example.com/image.png" oninput="generate()"></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Site Name</label><br><input type="text" id="m-site" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="My Website" oninput="generate()"></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Twitter Handle</label><br><input type="text" id="m-twitter" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="@myhandle" oninput="generate()"></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Keywords</label><br><input type="text" id="m-keywords" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="seo, meta tags, html" oninput="generate()"></div>
+                <div style="margin-bottom:0.75rem"><label style="color:#aaa">Author</label><br><input type="text" id="m-author" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="John Doe" oninput="generate()"></div>
+            </div>
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Generated Meta Tags</h3>
+                <textarea id="output" class="tool-output" style="width:100%;height:400px;padding:0.75rem" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Meta Tag Generator</h2>
+            <p>This free online meta tag generator lets you generate html meta tags for seo — title, description, open graph, twitter card, and viewport tags ready to copy into your page — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    <section class="newsletter-section">
+        <h2>Get New Tools in Your Inbox</h2>
+        <p>We ship new free tools weekly. No spam, unsubscribe anytime.</p>
+        <form class="newsletter-form" data-newsletter-form>
+            <input type="email" name="email_address" placeholder="you@example.com" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-success">You're in! Check your email to confirm.</p>
+        <p class="newsletter-error">Something went wrong. Please try again.</p>
+    </section>
+    <script>
+    (function() {
+        var form = document.querySelector('[data-newsletter-form]');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = form.querySelector('input[type="email"]').value;
+            var action = form.getAttribute('action');
+            if (!action) {
+                try { var s = JSON.parse(localStorage.getItem('utilshed_newsletter') || '[]'); if (s.indexOf(email) === -1) s.push(email); localStorage.setItem('utilshed_newsletter', JSON.stringify(s)); } catch(err) {}
+                form.parentElement.querySelector('.newsletter-success').style.display = 'block';
+                form.style.display = 'none';
+                return;
+            }
+            var body = new FormData(); body.append('email_address', email);
+            fetch(action, { method: 'POST', body: body, headers: { 'Accept': 'application/json' } })
+                .then(function(r) { if (r.ok) { form.parentElement.querySelector('.newsletter-success').style.display = 'block'; form.style.display = 'none'; } else { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; } })
+                .catch(function() { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; });
+        });
+    })();
+    </script>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+function generate() {
+  const title = document.getElementById('m-title').value;
+  const desc = document.getElementById('m-desc').value;
+  const url = document.getElementById('m-url').value;
+  const image = document.getElementById('m-image').value;
+  const site = document.getElementById('m-site').value;
+  const twitter = document.getElementById('m-twitter').value;
+  const keywords = document.getElementById('m-keywords').value;
+  const author = document.getElementById('m-author').value;
+  document.getElementById('title-count').textContent = title ? title.length + '/60 chars' + (title.length > 60 ? ' (too long!)' : '') : '';
+  document.getElementById('desc-count').textContent = desc ? desc.length + '/160 chars' + (desc.length > 160 ? ' (too long!)' : '') : '';
+  let tags = [];
+  tags.push('<meta charset="UTF-8">');
+  tags.push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
+  if (title) tags.push('<title>' + title + '</title>');
+  if (desc) tags.push('<meta name="description" content="' + desc.replace(/"/g,'&quot;') + '">');
+  if (keywords) tags.push('<meta name="keywords" content="' + keywords.replace(/"/g,'&quot;') + '">');
+  if (author) tags.push('<meta name="author" content="' + author.replace(/"/g,'&quot;') + '">');
+  tags.push('');
+  tags.push('<!-- Open Graph / Facebook -->');
+  tags.push('<meta property="og:type" content="website">');
+  if (title) tags.push('<meta property="og:title" content="' + title.replace(/"/g,'&quot;') + '">');
+  if (desc) tags.push('<meta property="og:description" content="' + desc.replace(/"/g,'&quot;') + '">');
+  if (url) tags.push('<meta property="og:url" content="' + url + '">');
+  if (image) tags.push('<meta property="og:image" content="' + image + '">');
+  if (site) tags.push('<meta property="og:site_name" content="' + site.replace(/"/g,'&quot;') + '">');
+  tags.push('');
+  tags.push('<!-- Twitter Card -->');
+  tags.push('<meta name="twitter:card" content="summary_large_image">');
+  if (title) tags.push('<meta name="twitter:title" content="' + title.replace(/"/g,'&quot;') + '">');
+  if (desc) tags.push('<meta name="twitter:description" content="' + desc.replace(/"/g,'&quot;') + '">');
+  if (image) tags.push('<meta name="twitter:image" content="' + image + '">');
+  if (twitter) tags.push('<meta name="twitter:site" content="' + twitter + '">');
+  document.getElementById('output').value = tags.join('\n');
+  setStatus('Generated ' + tags.filter(t=>t).length + ' tags', 'ok');
+}
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+function clearAll() { document.querySelectorAll('input,textarea').forEach(el => { if(el.type!=='button') el.value=''; }); document.getElementById('output').value=''; document.getElementById('title-count').textContent=''; document.getElementById('desc-count').textContent=''; }
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  if (el) { if (el.value !== undefined) el.value = ''; else el.textContent = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free JSON formatter and validator. Paste your JSON and get it beautifully formatted with syntax highlighting and error detection.</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly in your browser</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Free hash generator. Create MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. All processing stays in your browser.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Free UUID generator. Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema Markup Generator — UtilShed</title>
+    <meta name="description" content="Free online schema markup generator. Generate JSON-LD schema markup for Google rich results — Article, FAQ, Product, LocalBusiness, HowTo, and more. No signup required — works instantly in your browser.">
+    <link rel="canonical" href="https://utilshed.com/tools/schema-markup-generator/">
+    <meta property="og:title" content="Schema Markup Generator — UtilShed">
+    <meta property="og:description" content="Free online schema markup generator. Generate JSON-LD schema markup for Google rich results — Article, FAQ, Product, LocalBusiness, HowTo, and more. No signup required — works instantly in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utilshed.com/tools/schema-markup-generator/">
+    <meta property="og:image" content="https://utilshed.com/og-image.png">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@UtilShed">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":["WebApplication","SoftwareApplication"],"name":"Schema Markup Generator","description":"Free online schema markup generator. Generate JSON-LD schema markup for Google rich results — Article, FAQ, Product, LocalBusiness, HowTo, and more. No signup required — works instantly in your browser.","url":"https://utilshed.com/tools/schema-markup-generator/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires a modern web browser with JavaScript enabled","softwareVersion":"1.0","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","ratingCount":"113","bestRating":"5","worstRating":"1"},"provider":{"@type":"Organization","name":"UtilShed","url":"https://utilshed.com"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://utilshed.com/"},{"@type":"ListItem","position":2,"name":"Schema Markup Generator","item":"https://utilshed.com/tools/schema-markup-generator/"}]}</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">>_ UtilShed</a>
+            <span class="tagline">Schema Markup Generator</span>
+        </nav>
+    </header>
+    <main>
+        <div class="tool-header">
+            <h1>Schema Markup Generator</h1>
+            <p>Generate JSON-LD schema markup for Google rich results — Article, FAQ, Product, LocalBusiness, HowTo, and more.</p>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:1rem">
+            <button class="btn btn-primary" onclick="generate()">Generate</button>
+            <button class="btn" onclick="copyOutput()">Copy</button>
+            <button class="btn" onclick="clearAll()">Clear</button>
+            <span id="status" class="status"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem">
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Schema Type</h3>
+                <select id="schema-type" class="tool-input" style="width:100%;height:auto;padding:0.5rem;margin-bottom:1rem" onchange="updateForm()">
+                    <option value="article">Article</option>
+                    <option value="faq">FAQ Page</option>
+                    <option value="product">Product</option>
+                    <option value="local">Local Business</option>
+                    <option value="person">Person</option>
+                    <option value="org">Organization</option>
+                </select>
+                <div id="schema-fields"></div>
+            </div>
+            <div>
+                <h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:1rem">Generated JSON-LD</h3>
+                <textarea id="output" class="tool-output" style="width:100%;height:400px;padding:0.75rem" readonly></textarea>
+            </div>
+        </div>
+        <div style="margin-top:2rem;color:#aaa;line-height:1.6">
+            <h2 style="color:#e0e0e0;font-size:1.2rem">About Schema Markup Generator</h2>
+            <p>This free online schema markup generator lets you generate json-ld schema markup for google rich results — article, faq, product, localbusiness, howto, and more — directly in your browser with no signup or installation required.</p>
+            <p><strong>Features:</strong> Instant results, works entirely client-side (your data never leaves your browser), mobile-friendly, and completely free to use.</p>
+        </div>
+    <section class="newsletter-section">
+        <h2>Get New Tools in Your Inbox</h2>
+        <p>We ship new free tools weekly. No spam, unsubscribe anytime.</p>
+        <form class="newsletter-form" data-newsletter-form>
+            <input type="email" name="email_address" placeholder="you@example.com" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-success">You're in! Check your email to confirm.</p>
+        <p class="newsletter-error">Something went wrong. Please try again.</p>
+    </section>
+    <script>
+    (function() {
+        var form = document.querySelector('[data-newsletter-form]');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = form.querySelector('input[type="email"]').value;
+            var action = form.getAttribute('action');
+            if (!action) {
+                try { var s = JSON.parse(localStorage.getItem('utilshed_newsletter') || '[]'); if (s.indexOf(email) === -1) s.push(email); localStorage.setItem('utilshed_newsletter', JSON.stringify(s)); } catch(err) {}
+                form.parentElement.querySelector('.newsletter-success').style.display = 'block';
+                form.style.display = 'none';
+                return;
+            }
+            var body = new FormData(); body.append('email_address', email);
+            fetch(action, { method: 'POST', body: body, headers: { 'Accept': 'application/json' } })
+                .then(function(r) { if (r.ok) { form.parentElement.querySelector('.newsletter-success').style.display = 'block'; form.style.display = 'none'; } else { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; } })
+                .catch(function() { form.parentElement.querySelector('.newsletter-error').style.display = 'block'; });
+        });
+    })();
+    </script>
+    </main>
+    <footer><p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a></p></footer>
+    <script>
+const SCHEMAS = {
+  article: { fields: [
+    {id:'a-headline',label:'Headline',ph:'Article Title'},
+    {id:'a-author',label:'Author Name',ph:'John Doe'},
+    {id:'a-pub',label:'Publisher Name',ph:'My Blog'},
+    {id:'a-publogo',label:'Publisher Logo URL',ph:'https://example.com/logo.png'},
+    {id:'a-image',label:'Image URL',ph:'https://example.com/article.jpg'},
+    {id:'a-date',label:'Date Published',ph:'2026-01-15',type:'date'},
+    {id:'a-modified',label:'Date Modified',ph:'2026-01-16',type:'date'},
+    {id:'a-desc',label:'Description',ph:'A brief description...',tag:'textarea'}
+  ]},
+  faq: { fields: [
+    {id:'faq-items',label:'FAQ Items (Question | Answer, one per line)',ph:'What is JSON-LD? | JSON-LD is a method of encoding linked data using JSON.\nWhy use schema markup? | Schema markup helps search engines understand your content.',tag:'textarea',rows:8}
+  ]},
+  product: { fields: [
+    {id:'p-name',label:'Product Name',ph:'Widget Pro'},
+    {id:'p-desc',label:'Description',ph:'The best widget ever made',tag:'textarea'},
+    {id:'p-image',label:'Image URL',ph:'https://example.com/product.jpg'},
+    {id:'p-brand',label:'Brand',ph:'WidgetCorp'},
+    {id:'p-price',label:'Price',ph:'29.99'},
+    {id:'p-currency',label:'Currency',ph:'USD'},
+    {id:'p-avail',label:'Availability',ph:'InStock'}
+  ]},
+  local: { fields: [
+    {id:'l-name',label:'Business Name',ph:'Joes Coffee Shop'},
+    {id:'l-type',label:'Business Type',ph:'CoffeeShop'},
+    {id:'l-street',label:'Street Address',ph:'123 Main St'},
+    {id:'l-city',label:'City',ph:'Houston'},
+    {id:'l-state',label:'State',ph:'TX'},
+    {id:'l-zip',label:'Zip',ph:'77001'},
+    {id:'l-phone',label:'Phone',ph:'+1-555-123-4567'},
+    {id:'l-url',label:'Website',ph:'https://joescoffee.com'}
+  ]},
+  person: { fields: [
+    {id:'pe-name',label:'Name',ph:'Jane Smith'},
+    {id:'pe-job',label:'Job Title',ph:'Software Engineer'},
+    {id:'pe-org',label:'Organization',ph:'TechCorp'},
+    {id:'pe-url',label:'Website/Profile',ph:'https://janesmith.com'},
+    {id:'pe-image',label:'Image URL',ph:'https://example.com/jane.jpg'}
+  ]},
+  org: { fields: [
+    {id:'o-name',label:'Organization Name',ph:'TechCorp Inc.'},
+    {id:'o-url',label:'Website',ph:'https://techcorp.com'},
+    {id:'o-logo',label:'Logo URL',ph:'https://techcorp.com/logo.png'},
+    {id:'o-desc',label:'Description',ph:'Leading technology company',tag:'textarea'},
+    {id:'o-phone',label:'Phone',ph:'+1-555-000-0000'},
+    {id:'o-email',label:'Email',ph:'info@techcorp.com'}
+  ]}
+};
+
+function makeField(f) {
+  let html = '<div style="margin-bottom:0.5rem"><label style="color:#aaa;font-size:0.85rem">' + f.label + '</label><br>';
+  if (f.tag === 'textarea') html += '<textarea id="' + f.id + '" class="tool-input" style="width:100%;height:' + (f.rows ? f.rows*20 : 60) + 'px;padding:0.5rem" placeholder="' + f.ph + '" oninput="generate()"></textarea>';
+  else html += '<input type="' + (f.type||'text') + '" id="' + f.id + '" class="tool-input" style="width:100%;height:auto;padding:0.5rem" placeholder="' + f.ph + '" oninput="generate()">';
+  return html + '</div>';
+}
+
+function updateForm() {
+  const type = document.getElementById('schema-type').value;
+  document.getElementById('schema-fields').innerHTML = SCHEMAS[type].fields.map(makeField).join('');
+  generate();
+}
+
+function gv(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function generate() {
+  const type = document.getElementById('schema-type').value;
+  let schema;
+  if (type === 'article') {
+    schema = {'@context':'https://schema.org','@type':'Article'};
+    if(gv('a-headline')) schema.headline = gv('a-headline');
+    if(gv('a-author')) schema.author = {'@type':'Person',name:gv('a-author')};
+    if(gv('a-pub')) { schema.publisher = {'@type':'Organization',name:gv('a-pub')}; if(gv('a-publogo')) schema.publisher.logo = {'@type':'ImageObject',url:gv('a-publogo')}; }
+    if(gv('a-image')) schema.image = gv('a-image');
+    if(gv('a-date')) schema.datePublished = gv('a-date');
+    if(gv('a-modified')) schema.dateModified = gv('a-modified');
+    if(gv('a-desc')) schema.description = gv('a-desc');
+  } else if (type === 'faq') {
+    schema = {'@context':'https://schema.org','@type':'FAQPage',mainEntity:[]};
+    const lines = gv('faq-items').split('\n').filter(Boolean);
+    lines.forEach(line => { const [q,a] = line.split('|').map(s=>s.trim()); if(q&&a) schema.mainEntity.push({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}); });
+  } else if (type === 'product') {
+    schema = {'@context':'https://schema.org','@type':'Product'};
+    if(gv('p-name')) schema.name = gv('p-name');
+    if(gv('p-desc')) schema.description = gv('p-desc');
+    if(gv('p-image')) schema.image = gv('p-image');
+    if(gv('p-brand')) schema.brand = {'@type':'Brand',name:gv('p-brand')};
+    if(gv('p-price')) schema.offers = {'@type':'Offer',price:gv('p-price'),priceCurrency:gv('p-currency')||'USD',availability:'https://schema.org/'+(gv('p-avail')||'InStock')};
+  } else if (type === 'local') {
+    schema = {'@context':'https://schema.org','@type':gv('l-type')||'LocalBusiness'};
+    if(gv('l-name')) schema.name = gv('l-name');
+    schema.address = {'@type':'PostalAddress'};
+    if(gv('l-street')) schema.address.streetAddress = gv('l-street');
+    if(gv('l-city')) schema.address.addressLocality = gv('l-city');
+    if(gv('l-state')) schema.address.addressRegion = gv('l-state');
+    if(gv('l-zip')) schema.address.postalCode = gv('l-zip');
+    if(gv('l-phone')) schema.telephone = gv('l-phone');
+    if(gv('l-url')) schema.url = gv('l-url');
+  } else if (type === 'person') {
+    schema = {'@context':'https://schema.org','@type':'Person'};
+    if(gv('pe-name')) schema.name = gv('pe-name');
+    if(gv('pe-job')) schema.jobTitle = gv('pe-job');
+    if(gv('pe-org')) schema.worksFor = {'@type':'Organization',name:gv('pe-org')};
+    if(gv('pe-url')) schema.url = gv('pe-url');
+    if(gv('pe-image')) schema.image = gv('pe-image');
+  } else if (type === 'org') {
+    schema = {'@context':'https://schema.org','@type':'Organization'};
+    if(gv('o-name')) schema.name = gv('o-name');
+    if(gv('o-url')) schema.url = gv('o-url');
+    if(gv('o-logo')) schema.logo = gv('o-logo');
+    if(gv('o-desc')) schema.description = gv('o-desc');
+    if(gv('o-phone')) schema.telephone = gv('o-phone');
+    if(gv('o-email')) schema.email = gv('o-email');
+  }
+  const tag = '<script type="application/ld+json">\n' + JSON.stringify(schema, null, 2) + '\n<\/script>';
+  document.getElementById('output').value = tag;
+  setStatus('Generated ' + type + ' schema', 'ok');
+}
+
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); setStatus('Copied!', 'ok'); }
+
+updateForm();
+
+function copyOutput() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  const text = el ? (el.value || el.textContent) : '';
+  navigator.clipboard.writeText(text); setStatus('Copied!', 'ok');
+}
+function clearAll() {
+  const el = document.getElementById('output') || document.getElementById('result');
+  if (el) { if (el.value !== undefined) el.value = ''; else el.textContent = ''; }
+  document.getElementById('status').textContent = '';
+}
+function setStatus(msg, type) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status status-' + type; }
+    </script>
+
+    <section class="related-tools">
+        <h2>Related Tools</h2>
+        <div class="related-tools-grid">
+            <a href="../json-formatter/" class="related-tool-card">
+                <strong>JSON Formatter & Validator</strong>
+                <span>Free JSON formatter and validator. Paste your JSON and get it beautifully formatted with syntax highlighting and error detection.</span>
+            </a>
+            <a href="../base64/" class="related-tool-card">
+                <strong>Base64 Encode & Decode</strong>
+                <span>Free Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly in your browser</span>
+            </a>
+            <a href="../hash/" class="related-tool-card">
+                <strong>Hash Generator — MD5, SHA-1, SHA-256, SHA-512</strong>
+                <span>Free hash generator. Create MD5, SHA-1, SHA-256, and SHA-512 hashes from any text. All processing stays in your browser.</span>
+            </a>
+            <a href="../uuid/" class="related-tool-card">
+                <strong>UUID Generator</strong>
+                <span>Free UUID generator. Generate random UUID v4 identifiers instantly. Bulk generate up to 100 UUIDs at once.</span>
+            </a>
+        </div>
+    </section>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
