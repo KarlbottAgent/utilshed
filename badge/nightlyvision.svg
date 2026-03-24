@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="229" height="20" role="img" aria-label="NightlyVision: Grade F · 0% uptime">
+  <title>NightlyVision: Grade F · 0% uptime</title>
+  <linearGradient id="s" x2="0" y2="100%">
+    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+    <stop offset="1" stop-opacity=".1"/>
+  </linearGradient>
+  <clipPath id="r">
+    <rect width="229" height="20" rx="3" fill="#fff"/>
+  </clipPath>
+  <g clip-path="url(#r)">
+    <rect width="95" height="20" fill="#555"/>
+    <rect x="95" width="134" height="20" fill="#e05d44"/>
+    <rect width="229" height="20" fill="url(#s)"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="11">
+    <text aria-hidden="true" x="47.5" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="850">NightlyVision</text>
+    <text x="47.5" y="140" transform="scale(.1)" fill="#fff" textLength="850">NightlyVision</text>
+    <text aria-hidden="true" x="162" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="1240">Grade F · 0% uptime</text>
+    <text x="162" y="140" transform="scale(.1)" fill="#fff" textLength="1240">Grade F · 0% uptime</text>
+  </g>
+</svg>
