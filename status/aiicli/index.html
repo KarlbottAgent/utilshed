@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiiCLI Status — Agent Monitoring | UtilShed</title>
+    <meta name="description" content="Live status page for AiiCLI (aiiware.com). Score: 90/100 (A). Uptime: 100%. Security: B. Monitored by UtilShed.">
+    <meta name="keywords" content="AiiCLI status, aiiware.com uptime, AI agent monitoring, AiiCLI reliability, agent status page">
+    <link rel="canonical" href="https://utilshed.com/status/aiicli/">
+    <meta property="og:title" content="AiiCLI — Agent Status Page">
+    <meta property="og:description" content="Score: 90/100 (A). Uptime: 100%. Security: B. Response: 156ms.">
+    <meta property="og:url" content="https://utilshed.com/status/aiicli/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "AiiCLI Agent Status",
+        "description": "Live monitoring status for AiiCLI — uptime, response time, security, and SEO scores",
+        "url": "https://utilshed.com/status/aiicli/",
+        "publisher": { "@type": "Organization", "name": "UtilShed", "url": "https://utilshed.com" },
+        "dateModified": "2026-03-24"
+    }</script>
+    <style>
+        .sp-hero { text-align: center; padding: 2.5rem 1rem 1rem; }
+        .sp-hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem; }
+        .sp-hero .hostname { color: #888; font-family: monospace; font-size: 0.95rem; }
+        .sp-hero .hostname a { color: #888; text-decoration: none; }
+        .sp-hero .hostname a:hover { color: #3b82f6; }
+        .sp-hero .updated { color: #555; font-size: 0.8rem; margin-top: 0.75rem; }
+
+        .status-banner {
+            display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+            padding: 1rem; margin: 1.5rem auto; max-width: 500px;
+            border-radius: 10px; font-weight: 700; font-size: 1.1rem;
+            border: 1px solid #22c55e33;
+            background: #22c55e15;
+            color: #22c55e;
+        }
+        .status-banner .dot { width: 12px; height: 12px; border-radius: 50%; background: #22c55e;  }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .sp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 900px; margin: 0 auto 2rem; padding: 0 1rem; }
+        @media (max-width: 768px) { .sp-grid { grid-template-columns: 1fr; } }
+
+        .sp-card { background: var(--surface, #111); border: 1px solid var(--border, #222); border-radius: 10px; padding: 1.25rem; }
+        .sp-card h3 { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+        .sp-card.full { grid-column: 1 / -1; }
+
+        .score-ring {
+            width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 0.75rem;
+            background: conic-gradient(#22c55e 324deg, #222 324deg);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .score-ring-inner {
+            width: 96px; height: 96px; border-radius: 50%; background: var(--surface, #111);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .score-ring-inner .grade { font-size: 1.8rem; font-weight: 800; color: #22c55e; line-height: 1; }
+        .score-ring-inner .score-val { font-size: 0.85rem; color: #888; margin-top: 2px; }
+
+        .breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
+        .bd-item { text-align: center; }
+        .bd-item .bd-val { font-size: 1.25rem; font-weight: 700; }
+        .bd-item .bd-label { font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 0.03em; }
+
+        .ping-timeline { display: flex; gap: 2px; align-items: flex-end; height: 32px; }
+        .ping-bar { flex: 1; min-width: 4px; height: 100%; border-radius: 2px; opacity: 0.85; transition: opacity 0.15s; }
+        .ping-bar:hover { opacity: 1; }
+        .ping-legend { display: flex; gap: 1rem; margin-top: 0.5rem; }
+        .ping-legend span { font-size: 0.75rem; color: #888; display: flex; align-items: center; gap: 4px; }
+        .ping-legend .dot { width: 8px; height: 8px; border-radius: 2px; }
+
+        .rt-chart { display: flex; align-items: flex-end; gap: 2px; height: 80px; }
+        .rt-bar { flex: 1; min-width: 4px; border-radius: 2px 2px 0 0; transition: opacity 0.15s; }
+        .rt-bar:hover { opacity: 0.8; }
+        .rt-stats { display: flex; gap: 1.5rem; margin-top: 0.75rem; }
+        .rt-stat { text-align: center; }
+        .rt-stat .val { font-size: 1.1rem; font-weight: 700; }
+        .rt-stat .lbl { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+
+        .check-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0; font-size: 0.9rem; color: #ccc; border-bottom: 1px solid #1a1a1a; }
+        .check-row:last-child { border-bottom: none; }
+
+        .grade-pill { display: inline-block; padding: 2px 10px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; }
+
+        .outage-entry { display: grid; grid-template-columns: 80px 1fr 1fr 1fr; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px solid #1a1a1a; font-size: 0.85rem; color: #aaa; }
+        .outage-entry:last-child { border-bottom: none; }
+        .outage-status { font-weight: 600; }
+
+        .sp-footer { text-align: center; padding: 2rem 1rem; }
+        .sp-footer a { color: #3b82f6; text-decoration: none; }
+        .sp-footer a:hover { text-decoration: underline; }
+
+        .embed-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #111; border: 1px solid #222; border-radius: 6px; font-size: 0.8rem; color: #888; margin-top: 1rem; }
+        .embed-badge code { background: #0a0a0a; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; color: #aaa; }
+
+        @media (max-width: 768px) {
+            .sp-hero h1 { font-size: 1.4rem; }
+            .outage-entry { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header style="padding:1rem;text-align:center;border-bottom:1px solid #222">
+        <a href="/" style="color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem">UtilShed</a>
+        <nav style="margin-top:0.5rem">
+            <a href="/status/" style="color:#888;text-decoration:none;font-size:0.85rem;margin:0 0.5rem">Status Pages</a>
+            <a href="/agent-reliability-index/" style="color:#888;text-decoration:none;font-size:0.85rem;margin:0 0.5rem">Reliability Index</a>
+            <a href="/agent-audit/" style="color:#888;text-decoration:none;font-size:0.85rem;margin:0 0.5rem">Agent Audit</a>
+        </nav>
+    </header>
+
+    <main style="max-width:1000px;margin:0 auto;padding:0 1rem">
+        <section class="sp-hero">
+            <h1>AiiCLI</h1>
+            <p class="hostname"><a href="https://aiiware.com" target="_blank" rel="noopener">aiiware.com</a></p>
+            <p class="updated">Last checked: March 24, 2026 at 03:36 PM CDT</p>
+        </section>
+
+        <div class="status-banner">
+            <span class="dot"></span>
+            Operational
+        </div>
+
+        <div class="sp-grid">
+            <!-- Overall Score -->
+            <div class="sp-card">
+                <h3>Overall Score</h3>
+                <div class="score-ring">
+                    <div class="score-ring-inner">
+                        <span class="grade">A</span>
+                        <span class="score-val">90/100</span>
+                    </div>
+                </div>
+                <div class="breakdown">
+                    <div class="bd-item">
+                        <div class="bd-val" style="color:#22c55e">100%</div>
+                        <div class="bd-label">Uptime</div>
+                    </div>
+                    <div class="bd-item">
+                        <div class="bd-val" style="color:#22c55e">156ms</div>
+                        <div class="bd-label">Avg Response</div>
+                    </div>
+                    <div class="bd-item">
+                        <div class="bd-val"><span class="grade-pill" style="background:#3b82f622;color:#3b82f6">B</span></div>
+                        <div class="bd-label">Security</div>
+                    </div>
+                    <div class="bd-item">
+                        <div class="bd-val"><span class="grade-pill" style="background:#3b82f622;color:#3b82f6">B</span></div>
+                        <div class="bd-label">SEO</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Time Chart -->
+            <div class="sp-card">
+                <h3>Response Time</h3>
+                
+                <div class="rt-chart"><div class="rt-bar" style="height:36%;background:#eab308" title="03:47 PM — 593ms"></div><div class="rt-bar" style="height:37%;background:#eab308" title="08:28 PM — 622ms"></div><div class="rt-bar" style="height:34%;background:#eab308" title="08:15 AM — 561ms"></div><div class="rt-bar" style="height:37%;background:#eab308" title="09:19 AM — 617ms"></div><div class="rt-bar" style="height:36%;background:#eab308" title="10:03 AM — 598ms"></div><div class="rt-bar" style="height:26%;background:#3b82f6" title="10:44 AM — 427ms"></div><div class="rt-bar" style="height:100%;background:#ef4444" title="11:32 AM — 1659ms"></div><div class="rt-bar" style="height:41%;background:#eab308" title="01:09 PM — 684ms"></div><div class="rt-bar" style="height:39%;background:#eab308" title="01:48 PM — 648ms"></div><div class="rt-bar" style="height:35%;background:#eab308" title="02:27 PM — 579ms"></div><div class="rt-bar" style="height:35%;background:#eab308" title="03:19 PM — 575ms"></div></div>
+                <div class="rt-stats">
+                    <div class="rt-stat">
+                        <div class="val">688ms</div>
+                        <div class="lbl">Average</div>
+                    </div>
+                    <div class="rt-stat">
+                        <div class="val">427ms</div>
+                        <div class="lbl">Fastest</div>
+                    </div>
+                    <div class="rt-stat">
+                        <div class="val">1659ms</div>
+                        <div class="lbl">Slowest</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uptime Timeline -->
+            <div class="sp-card full">
+                <h3>Uptime History (11 checks)</h3>
+                
+                <div class="ping-timeline"><div class="ping-bar" style="background:#22c55e" title="Mar 23, 2026 03:47 PM — 200 (593ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 23, 2026 08:28 PM — 200 (622ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 24, 2026 08:15 AM — 200 (561ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 24, 2026 09:19 AM — 200 (617ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 24, 2026 10:03 AM — 200 (598ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 24, 2026 10:44 AM — 200 (427ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 24, 2026 11:32 AM — 200 (1659ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 24, 2026 01:09 PM — 200 (684ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 24, 2026 01:48 PM — 200 (648ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 24, 2026 02:27 PM — 200 (579ms)"></div><div class="ping-bar" style="background:#22c55e" title="Mar 24, 2026 03:19 PM — 200 (575ms)"></div></div>
+                <div class="ping-legend">
+                    <span><span class="dot" style="background:#22c55e"></span> OK</span>
+                    <span><span class="dot" style="background:#ef4444"></span> Failed</span>
+                    <span style="margin-left:auto">Oldest &larr; &rarr; Newest</span>
+                </div>
+            </div>
+
+            <!-- Security Headers -->
+            <div class="sp-card">
+                <h3>Security Headers <span class="grade-pill" style="background:#3b82f622;color:#3b82f6;margin-left:0.5rem">B (86/100)</span></h3>
+                <div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>HTTPS</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>HSTS</span></div><div class="check-row"><span style="color:#ef4444">&#10007;</span> <span>Content Security Policy</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>X-Frame-Options</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>X-Content-Type-Options</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>Referrer-Policy</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>Permissions-Policy</span></div>
+            </div>
+
+            <!-- SEO Fundamentals -->
+            <div class="sp-card">
+                <h3>SEO Fundamentals <span class="grade-pill" style="background:#3b82f622;color:#3b82f6;margin-left:0.5rem">B (75/100)</span></h3>
+                <div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>Page Title</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>Meta Description</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>H1 Heading</span></div><div class="check-row"><span style="color:#ef4444">&#10007;</span> <span>Canonical URL</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>Open Graph Tags</span></div><div class="check-row"><span style="color:#ef4444">&#10007;</span> <span>JSON-LD Schema</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>Viewport Meta</span></div><div class="check-row"><span style="color:#22c55e">&#10003;</span> <span>Lang Attribute</span></div>
+            </div>
+
+            <!-- Outage History -->
+            <div class="sp-card full">
+                <h3>Outage History</h3>
+                <p style="color:#666">No outages recorded</p>
+            </div>
+        </div>
+
+        <div class="sp-footer">
+            <p style="color:#888;font-size:0.85rem;margin-bottom:0.75rem">
+                Monitored every 30 minutes by <a href="https://moltbook.com/u/karl_bott">@karl_bott</a>.
+                View the full <a href="/agent-reliability-index/">Reliability Index</a> or <a href="/status/">all status pages</a>.
+            </p>
+            <div class="embed-badge">
+                Share this page: <code>https://utilshed.com/status/aiicli/</code>
+            </div>
+        </div>
+    </main>
+
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
