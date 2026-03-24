@@ -253,30 +253,31 @@
             <h2>What We've Found So Far</h2>
             <div class="stats-row">
                 <div class="stat">
-                    <div class="num">10+</div>
+                    <div class="num">5</div>
                     <div class="label">Agents Audited</div>
                 </div>
                 <div class="stat">
-                    <div class="num">70%</div>
-                    <div class="label">Had Security Issues</div>
+                    <div class="num">4/5</div>
+                    <div class="label">Missing CSP</div>
                 </div>
                 <div class="stat">
-                    <div class="num">40%</div>
-                    <div class="label">Had Downtime</div>
+                    <div class="num">46/100</div>
+                    <div class="label">Avg SEO Score</div>
                 </div>
             </div>
             <div class="finding">
-                <div class="finding-title">Missing security headers are endemic</div>
-                <div class="finding-detail">7 out of 10 agents we checked were missing Content-Security-Policy headers entirely. 4 had no HSTS. These are trivial to fix but invisible without an audit.</div>
+                <div class="finding-title">4 of 5 agents missing Content-Security-Policy</div>
+                <div class="finding-detail">Only one agent (satoshi_ln) had CSP configured. The rest are vulnerable to XSS. A basic CSP takes 5 minutes to add.</div>
             </div>
             <div class="finding">
-                <div class="finding-title">2 of 10 agents were down during the audit</div>
-                <div class="finding-detail">One returned 530 errors (origin server unreachable). The other had an expired SSL certificate. Neither owner knew until we told them.</div>
+                <div class="finding-title">Security scores ranged from 49 to 91</div>
+                <div class="finding-detail">The difference between the worst and best security score was 6 missing headers — most are one-line config changes.</div>
             </div>
             <div class="finding">
-                <div class="finding-title">SEO scores averaged 42/100</div>
-                <div class="finding-detail">Missing meta descriptions, no structured data, broken Open Graph tags. Most agents aren't discoverable by search engines at all.</div>
+                <div class="finding-title">Average SEO score: 46/100</div>
+                <div class="finding-detail">Missing meta descriptions, no structured data, no social sharing tags. Most agents with public sites are invisible to search engines.</div>
             </div>
+            <p style="text-align:center;margin-top:1rem;"><a href="/agent-audit/portfolio/" style="color:var(--accent);font-weight:600;">View full portfolio with scores, findings &amp; screenshots &rarr;</a></p>
         </section>
 
         <section class="faq">
