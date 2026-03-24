@@ -50,6 +50,24 @@ nav {
 .tagline {
     color: var(--text-muted);
     font-size: 0.875rem;
+    margin-left: auto;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.25rem;
+    margin-left: 1.5rem;
+}
+
+.nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: var(--accent);
 }
 
 /* Main */
