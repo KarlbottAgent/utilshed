@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205975363858318" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="dns-prefetch" href="//gc.zgo.at">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Your Site Health Badge — Free Embeddable Badge | UtilShed</title>
+    <meta name="description" content="Add a free site health badge to your README or website. Shows a live A-F grade for health and security. Works like shields.io — just paste the embed code.">
+    <meta name="keywords" content="site health badge, shields.io badge, website health, embeddable badge, README badge, security badge, free badge generator">
+    <link rel="canonical" href="https://utilshed.com/get-badge/">
+    <meta property="og:title" content="Get Your Site Health Badge — Free from UtilShed">
+    <meta property="og:description" content="Add a live health grade badge to your README or website. Free, auto-updating, no signup.">
+    <meta property="og:url" content="https://utilshed.com/get-badge/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="UtilShed">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="../css/style.css">
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Site Health Badge Generator",
+        "description": "Generate a free embeddable site health badge showing an A-F grade for any URL",
+        "url": "https://utilshed.com/get-badge/",
+        "applicationCategory": "WebTool",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "provider": { "@type": "Organization", "name": "UtilShed", "url": "https://utilshed.com" }
+    }</script>
+    <style>
+        .badge-hero { text-align: center; padding: 3rem 1rem 1.5rem; }
+        .badge-hero h1 {
+            font-size: 2.25rem; font-weight: 800; margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #fff, #22c55e);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .badge-hero .subtitle { color: #999; max-width: 600px; margin: 0 auto 0.5rem; font-size: 1.1rem; line-height: 1.6; }
+        .badge-hero .free-tag { display: inline-block; background: #22c55e22; color: var(--green); padding: 4px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-top: 0.5rem; }
+
+        .badge-input { max-width: 640px; margin: 0 auto 2rem; padding: 0 1rem; }
+        .input-row { display: flex; gap: 0.75rem; }
+        .input-row input {
+            flex: 1; padding: 0.85rem 1rem; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 10px; color: var(--text); font-size: 1rem; font-family: var(--mono);
+            transition: border-color 0.2s;
+        }
+        .input-row input:focus { outline: none; border-color: var(--accent); }
+        .input-row input::placeholder { color: #555; }
+        .input-row button {
+            padding: 0.85rem 2rem; background: var(--green); color: #fff; border: none;
+            border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 1rem; white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .input-row button:hover { background: #16a34a; }
+        .input-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Preview */
+        .preview-section { display: none; max-width: 720px; margin: 0 auto 2rem; padding: 0 1rem; }
+        .preview-section.active { display: block; }
+        .preview-box {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 2rem; text-align: center; margin-bottom: 1.5rem;
+        }
+        .preview-box img { max-width: 100%; height: auto; }
+        .preview-label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+        .preview-note { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.75rem; }
+
+        /* Embed codes */
+        .embed-codes { display: flex; flex-direction: column; gap: 1rem; }
+        .embed-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+        .embed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .embed-label { font-weight: 700; font-size: 0.9rem; }
+        .embed-copy {
+            padding: 4px 12px; background: transparent; border: 1px solid var(--border); border-radius: 6px;
+            color: var(--text-muted); font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+        }
+        .embed-copy:hover { border-color: var(--green); color: var(--green); }
+        .embed-copy.copied { border-color: var(--green); color: var(--green); }
+        .embed-code {
+            background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem;
+            font-family: var(--mono); font-size: 0.85rem; color: var(--text); word-break: break-all;
+            white-space: pre-wrap; line-height: 1.5; user-select: all;
+        }
+
+        /* Loading */
+        .badge-loading { display: none; text-align: center; padding: 2rem; color: var(--text-muted); }
+        .badge-loading.active { display: block; }
+        .badge-spinner {
+            width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--green);
+            border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 0.75rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Error */
+        .badge-error { display: none; max-width: 640px; margin: 0.75rem auto; padding: 0.85rem 1.25rem; background: #ef444422; border: 1px solid #ef444444; border-radius: 10px; color: var(--red); font-size: 0.9rem; text-align: center; }
+        .badge-error.active { display: block; }
+
+        /* How it works */
+        .how-section { max-width: 720px; margin: 0 auto 3rem; padding: 0 1rem; }
+        .how-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; text-align: center; }
+        .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        @media (max-width: 640px) { .how-grid { grid-template-columns: 1fr; } }
+        .how-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 1.25rem; text-align: center;
+        }
+        .how-num { font-size: 1.75rem; font-weight: 800; color: var(--green); margin-bottom: 0.5rem; }
+        .how-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .how-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+
+        /* Grades */
+        .grades-section { max-width: 720px; margin: 0 auto 3rem; padding: 0 1rem; }
+        .grades-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; text-align: center; }
+        .grade-row { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .grade-row:last-child { border-bottom: none; }
+        .grade-letter { font-size: 1.5rem; font-weight: 800; width: 40px; text-align: center; }
+        .grade-a { color: #4c1; }
+        .grade-b { color: #97ca00; }
+        .grade-c { color: #dfb317; }
+        .grade-d { color: #fe7d37; }
+        .grade-f { color: #e05d44; }
+        .grade-desc { flex: 1; }
+        .grade-range { color: var(--text-muted); font-size: 0.85rem; font-family: var(--mono); width: 70px; text-align: right; }
+
+        /* FAQ */
+        .faq-section { max-width: 720px; margin: 0 auto 3rem; padding: 0 1rem; }
+        .faq-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; text-align: center; }
+        .faq-item { border-bottom: 1px solid var(--border); padding: 1rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q { font-weight: 700; margin-bottom: 0.5rem; }
+        .faq-a { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+        .faq-a code { background: var(--surface); padding: 2px 6px; border-radius: 4px; font-family: var(--mono); font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">&gt;_ UtilShed</a>
+            <div class="nav-links">
+                <a href="/instant-audit/">Free Audit</a>
+                <a href="/agent-audit/">Agent Audit</a>
+                <a href="/agent-reliability-index/">Reliability Index</a>
+                <a href="/blog/">Blog</a>
+            </div>
+            <span class="tagline">Fast, free tools. No signup.</span>
+        </nav>
+    </header>
+
+    <main>
+        <section class="badge-hero">
+            <h1>Get Your Site Health Badge</h1>
+            <p class="subtitle">Add a live health grade to your README or website. Auto-updates every 5 minutes. Works anywhere images work.</p>
+            <span class="free-tag">Free forever — no signup</span>
+        </section>
+
+        <section class="badge-input">
+            <div class="input-row">
+                <input type="url" id="url-input" placeholder="https://your-site.com" autocomplete="off" spellcheck="false">
+                <button id="generate-btn" onclick="generateBadge()">Generate</button>
+            </div>
+        </section>
+
+        <div class="badge-error" id="error-msg"></div>
+
+        <div class="badge-loading" id="loading">
+            <div class="badge-spinner"></div>
+            <div>Checking site health...</div>
+        </div>
+
+        <section class="preview-section" id="preview">
+            <div class="preview-box">
+                <div class="preview-label">Live Preview</div>
+                <img id="badge-img" alt="Site health badge">
+                <div class="preview-note">Badge auto-updates every 5 minutes via edge cache</div>
+            </div>
+
+            <div class="embed-codes">
+                <div class="embed-block">
+                    <div class="embed-header">
+                        <span class="embed-label">Markdown (README)</span>
+                        <button class="embed-copy" onclick="copyCode('md')">Copy</button>
+                    </div>
+                    <div class="embed-code" id="code-md"></div>
+                </div>
+
+                <div class="embed-block">
+                    <div class="embed-header">
+                        <span class="embed-label">HTML</span>
+                        <button class="embed-copy" onclick="copyCode('html')">Copy</button>
+                    </div>
+                    <div class="embed-code" id="code-html"></div>
+                </div>
+
+                <div class="embed-block">
+                    <div class="embed-header">
+                        <span class="embed-label">Image URL</span>
+                        <button class="embed-copy" onclick="copyCode('url')">Copy</button>
+                    </div>
+                    <div class="embed-code" id="code-url"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-section">
+            <h2>How It Works</h2>
+            <div class="how-grid">
+                <div class="how-card">
+                    <div class="how-num">1</div>
+                    <h3>Enter Your URL</h3>
+                    <p>Paste any public URL. We check availability, response time, and security headers.</p>
+                </div>
+                <div class="how-card">
+                    <div class="how-num">2</div>
+                    <h3>Get Your Badge</h3>
+                    <p>Copy the embed code for Markdown, HTML, or just the image URL. One line of code.</p>
+                </div>
+                <div class="how-card">
+                    <div class="how-num">3</div>
+                    <h3>Always Up to Date</h3>
+                    <p>The badge re-checks your site on every view (cached 5 min). No maintenance needed.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="grades-section">
+            <h2>Grade Scale</h2>
+            <div class="grade-row">
+                <span class="grade-letter grade-a">A</span>
+                <span class="grade-desc">Excellent — fast, secure, all headers present</span>
+                <span class="grade-range">90-100</span>
+            </div>
+            <div class="grade-row">
+                <span class="grade-letter grade-b">B</span>
+                <span class="grade-desc">Good — minor gaps in security headers or slower response</span>
+                <span class="grade-range">80-89</span>
+            </div>
+            <div class="grade-row">
+                <span class="grade-letter grade-c">C</span>
+                <span class="grade-desc">Fair — missing several security headers or slow</span>
+                <span class="grade-range">70-79</span>
+            </div>
+            <div class="grade-row">
+                <span class="grade-letter grade-d">D</span>
+                <span class="grade-desc">Poor — significant security or performance issues</span>
+                <span class="grade-range">60-69</span>
+            </div>
+            <div class="grade-row">
+                <span class="grade-letter grade-f">F</span>
+                <span class="grade-desc">Failing — unreachable, no HTTPS, or critical issues</span>
+                <span class="grade-range">0-59</span>
+            </div>
+        </section>
+
+        <section class="faq-section">
+            <h2>FAQ</h2>
+            <div class="faq-item">
+                <div class="faq-q">What does the badge check?</div>
+                <div class="faq-a">Availability (is the site reachable?), response time, and 7 security headers: Content-Security-Policy, X-Content-Type-Options, X-Frame-Options, Strict-Transport-Security, Referrer-Policy, Permissions-Policy, and X-XSS-Protection.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">How often does it update?</div>
+                <div class="faq-a">The badge is edge-cached for 5 minutes. After that, the next request triggers a fresh check. No cron jobs or webhooks needed on your side.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Is it really free?</div>
+                <div class="faq-a">Yes. No signup, no API key, no rate limit for normal use. The badge endpoint is <code>api.utilshed.com/badge/health</code> — just append your URL as a query param.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Can I use it in my GitHub README?</div>
+                <div class="faq-a">Absolutely. Copy the Markdown embed code above — it works just like shields.io badges. GitHub renders it inline.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">How do I improve my grade?</div>
+                <div class="faq-a">Run a <a href="/instant-audit/" style="color:var(--accent)">free instant audit</a> for a detailed breakdown of what's missing. The most common fixes are adding security headers (HSTS, CSP, X-Content-Type-Options).</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Does it support custom labels or colors?</div>
+                <div class="faq-a">Not yet — the badge shows "site health" as the label and uses a standard A-F color scale. We may add customization in the future.</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/KarlbottAgent">UtilShed</a> — open source, free forever. | <a href="/privacy/">Privacy</a> | <a href="/about/">About</a> | <a href="/blog/">Blog</a> | <a href="/instant-audit/">Free Audit</a>
+                <a href="/agent-audit/">Agent Audit</a> | <a href="/agent-reliability-index/">Reliability Index</a></p>
+    </footer>
+
+    <script>
+    function generateBadge() {
+        var input = document.getElementById('url-input');
+        var url = input.value.trim();
+        if (!url) { showError('Please enter a URL'); return; }
+        if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+        try { new URL(url); } catch(e) { showError('Invalid URL'); return; }
+
+        hideError();
+        document.getElementById('loading').classList.add('active');
+        document.getElementById('preview').classList.remove('active');
+        document.getElementById('generate-btn').disabled = true;
+
+        var badgeUrl = 'https://api.utilshed.com/badge/health?url=' + encodeURIComponent(url);
+        var linkUrl = 'https://utilshed.com/instant-audit/?url=' + encodeURIComponent(url);
+
+        var img = document.getElementById('badge-img');
+        img.onload = function() {
+            document.getElementById('loading').classList.remove('active');
+            document.getElementById('preview').classList.add('active');
+            document.getElementById('generate-btn').disabled = false;
+
+            document.getElementById('code-md').textContent =
+                '[![Site Health](' + badgeUrl + ')](' + linkUrl + ')';
+            document.getElementById('code-html').textContent =
+                '<a href="' + linkUrl + '"><img src="' + badgeUrl + '" alt="Site Health"></a>';
+            document.getElementById('code-url').textContent = badgeUrl;
+        };
+        img.onerror = function() {
+            document.getElementById('loading').classList.remove('active');
+            document.getElementById('generate-btn').disabled = false;
+            showError('Could not generate badge. Check the URL and try again.');
+        };
+        img.src = badgeUrl;
+    }
+
+    function showError(msg) {
+        var el = document.getElementById('error-msg');
+        el.textContent = msg;
+        el.classList.add('active');
+    }
+    function hideError() {
+        document.getElementById('error-msg').classList.remove('active');
+    }
+
+    function copyCode(type) {
+        var el = document.getElementById('code-' + type);
+        var text = el.textContent;
+        navigator.clipboard.writeText(text).then(function() {
+            var btn = el.parentElement.querySelector('.embed-copy');
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+        });
+    }
+
+    // Allow Enter key to trigger generate
+    document.getElementById('url-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') generateBadge();
+    });
+
+    // Pre-fill from query param
+    (function() {
+        var params = new URLSearchParams(window.location.search);
+        var url = params.get('url');
+        if (url) {
+            document.getElementById('url-input').value = url;
+            generateBadge();
+        }
+    })();
+    </script>
+    <script data-goatcounter="https://utilshed.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
